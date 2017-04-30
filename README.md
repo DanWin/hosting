@@ -14,7 +14,7 @@ This setup has two postfix instances, one for receiving and sending mail to othe
 ```
 postmulti -e init
 postmulti -I clearnet -e create
-postmulti -e enable
+postmulti -I clearnet -e enable
 postmulti -i clearnet -p start
 ```
 
