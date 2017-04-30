@@ -1,0 +1,6 @@
+[Unit]
+Description=Delete old shared hosting accounts
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/php /home/daniel/hosting/find_old.php

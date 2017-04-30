@@ -1,0 +1,43 @@
+SOCKSPort 9050 # Default: Bind to localhost:9050 for local connections.
+
+HiddenServiceDir /var/lib/tor/hidden_service/
+HiddenServicePort 80 127.0.0.1:80
+HiddenServicePort 25 127.0.0.1:25
+HiddenServicePort 143 127.0.0.1:143
+HiddenServicePort 110 127.0.0.1:110
+HiddenServicePort 22 127.0.0.1:22
+HiddenServicePort 20 127.0.0.1:20
+HiddenServicePort 21 127.0.0.1:21
+HiddenServicePort 5000 127.0.0.1:5000
+HiddenServicePort 5001 127.0.0.1:5001
+HiddenServicePort 5002 127.0.0.1:5002
+HiddenServicePort 5003 127.0.0.1:5003
+HiddenServicePort 5004 127.0.0.1:5004
+HiddenServicePort 5005 127.0.0.1:5005
+HiddenServicePort 5006 127.0.0.1:5006
+HiddenServicePort 5007 127.0.0.1:5007
+HiddenServicePort 5008 127.0.0.1:5008
+HiddenServicePort 5009 127.0.0.1:5009
+HiddenServicePort 5010 127.0.0.1:5010
+HiddenServicePort 5011 127.0.0.1:5011
+HiddenServicePort 5012 127.0.0.1:5012
+HiddenServicePort 5013 127.0.0.1:5013
+HiddenServicePort 5014 127.0.0.1:5014
+HiddenServicePort 5015 127.0.0.1:5015
+HiddenServicePort 5016 127.0.0.1:5016
+HiddenServicePort 5017 127.0.0.1:5017
+HiddenServicePort 5018 127.0.0.1:5018
+HiddenServicePort 5019 127.0.0.1:5019
+HiddenServicePort 5020 127.0.0.1:5020
+
+VirtualAddrNetworkIPv4 10.192.0.0/10
+VirtualAddrNetworkIPv6 [FC00::]/7
+AutomapHostsOnResolve 1
+TransPort 9040
+TransPort [::1]:9040
+DNSPort 53
+DNSPort [::1]:53
+MaxClientCircuitsPending 1024
+NumCPUs 4
+HardwareAccel 1
+AvoidDiskWrites 1

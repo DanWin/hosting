@@ -1,0 +1,11 @@
+/var/log/php7.1-fpm*.log {
+	rotate 1
+	daily
+	missingok
+	notifempty
+	compress
+	delaycompress
+	postrotate
+		/usr/lib/php/php7.1-fpm-reopenlogs
+	endscript
+}

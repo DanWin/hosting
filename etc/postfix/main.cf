@@ -1,0 +1,61 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+delay_warning_time = 1h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_use_tls=no
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+myhostname = dhosting4okcs22v.onion
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = dhosting4okcs22v.onion
+mydestination = dhosting4okcs22v.onion localhost dhosting
+#relayhost = [10.8.0.1]
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = all
+#relay_domains = onion
+relay_domains = !dhosting4okcs22v.onion onion lelantos.org mail2tor.com anoninbox.net anonplus.org o3mail.org volatile.ch danwin1210.me
+home_mailbox = Maildir/
+canonical_maps = regexp:/etc/postfix/canonical
+ignore_mx_lookup_error = yes
+always_add_missing_headers = yes
+message_drop_headers = bcc content-length resent-bcc return-path x-mailer received x-originating-ip x-original-to user-agent
+transport_maps = hash:/etc/postfix/transport
+
+
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_local_domain = dhosting4okcs22v.onion
+smtpd_recipient_restrictions = permit_sasl_authenticated
+smtpd_sender_restrictions = reject_sender_login_mismatch, permit_sasl_authenticated
+smtpd_relay_restrictions = permit_sasl_authenticated, permit_auth_destination, defer_unauth_destination, reject
+smtpd_recipient_limit = 10
+smtpd_sender_login_maps = regexp:/etc/postfix/sender_login_maps
+multi_instance_wrapper = ${command_directory}/postmulti -p --
+multi_instance_enable = yes
+multi_instance_directories = /etc/postfix-clearnet

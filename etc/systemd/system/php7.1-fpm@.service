@@ -1,0 +1,17 @@
+[Unit]
+Description=The PHP 7.1 FastCGI Process Manager (instance %i)
+Documentation=man:php-fpm7.1(8)
+After=network.target
+PartOf=php7.1-fpm.service
+ReloadPropagatedFrom=php7.1-fpm.service
+
+[Service] 
+Type=notify
+PIDFile=/run/php/php7.1-fpm-%i.pid
+ExecStart=/usr/sbin/php-fpm7.1 --nodaemonize --fpm-config /etc/php/7.1/fpm/php-fpm-%i.conf
+ExecReload=/bin/kill -USR2 $MAINPID
+LimitNOFILE=100000
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

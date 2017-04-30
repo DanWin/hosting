@@ -1,0 +1,68 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+#flush iptables
+iptables -F
+ip6tables -F
+iptables -t nat -F
+ip6tables -t nat -F
+
+#allow tor traffic
+for tor in 111 `seq 115 146`; do(
+iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
+ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
+iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
+ip6tables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
+)done
+#redirect all outgoing DNS querries to our tor
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+#allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
+for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
+iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
+iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
+)done
+#unrestricted access to these IPs
+for clearnet in 127.0.0.1; do(
+iptables -t nat -A OUTPUT -d $clearnet -j RETURN;
+iptables -A OUTPUT -d $clearnet -j ACCEPT;
+) done
+for clearnet in ::1; do(
+ip6tables -t nat -A OUTPUT -d $clearnet -j RETURN;
+ip6tables -A OUTPUT -d $clearnet -j ACCEPT;
+) done
+#redirect everything else
+iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+#accept established connections
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+#allow local communication
+iptables -A OUTPUT -o lo -j ACCEPT
+ip6tables -A OUTPUT -o lo -j ACCEPT
+#reject everything else
+iptables -A OUTPUT -j REJECT
+ip6tables -A OUTPUT -j REJECT
+
+#uncomment to be able to directly connect with your own IP
+#for clearnet in YOUR_IP_HERE;do(
+#iptables -A INPUT -s $clearnet -j ACCEPT;
+#)done
+#allow established connections
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+#drop everything else
+iptables -A INPUT -i eth0 -j DROP
+ip6tables -A INPUT -i eth0 -j DROP
+
+exit 0

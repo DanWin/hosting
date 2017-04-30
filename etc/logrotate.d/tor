@@ -1,0 +1,15 @@
+/var/log/tor/*log {
+	daily
+	rotate 2
+	compress
+	delaycompress
+	missingok
+	notifempty
+	create 0640 debian-tor adm
+	sharedscripts
+	postrotate
+		if service tor status > /dev/null; then
+			service tor reload > /dev/null
+		fi
+	endscript
+}

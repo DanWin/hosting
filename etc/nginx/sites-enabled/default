@@ -1,0 +1,36 @@
+server {
+	listen 80 default_server;
+	root /var/www/html;
+	index index.php;
+	server_name dhosting4okcs22v.onion;
+	location / {
+		try_files $uri $uri/ =404;
+	}
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+	}
+	location /squirrelmail {
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+		}
+	}
+	location /phpmyadmin {
+		root /usr/share;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/run/php/php7.1-fpm.sock;
+		}
+	}
+	location /adminer {
+		root /usr/share/adminer;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/run/php/php7.1-fpm.sock;
+		}
+	}
+	location /externals/jush/ {
+		root /usr/share/adminer;
+	}
+}

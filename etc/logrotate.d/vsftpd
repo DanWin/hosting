@@ -1,0 +1,10 @@
+/var/log/vsftpd.log
+{
+	create 640 root adm
+
+	# ftpd doesn't handle SIGHUP properly
+	missingok
+	notifempty
+	rotate 1
+	daily
+}
