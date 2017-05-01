@@ -19,7 +19,9 @@ echo '<li><b>No Web-based file management yet, you\'ll need to use an FTP client
 echo '<li>FTP access</li>';
 echo '<li>SFTP access</li>';
 echo '<li>No disk quota</li>';
-echo '<li>mail() can send e-mails from your.onion@' . ADDRESS . ' and you get imap, pop3 and smtp access</li>';
+echo '<li>mail() can send e-mails from your.onion@' . ADDRESS . ' (your.onion@hosting.danwin1210.me for clearnet)</li>';
+echo '<li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>';
+echo '<li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>';
 echo '<li>Your own .onion address</li>';
 echo '<li>There is a missing feature or you need a special configuration? Just <a href="http://tt3j2x4k5ycaa5zt.onion/contact.php">contact me</a> and I\'ll see what I can do.</li>';
 echo '<li>Empty accounts will be deleted after a month</li>';

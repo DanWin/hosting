@@ -69,7 +69,7 @@ chdir = /
 pm = ondemand
 pm.max_children = 8
 pm.process_idle_timeout = 10s;
-php_admin_value[sendmail_path] = '/usr/bin/php /var/www/sendmail_wrapper.php \"$onion <$onion.onion@" . ADDRESS . ">\" | /usr/sbin/sendmail -t -i'
+php_admin_value[sendmail_path] = '/usr/bin/php /var/www/sendmail_wrapper.php \"$onion.onion <$onion.onion@" . ADDRESS . ">\" | /usr/sbin/sendmail -t -i'
 php_admin_value[memory_limit] = 128M
 php_admin_value[disable_functions] = pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,exec,passthru,shell_exec,system,popen,proc_open,socket_listen,socket_create_listen,socket_bind,stream_socket_server,fsockopen,pfsockopen,posix_kill,php_uname,link,symlink,posix_uname
 php_admin_value[open_basedir] = /home/$onion.onion
@@ -101,7 +101,7 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
 	//add hidden service to torrc
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 127.0.0.1:80\n";
+	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 127.0.0.1:80\nHiddenServicePort 25 127.0.0.1:25\n";
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//remove from to-add queue
 	$del->execute([$onion]);
@@ -124,7 +124,7 @@ foreach($onions as $onion){
 	unlink("/etc/nginx/sites-enabled/$onion[0].onion");
 	//clean torrc from user
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 127.0.0.1:80\n", '', $torrc);
+	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 127.0.0.1:80\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//delete hidden service from tor
 	unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname");

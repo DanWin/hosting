@@ -1,0 +1,5 @@
+user = postfix
+password = MY_PASSWORD
+hosts = localhost
+dbname = hosting
+query = SELECT '%d@dhosting4okcs22v.onion' FROM users WHERE '%d' = CONCAT(onion, '.onion')

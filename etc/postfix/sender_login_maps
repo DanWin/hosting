@@ -1,1 +1,2 @@
 /(.*)@dhosting4okcs22v.onion/	$1@dhosting4okcs22v.onion
+/@([a-z2-7]{16}).onion/	$1.onion@dhosting4okcs22v.onion
