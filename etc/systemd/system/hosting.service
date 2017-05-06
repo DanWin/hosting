@@ -3,4 +3,4 @@ Description=Manage shared hosting accounts
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php /home/daniel/hosting/cron.php
+ExecStart=/usr/bin/php /var/www/cron.php

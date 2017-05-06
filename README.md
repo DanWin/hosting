@@ -10,6 +10,11 @@ The configuration was designed for a standard Debian unstable installation. It's
 Software you will need to install and configure by copying (and editing according to your needs) the configuration files supplied:
 nginx, php7.0, php7.1, all php modules you want to support, sshd, vsftpd, phpmyadmin, adminer, mysql or mariadb, logrotate, tor, postfix, dovecot, saslauthd
 
+To allow sasl authentication, add postfix to the sasl group:
+```
+usermod -aG sasl postfix
+```
+
 This setup has two postfix instances, one for receiving and sending mail to other .onion services and one for rewriting addresses to pass them on to a clearnet facing mail relay. You may or may not want to create the second instance by running
 ```
 postmulti -e init
