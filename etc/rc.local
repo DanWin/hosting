@@ -33,7 +33,7 @@ iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
 iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
 )done
 #unrestricted access to these IPs
-for clearnet in 127.0.0.1; do(
+for clearnet in 127.0.0.0/8; do(
 iptables -t nat -A OUTPUT -d $clearnet -j RETURN;
 iptables -A OUTPUT -d $clearnet -j ACCEPT;
 ) done
