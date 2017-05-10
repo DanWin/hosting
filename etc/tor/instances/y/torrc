@@ -2,4 +2,3 @@ SOCKSPort 0
 MaxClientCircuitsPending 1024
 HardwareAccel 1
 AvoidDiskWrites 1
-Log notice file /var/log/tor-instances/log-y
