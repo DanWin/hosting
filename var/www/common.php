@@ -12,6 +12,10 @@ const SERVERS=[ //servers and ports we are running on
 'danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'', 'imap'=>'', 'smtp'=>'']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
+const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
+'d41d8cd98f00b204e9800998ecf8427e', //empty file
+'7ae7e9bac6be76f00e0d95347111f037' //default file
+];
 
 function get_onion($pkey){
 	$keyData = openssl_pkey_get_details($pkey);

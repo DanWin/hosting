@@ -25,8 +25,7 @@ foreach($all as $tmp){
 	}
 	//check www empty or index unmodified
 	if(count(scandir("/home/$tmp/www/"))===3){
-		$md5s=['2ff89413bebfd03f9241b0254ebfd782','d41d8cd98f00b204e9800998ecf8427e', '7ae7e9bac6be76f00e0d95347111f037'];
-		if(!file_exists("/home/$tmp/www/index.hosting.html") || !in_array(md5_file("/home/$tmp/www/index.hosting.html"), $md5s)){
+		if(!file_exists("/home/$tmp/www/index.hosting.html") || !in_array(md5_file("/home/$tmp/www/index.hosting.html"), INDEX_MD5S)){
 			continue;
 		}
 	}
