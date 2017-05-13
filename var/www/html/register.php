@@ -131,10 +131,12 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$db->exec('FLUSH PRIVILEGES;');
 		$stmt=$db->prepare('INSERT INTO new_account (onion, password) VALUES (?, ?);');
 		$stmt->execute([$onion, get_system_hash($_POST['pass'])]);
-		$title="A new hidden service $onion has been created";
-		$msg="A new hidden service http://$onion.onion has been created";
-		$headers="From: www-data <www-data>\r\nContent-Type: text/plain; charset=UTF-8\r\n";
-		mail('daniel@tt3j2x4k5ycaa5zt.onion', $title, $msg, $headers);
+		if(EMAIL_TO!==''){
+			$title="A new hidden service $onion has been created";
+			$msg="A new hidden service http://$onion.onion has been created";
+			$headers="From: www-data <www-data>\r\nContent-Type: text/plain; charset=UTF-8\r\n";
+			mail(EMAIL_TO, $title, $msg, $headers);
+		}
 		echo "<p style=\"color:green;\">Your onion domain <a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a> has successfully been created. Please wait up to one minute until the changes have been processed. You can then login <a href=\"login.php\">here</a>.</p>";
 	}
 }

@@ -11,6 +11,7 @@ const SERVERS=[ //servers and ports we are running on
 'dhosting4okcs22v.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
 'danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'', 'imap'=>'', 'smtp'=>'']
 ];
+const EMAIL_TO=''; //Send email notifications about new registrations to this address
 
 function get_onion($pkey){
 	$keyData = openssl_pkey_get_details($pkey);
