@@ -65,7 +65,6 @@ listen = /run/php/$onion
 listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
-chdir = /
 pm = ondemand
 pm.max_children = 8
 pm.process_idle_timeout = 10s;

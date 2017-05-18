@@ -19,7 +19,7 @@ apt-get install aspell-am aspell-ar aspell-ar-large aspell-bg aspell-bn aspell-b
 
 Copy (and modify according to your needs) the configuration files in etc to /etc after installation has finished.
 
-If you copied over the new etc/apt/sources.list file, we need to update our repository data and install a new keyring package for authenticating packages from torproject:
+If you copied over the new etc/apt/sources.list file, we need to update our repository data and install a new keyring package for authenticating packages from torproject (you will need to confirm this):
 ```
 apt-get update && apt-get install deb.torproject.org-keyring
 ```
