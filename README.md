@@ -66,7 +66,14 @@ For web based mail management grab the latest squirrelmail and install it in /va
 cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure
 ```
 
-Add a user to the SQL database for managing hosted sites and grant all privileges to it. Then edit the database configuration in /var/www/common.php and last but not least setup the database by running
+Create a mysql user with all permissions for our hosting management:
+```
+mysql
+CREATE USER 'hosting'@'localhost' IDENTIFIED BY 'MY_PASSWORD';
+GRANT ALL PRIVILEGES ON *.* TO 'hosting'@'localhost' WITH GRANT OPTION;
+```
+
+Then edit the database configuration in /var/www/common.php and last but not least setup the database by running
 ```
 php /var/www/setup.php
 ``` 
