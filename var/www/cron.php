@@ -5,15 +5,16 @@ try{
 }catch(PDOException $e){
 	die('No Connection to MySQL database!');
 }
-$reload=false;
+$reload=[];
 
 //add new accounts
 $del=$db->prepare("DELETE FROM new_account WHERE onion=?;");
 $update_priv=$db->prepare("UPDATE users SET private_key=? WHERE onion=?;");
 $stmt=$db->query("SELECT new_account.onion, users.username, new_account.password, users.private_key, users.php, users.autoindex FROM new_account INNER JOIN users ON (users.onion=new_account.onion) LIMIT 100;");
 while($id=$stmt->fetch(PDO::FETCH_NUM)){
-	$reload=true;
 	$onion=$id[0];
+	$firstchar=substr($onion, 0, 1);
+	$reload[$firstchar]=true;
 	//php openssl implementation has some issues, re-export using native openssl
 	$pkey=openssl_pkey_get_private($id[3]);
 	openssl_pkey_export_to_file($pkey, 'key.tmp');
@@ -77,7 +78,6 @@ php_admin_value[soap.wsdl_cache_dir] = /home/$onion.onion/tmp
 php_admin_value[session.save_path] = /home/$onion.onion/tmp
 ";
 
-	$firstchar=substr($onion, 0, 1);
 	//save configuration files
 	file_put_contents("/etc/nginx/sites-enabled/$onion.onion", $nginx);
 	if($id[4]==1){
@@ -111,8 +111,8 @@ $del=$db->prepare("DELETE FROM users WHERE onion=?");
 $stmt=$db->query("SELECT onion FROM del_account LIMIT 100;");
 $onions=$stmt->fetchAll(PDO::FETCH_NUM);
 foreach($onions as $onion){
-	$reload=true;
 	$firstchar=substr($onion[0], 0, 1);
+	$reload[$firstchar]=true;
 	//delete config files
 	if(file_exists("/etc/php/7.0/fpm/pool.d/$firstchar/$onion[0].conf")){
 		unlink("/etc/php/7.0/fpm/pool.d/$firstchar/$onion[0].conf");
@@ -132,11 +132,11 @@ foreach($onions as $onion){
 }
 
 //reload services
-if($reload){
+foreach($reload as $key => $val){
 	exec('service nginx reload');
-	exec('service php7.0-fpm reload');
-	exec('service php7.1-fpm reload');
-	exec('service tor reload');
+	exec("service php7.0-fpm@$key reload");
+	exec("service php7.1-fpm@$key reload");
+	exec("service tor@$key reload");
 }
 
 //continue deleting old accounts
