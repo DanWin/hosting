@@ -56,6 +56,3 @@ smtpd_sender_restrictions = reject_sender_login_mismatch, permit_sasl_authentica
 smtpd_relay_restrictions = permit_sasl_authenticated, permit_auth_destination, defer_unauth_destination, reject
 smtpd_recipient_limit = 10
 smtpd_sender_login_maps = regexp:/etc/postfix/sender_login_maps
-multi_instance_wrapper = ${command_directory}/postmulti -p --
-multi_instance_enable = yes
-multi_instance_directories = /etc/postfix-clearnet

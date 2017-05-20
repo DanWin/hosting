@@ -32,14 +32,16 @@ usermod -aG sasl postfix
 This setup has two postfix instances, one for receiving and sending mail to other .onion services and one for rewriting addresses to pass them on to a clearnet facing mail relay. You may or may not want to create the second instance by running
 ```
 postmulti -e init
-postmulti -I clearnet -e create
-postmulti -I clearnet -e enable
+postmulti -I postfix-clearnet -e create
+postmulti -i clearnet -e enable
 postmulti -i clearnet -p start
 ```
+If you created an instance, make sure to copy and modify the configuration files from etc/postfix-clearnet too
 
 After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
 ```
 postmap /etc/postfix/canonical /etc/postfix/sender_login_maps /etc/postfix/transport
+postmap /etc/postfix-clearnet/canonical /etc/postfix-clearnet/transport #only if you have a second instance
 ```
 
 To save temporary files in memory, add the following to /etc/fstab
