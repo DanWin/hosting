@@ -37,6 +37,11 @@ postmulti -I clearnet -e enable
 postmulti -i clearnet -p start
 ```
 
+After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
+```
+postmap /etc/postfix/canonical /etc/postfix/sender_login_maps /etc/postfix/transport
+```
+
 To save temporary files in memory, add the following to /etc/fstab
 ```
 tmpfs /tmp tmpfs defaults 0 0
