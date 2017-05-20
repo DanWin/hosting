@@ -41,7 +41,7 @@ If you created an instance, make sure to copy and modify the configuration files
 After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
 ```
 postmap /etc/postfix/canonical /etc/postfix/sender_login_maps /etc/postfix/transport
-postmap /etc/postfix-clearnet/canonical /etc/postfix-clearnet/transport #only if you have a second instance
+postmap /etc/postfix-clearnet/canonical /etc/postfix-clearnet/sasl_password /etc/postfix-clearnet/transport #only if you have a second instance
 ```
 
 To save temporary files in memory, add the following to /etc/fstab
@@ -58,9 +58,10 @@ SUB_UID_COUNT 1
 
 As time syncronisation is important, you should configure ntp servers in /etc/systemd/timesyncd.conf and make them match with the entries in /etc/rc.local iptables configuration
 
-To create all required tor and php instances run the following command:
+To create all required tor and php instances run the following commands:
 ```
-for instance in 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(tor-instance-create $instance; ln -s /etc/systemd/system/php7.0-fpm@.service "/etc/systemd/system/multi-user.target.wants/php7.0-fpm@$instance.service"; ln -s /etc/systemd/system/php7.1-fpm@.service "/etc/systemd/system/multi-user.target.wants/php7.1-fpm@$instance.service";) done
+for instance in 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(tor-instance-create $instance) done
+for instance in default 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(systemctl enable php7.0-fpm@$instance; systemctl enable php7.1-fpm@$instance;) done
 ```
 
 And to get a list of all tor user ids to add in /etc/rc.local run the following:
