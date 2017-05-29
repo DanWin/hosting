@@ -92,6 +92,12 @@ ln -s /etc/systemd/system/hosting-del.timer /etc/systemd/system/multi-user.targe
 ln -s /etc/systemd/system/hosting.timer /etc/systemd/system/multi-user.target.wants/hosting.timer
 ```
 
+Add empty directories that should be copied when creating a new user and set permissions correctly:
+```
+mkdir /var/www/skel/data /var/www/skel/Maildir /var/www/skel/tmp
+chmod 700 /var/www/skel/data /var/www/skel/Maildir /var/www/skel/tmp /var/www/skel/www
+```
+
 Live demo:
 ----------
 
