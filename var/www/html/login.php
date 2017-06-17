@@ -12,6 +12,7 @@ if(!empty($_SESSION['hosting_username'])){
 	exit;
 }
 $msg='';
+$username='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
 	if(CAPTCHA){
@@ -49,19 +50,24 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$stmt=$db->prepare('SELECT username, password FROM users WHERE onion=?;');
 			$stmt->execute([$match[1]]);
 			$tmp=$stmt->fetch(PDO::FETCH_NUM);
-			}
+		}
 		if($tmp){
 			if(!isset($_POST['pass']) || !password_verify($_POST['pass'], $tmp[1])){
 				$msg.='<p style="color:red;">Error, wrong password.</p>';
+				$ok=false;
 			}else{
-				$_SESSION['hosting_username']=$tmp[0];
-				session_write_close();
-				header('Location: home.php');
-				exit;
+				$username=$tmp[0];
 			}
 		}else{
 			$msg.='<p style="color:red;">Error, username was not found. If you forgot it, you can enter youraccount.onion instead.</p>';
+			$ok=false;
 		}
+	}
+	if($ok){
+		$_SESSION['hosting_username']=$username;
+		session_write_close();
+		header('Location: home.php');
+		exit;
 	}
 }
 echo '<!DOCTYPE html><html><head>';
