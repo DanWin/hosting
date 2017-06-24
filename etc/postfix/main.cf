@@ -32,27 +32,29 @@ alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 myorigin = dhosting4okcs22v.onion
 mydestination = dhosting4okcs22v.onion localhost dhosting
-#relayhost = [10.8.0.1]
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
-#relay_domains = onion
 relay_domains = !dhosting4okcs22v.onion onion lelantos.org mail2tor.com anoninbox.net anonplus.org o3mail.org volatile.ch danwin1210.me
 home_mailbox = Maildir/
 canonical_maps = proxy:mysql:/etc/postfix/sql/alias.cf regexp:/etc/postfix/canonical
 ignore_mx_lookup_error = yes
 always_add_missing_headers = yes
 message_drop_headers = bcc content-length resent-bcc return-path x-mailer received x-originating-ip x-original-to user-agent
-transport_maps = hash:/etc/postfix/transport
-
 
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_local_domain = dhosting4okcs22v.onion
-smtpd_recipient_restrictions = permit_sasl_authenticated
-smtpd_sender_restrictions = reject_sender_login_mismatch, permit_sasl_authenticated
-smtpd_relay_restrictions = permit_sasl_authenticated, permit_auth_destination, defer_unauth_destination, reject
 smtpd_recipient_limit = 10
 smtpd_sender_login_maps = regexp:/etc/postfix/sender_login_maps
+smtpd_sender_restrictions = reject_sender_login_mismatch, permit_sasl_authenticated
+smtpd_recipient_restrictions = permit_sasl_authenticated
+
+#uncomment for direct (no clearnet relay)
+smtpd_relay_restrictions = defer_unauth_destination, permit_sasl_authenticated, permit_auth_destination, reject
+
+#uncomment for clearnet relay
+#transport_maps = hash:/etc/postfix/transport
+#smtpd_relay_restrictions = permit_sasl_authenticated, permit_auth_destination, reject

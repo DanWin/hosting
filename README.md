@@ -36,7 +36,7 @@ postmulti -I postfix-clearnet -e create
 postmulti -i clearnet -e enable
 postmulti -i clearnet -p start
 ```
-If you created an instance, make sure to copy and modify the configuration files from etc/postfix-clearnet too
+If you created an instance, uncomment the clearnet relay related config in etc/postfix/main.cf and make sure to copy and modify the configuration files from etc/postfix-clearnet too
 
 After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
 ```
