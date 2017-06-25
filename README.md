@@ -71,7 +71,7 @@ for instance in 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z;
 
 For web based mail management grab the latest squirrelmail and install it in /var/www/html/squirrelmail:
 ```
-cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure
+cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure && mkdir /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach && chown www-data:www-data /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach
 ```
 
 Create a mysql user with all permissions for our hosting management:
