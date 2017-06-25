@@ -24,9 +24,10 @@ If you copied over the new etc/apt/sources.list file, we need to update our repo
 apt-get update && apt-get install deb.torproject.org-keyring
 ```
 
-To allow sasl authentication, add postfix to the sasl group:
+To allow sasl authentication, set start to yes in /etc/default/sasauthd and add postfix to the sasl group:
 ```
 usermod -aG sasl postfix
+service saslauthd restart
 ```
 
 This setup has two postfix instances, one for receiving and sending mail to other .onion services and one for rewriting addresses to pass them on to a clearnet facing mail relay. You may or may not want to create the second instance by running
