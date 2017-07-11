@@ -75,7 +75,7 @@ echo '<title>Daniel\'s Hosting - Login</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 echo '</head><body>';
-echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a></p>';
+echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
 echo $msg;
 echo '<form method="POST" action="login.php"><table>';
 echo '<tr><td>Username</td><td><input type="text" name="username" value="';

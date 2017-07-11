@@ -16,7 +16,7 @@ echo '<title>Daniel\'s Hosting - Register</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 echo '</head><body>';
-echo '<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a></p>';
+echo '<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
 	$onion='';

@@ -7,7 +7,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name=viewport content="width=device-width, initial-scale=1">
 </head><body>
-<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a></p>
+<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
 <ul>
