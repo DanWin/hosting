@@ -1,45 +1,45 @@
 <?php
 include('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-echo '</head><body>';
-echo '<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a></p>';
-echo '<p>Here you can get yourself a hosting account on my server.</p>';
-echo '<p>What you will get:</p>';
-echo '<ul>';
-echo '<li>Chose between PHP 7.0 or 7.1</li>';
-echo '<li>Nginx Webserver</li>';
-echo '<li>SQLite support</li>';
-echo '<li>1 MariaDB (MySQL) database</li>';
-echo '<li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>';
-echo '<li><b>No Web-based file management yet, you\'ll need to use an FTP client like <a href="https://filezilla-project.org/">FileZilla</a> (<a href="http://tt3j2x4k5ycaa5zt.onion/tutorials/torify-ftp/" target="_blank">Torify FileZilla</a>) for now, to manage files. A web based file manager is planned.</b></li>';
-echo '<li>FTP access</li>';
-echo '<li>SFTP access</li>';
-echo '<li>No disk quota</li>';
-echo '<li>mail() can send e-mails from your.onion@' . ADDRESS . ' (your.onion@hosting.danwin1210.me for clearnet)</li>';
-echo '<li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>';
-echo '<li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>';
-echo '<li>Your own .onion address</li>';
-echo '<li>There is a missing feature or you need a special configuration? Just <a href="http://tt3j2x4k5ycaa5zt.onion/contact.php">contact me</a> and I\'ll see what I can do.</li>';
-echo '<li>Empty accounts will be deleted after a month</li>';
-echo '<li>More to come…</li>';
-echo '</ul>';
-echo '<h2>Rules</h2>';
-echo '<ul>';
-echo '<li>No child pornography!</li>';
-echo '<li>No terroristic propaganda!</li>';
-echo '<li>No illegal content according to German law!</li>';
-echo '<li>No malware! (e.g. botnets)</li>';
-echo '<li>No phishing!</li>';
-echo '<li>No scams!</li>';
-echo '<li>No spam!</li>';
-echo '<li>No shops! (mostly scams anyway)</li>';
-echo '<li>No proxy scripts!</li>';
-echo '<li>No IP logger or similar de-anonymizer sites!</li>';
-echo '<li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>';
-echo '</ul>';
-echo '</body></html>';
 ?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+</head><body>
+<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a></p>
+<p>Here you can get yourself a hosting account on my server.</p>
+<p>What you will get:</p>
+<ul>
+<li>Chose between PHP 7.0 or 7.1</li>
+<li>Nginx Webserver</li>
+<li>SQLite support</li>
+<li>1 MariaDB (MySQL) database</li>
+<li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
+<li><b>No Web-based file management yet, you'll need to use an FTP client like <a href="https://filezilla-project.org/">FileZilla</a> (<a href="http://tt3j2x4k5ycaa5zt.onion/tutorials/torify-ftp/" target="_blank">Torify FileZilla</a>) for now, to manage files. A web based file manager is planned.</b></li>
+<li>FTP access</li>
+<li>SFTP access</li>
+<li>No disk quota</li>
+<li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet)</li>
+<li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
+<li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
+<li>Your own .onion address</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="http://tt3j2x4k5ycaa5zt.onion/contact.php">contact me</a> and I'll see what I can do.</li>
+<li>Empty accounts will be deleted after a month</li>
+<li>More to come…</li>
+</ul>
+<h2>Rules</h2>
+<ul>
+<li>No child pornography!</li>
+<li>No terroristic propaganda!</li>
+<li>No illegal content according to German law!</li>
+<li>No malware! (e.g. botnets)</li>
+<li>No phishing!</li>
+<li>No scams!</li>
+<li>No spam!</li>
+<li>No shops! (mostly scams anyway)</li>
+<li>No proxy scripts!</li>
+<li>No IP logger or similar de-anonymizer sites!</li>
+<li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
+</ul>
+</body></html>

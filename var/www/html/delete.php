@@ -20,17 +20,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 }
 header('Content-Type: text/html; charset=UTF-8');
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Delete account</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-echo '</head><body>';
-echo '<p>This will delete your account and all data asociated with it. It can\'t be un-done. Are you sure?</p>';
-echo $msg;
-echo '<form method="POST" action="delete.php"><table>';
-echo '<tr><td>Enter your account password to confirm</td><td><input type="password" name="pass" required autofocus></td></tr>';
-echo '<tr><td colspan="2"><input type="submit" value="Delete"></td></tr>';
-echo '</table></form>';
-echo '<p><a href="home.php">No, don\'t delete.</a></p>';
-echo '</body></html>';
 ?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Delete account</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+</head><body>
+<p>This will delete your account and all data asociated with it. It can't be un-done. Are you sure?</p>
+<?php echo $msg; ?>
+<form method="POST" action="delete.php"><table>
+<tr><td>Enter your account password to confirm</td><td><input type="password" name="pass" required autofocus></td></tr>
+<tr><td colspan="2"><input type="submit" value="Delete"></td></tr>
+</table></form>
+<p><a href="home.php">No, don't delete.</a></p>
+</body></html>
