@@ -99,6 +99,14 @@ mkdir /var/www/skel/data /var/www/skel/Maildir /var/www/skel/tmp
 chmod 750 /var/www/skel/data /var/www/skel/Maildir /var/www/skel/tmp /var/www/skel/www
 ```
 
+For better performance add the following to /etc/sysctl.conf
+```
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_timestamps = 0
+vm.swappiness=1
+```
+
 Live demo:
 ----------
 
