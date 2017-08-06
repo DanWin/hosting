@@ -163,9 +163,12 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 }
 
 
-if(!empty($_FILES['file'])){
-	ftp_put($ftp, $dir.$_FILES['file']['name'], $_FILES['file']['tmp_name'], FTP_BINARY);
-	unlink($_FILES['file']['tmp_name']);
+if(!empty($_FILES['files'])){
+	$c=count($_FILES['files']['name']);
+	for($i=0; $i<$c; ++$i){
+		ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
+		unlink($_FILES['files']['tmp_name'][$i]);
+	}
 }
 
 
@@ -232,7 +235,7 @@ $dir=htmlspecialchars($dir);
 </head><body>
 <h1>Index of <?php echo $dir; ?></h1>
 <?php if($dir!=='/'){ ?>
-<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input name="file" type="file"><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
+<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
 <?php
 }
 $fileurl='A';
