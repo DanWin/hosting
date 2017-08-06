@@ -13,13 +13,13 @@ echo '<title>Daniel\'s Hosting - Dashboard</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 echo '</head><body>';
-echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a href=\"delete.php\">Delete account</a></p>";
+echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a target=\"_blank\" href=\"files.php\">FileManager</a> | <a href=\"delete.php\">Delete account</a>
+</p>";
 $mail=0;
 if(file_exists("/home/$user[onion].onion/Maildir/new/")){
 	$mail=count(scandir("/home/$user[onion].onion/Maildir/new/"))-2;
 }
 echo "<p>Enter system account password to check your $user[onion].onion@" . ADDRESS . " mail ($mail new):</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[onion].onion\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
-echo '<p>There is no Web-based file management yet, you\'ll need to use an FTP client like <a href="https://filezilla-project.org/">FileZilla</a> (<a href="http://tt3j2x4k5ycaa5zt.onion/tutorials/torify-ftp/" target="_blank">Torify FileZilla</a>) for now, to manage files. A web based file manager is planned.</p>';
 echo '<h3>Domain</h3>';
 echo '<table border="1">';
 echo '<tr><th>Onion</th><th>Private key</th></tr>';
@@ -46,6 +46,7 @@ foreach(SERVERS as $server=>$tmp){
 }
 echo '</table>';
 echo '<p><a href="password.php?type=sys">Change system account password</a></p>';
+echo '<p>You can use the <a target="_blank" href="files.php">FileManager</a> for web based file management.</p>';
 echo '<h3>Logs</h3>';
 echo '<table border="1">';
 echo '<tr><th>Date</th><th>access.log</th><th>error.log</th></tr>';

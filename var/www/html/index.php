@@ -16,7 +16,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <li>SQLite support</li>
 <li>1 MariaDB (MySQL) database</li>
 <li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
-<li><b>No Web-based file management yet, you'll need to use an FTP client like <a href="https://filezilla-project.org/">FileZilla</a> (<a href="http://tt3j2x4k5ycaa5zt.onion/tutorials/torify-ftp/" target="_blank">Torify FileZilla</a>) for now, to manage files. A web based file manager is planned.</b></li>
+<li>Web-based file management</li>
 <li>FTP access</li>
 <li>SFTP access</li>
 <li>No disk quota</li>
