@@ -159,6 +159,7 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 		ftp_recursive_upload($ftp, $tmpdir);
 		rmdir($tmpdir);
 		$zip->close();
+		unlink($tmpfile);
 	}
 }
 
