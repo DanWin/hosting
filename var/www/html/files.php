@@ -15,7 +15,7 @@ if(empty($_SESSION['ftp_pass'])){
 	exit;
 }
 $ftp=ftp_connect('127.0.0.1') or die ('No Connection to FTP server!');
-if(!ftp_login($ftp, "$user[onion].onion", $_SESSION['ftp_pass'])){
+if(@!ftp_login($ftp, "$user[onion].onion", $_SESSION['ftp_pass'])){
 	send_login();
 	exit;
 }
@@ -152,13 +152,22 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 		}
 		$tmpfile='/tmp/'.uniqid().'.zip';
 		ftp_get($ftp, $tmpfile, $file, FTP_BINARY);
-		$zip->open($tmpfile);
-		$tmpdir='/tmp/'.uniqid().'/';
-		mkdir($tmpdir);
-		$zip->extractTo($tmpdir);
-		ftp_recursive_upload($ftp, $tmpdir);
-		rmdir($tmpdir);
-		$zip->close();
+		//prevent zip-bombs
+		$size=0;
+		$resource=zip_open($tmpfile);
+		while($dir_resource=zip_read($resource)) {
+			$size+=zip_entry_filesize($dir_resource);
+		}
+		zip_close($resource);
+		if($size<=1073741824){ //1GB limit
+			$zip->open($tmpfile);
+			$tmpdir='/tmp/'.uniqid().'/';
+			mkdir($tmpdir);
+			$zip->extractTo($tmpdir);
+			ftp_recursive_upload($ftp, $tmpdir);
+			rmdir($tmpdir);
+			$zip->close();
+		}
 		unlink($tmpfile);
 	}
 }
