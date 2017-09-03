@@ -123,8 +123,15 @@ if(@!ftp_chdir($ftp, $dir)){
 	exit;
 }
 
-if(!empty($_POST['mkdir']) && !empty($_POST['dirname'])){
-		ftp_mkdir($ftp, $_POST['dirname']);
+if(!empty($_POST['mkdir']) && !empty($_POST['name'])){
+		ftp_mkdir($ftp, $_POST['name']);
+}
+
+if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
+		$tmpfile='/tmp/'.uniqid();
+		touch($tmpfile);
+		ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
+		unlink($tmpflie);
 }
 
 if(!empty($_POST['delete']) && !empty($_POST['files'])){
@@ -141,6 +148,20 @@ if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
 
 if(!empty($_POST['rename']) && !empty($_POST['files'])){
 	send_rename($dir);
+	exit;
+}
+
+if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
+	$tmpfile='/tmp/'.uniqid();
+	foreach($_POST['files'] as $name=>$content){
+		file_put_contents($tmpfile, $content);
+		ftp_put($ftp, $name, $tmpfile, FTP_BINARY);
+	}
+	unlink($tmpfile);
+}
+
+if(!empty($_POST['edit']) && !empty($_POST['files'])){
+	send_edit($ftp, $dir);
 	exit;
 }
 
@@ -264,10 +285,12 @@ if($order==='A'){
 ?>
 <form action="files.php" method="post">
 <input type="submit" name="mkdir" value="Create directory">
-<input type="text" name="dirname"><br><br>
+<input type="submit" name="mkfile" value="Create file">
+<input type="text" name="name"><br><br>
 <input type="hidden" name="path" value="<?php echo $dir; ?>">
 <input type="submit" name="delete" value="Delete">
 <input type="submit" name="rename" value="Rename">
+<input type="submit" name="edit" value="Edit">
 <input type="submit" name="unzip" value="Unzip"><br>
 <table><tr>
 <th></th><th></th>
@@ -371,7 +394,7 @@ function ftp_recursive_delete($ftp, $file){
 
 function send_rename($dir){
 	echo '<!DOCTYPE html><html><head>';
-	echo '<title>Daniel\s Hosting - FileManager - Rename file</title>';
+	echo '<title>Daniel\'s Hosting - FileManager - Rename file</title>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
@@ -383,6 +406,29 @@ function send_rename($dir){
 	}
 	echo '</table>';
 	echo '<input type="submit" name="rename_2" value="rename"></form>';
+	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';
+	echo '</body></html>';
+}
+
+function send_edit($ftp, $dir){
+	echo '<!DOCTYPE html><html><head>';
+	echo '<title>Daniel\'s Hosting - FileManager - Edit file</title>';
+	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
+	echo '</head><body>';
+	echo '<form action="files.php" method="post">';
+	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
+	echo '<table>';
+	$tmpfile='/tmp/'.uniqid();
+	foreach($_POST['files'] as $file){
+		echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="10" cols="30">';
+		ftp_get($ftp, $tmpfile, $file, FTP_BINARY);
+		echo htmlspecialchars(file_get_contents($tmpfile));
+		echo '</textarea></td></tr>';
+	}
+	unlink($tmpfile);
+	echo '</table>';
+	echo '<input type="submit" name="edit_2" value="Edit"></form>';
 	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';
 	echo '</body></html>';
 }
