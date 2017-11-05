@@ -17,14 +17,14 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
 	if(CAPTCHA){
 		if(!isset($_REQUEST['challenge'])){
-			echo '<p style="color:red;">Error: Wrong Captcha</p>';
+			$msg.='<p style="color:red;">Error: Wrong Captcha</p>';
 			$ok=false;
 		}else{
 			$stmt=$db->prepare('SELECT code FROM captcha WHERE id=?;');
 			$stmt->execute([$_REQUEST['challenge']]);
 			$stmt->bindColumn(1, $code);
 			if(!$stmt->fetch(PDO::FETCH_BOUND)){
-				echo '<p style="color:red;">Error: Captcha expired</p>';
+				$msg.='<p style="color:red;">Error: Captcha expired</p>';
 				$ok=false;
 			}else{
 				$time=time();
@@ -32,7 +32,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 				$stmt->execute([$_REQUEST['challenge'], $time-3600]);
 				if($_REQUEST['captcha']!==$code){
 					if(strrev($_REQUEST['captcha'])!==$code){
-						echo '<p style="color:red;">Error: Wrong captcha</p>';
+						$msg.='<p style="color:red;">Error: Wrong captcha</p>';
 						$ok=false;
 					}
 				}

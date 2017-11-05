@@ -248,9 +248,10 @@ $dir=htmlspecialchars($dir);
 <!DOCTYPE html>
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daniel's Hosting - FileManager - Index of <?php echo $dir; ?></title>
-<style type="text/css">td+td+td+td+td{text-align:right;} tr{height:28px;}
+<style type="text/css">.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){text-align:right;} .list tr{height:28px;}
 .back{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM2ZmZpmZmSH5BAUAAAQALAAAAAAUABYAAANLSLrc/oKE8CoZM1O7os7c9WmcN04WdoKQdBIANypAHG5YbS/7kus1RlDxA+p4xqSRpmwCKE7nINqMwKi6wEAY1VaS3tBV/OiRz4sEADs=);}
 .dir{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5lmM//MmSH5BAUAAAQALAAAAAAUABYAAANUSLrc/jDKSRm4+E4wuu9AxH1kpimAQHpqiQ5CLMcrHI71GgdXngs8nI8F7A1JReFxZzyygk4iNNpJUmFWmFbF3cJ4hNRsPA6Aw+a0es0LLEzwjDsBADs=);}
 .img{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPMLAAAAADMzM2YAAAAzZmZmZv8zMwCZMwCZzJmZmczMzP///wAAAAAAAAAAAAAAAAAAACH5BAUAAAsALAAAAAAUABYAAASQMMhJ57p4BcW730F2bV5JhhlZdio6KkUsF4mi2tg2y4ICBL/gaxfrAY5IwJDY4yCeCKUGNjNYDTUFVKqTGTgJa1bLVSRi3/CVlIi+EgIB9mrdJAbuaYe+ThzwZSx8BAEHf3k3CQFXhIaHgR2KE46PLytmlJV6JX6ZgJYedwOjpJ+blyWIAVCsrU9AGUmys1IRADs=);}
@@ -292,7 +293,7 @@ if($order==='A'){
 <input type="submit" name="rename" value="Rename">
 <input type="submit" name="edit" value="Edit">
 <input type="submit" name="unzip" value="Unzip"><br>
-<table><tr>
+<table class="list"><tr>
 <th></th><th></th>
 <th><a href="files.php?path=<?php echo $dir; ?>&amp;C=N&amp;O=<?php echo $fileurl; ?>">File</a></th>
 <th><a href="files.php?path=<?php echo $dir; ?>&amp;C=M&amp;O=<?php echo $dateurl; ?>">Last Modified</a></th>
@@ -310,6 +311,7 @@ foreach($list as $element){
 </table>
 <input type="submit" name="delete" value="Delete">
 <input type="submit" name="rename" value="Rename">
+<input type="submit" name="edit" value="Edit">
 <input type="submit" name="unzip" value="Unzip"><br><br>
 </form>
 </body></html>
@@ -428,7 +430,7 @@ function send_edit($ftp, $dir){
 	}
 	unlink($tmpfile);
 	echo '</table>';
-	echo '<input type="submit" name="edit_2" value="Edit"></form>';
+	echo '<input type="submit" name="edit_2" value="Save"></form>';
 	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';
 	echo '</body></html>';
 }

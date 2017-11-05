@@ -17,8 +17,13 @@ ip6tables -F
 iptables -t nat -F
 ip6tables -t nat -F
 
+#accept already established connections
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 #allow tor traffic
-for tor in 111 `seq 115 146`; do(
+for tor in debian-tor _tor-2 _tor-3 _tor-4 _tor-5 _tor-6 _tor-7 _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s _tor-t _tor-u _tor-v _tor-w _tor-x _tor-y _tor-z; do(
 iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
@@ -32,6 +37,18 @@ for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
 iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
 iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
 )done
+#restrict local communication for php and webserver
+#allowed tcp ports
+for port in 3306 9040 9050 110 143 25 21 5000:5020; do(
+iptables -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT;
+ip6tables -A OUTPUT -d ::1 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT
+)done
+#accept DNS
+iptables -A OUTPUT -d 127.0.0.0/8 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
+ip6tables -A OUTPUT -d ::1 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
+#REJECT all others
+iptables -A OUTPUT -d 127.0.0.0/8 -m owner --gid-owner www-data -j REJECT
+ip6tables -A OUTPUT -d ::1 -m owner --gid-owner www-data -j REJECT
 #unrestricted access to these IPs
 for clearnet in 127.0.0.0/8; do(
 iptables -t nat -A OUTPUT -d $clearnet -j RETURN;
@@ -44,9 +61,6 @@ ip6tables -A OUTPUT -d $clearnet -j ACCEPT;
 #redirect everything else
 iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
 ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
-#accept established connections
-iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-ip6tables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 #allow local communication
 iptables -A OUTPUT -o lo -j ACCEPT
 ip6tables -A OUTPUT -o lo -j ACCEPT
@@ -54,15 +68,12 @@ ip6tables -A OUTPUT -o lo -j ACCEPT
 iptables -A OUTPUT -j REJECT
 ip6tables -A OUTPUT -j REJECT
 
-#uncomment to be able to directly connect with your own IP
+#uncomment to be able to directly connect with your own IP and allow no one else
 #for clearnet in YOUR_IP_HERE;do(
 #iptables -A INPUT -s $clearnet -j ACCEPT;
 #)done
-#allow established connections
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-#drop everything else
-iptables -A INPUT -i eth0 -j DROP
-ip6tables -A INPUT -i eth0 -j DROP
+#drop everything else (uncomment after adding your own IP above)
+#iptables -A INPUT -i eth0 -j DROP
+#ip6tables -A INPUT -i eth0 -j DROP
 
 exit 0

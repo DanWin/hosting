@@ -1,4 +1,4 @@
-user = postfix
+user = hosting
 password = MY_PASSWORD
 hosts = localhost
 dbname = hosting
