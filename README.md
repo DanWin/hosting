@@ -17,6 +17,7 @@ If you are on Ubuntu, add the following PPA:
 ```
 add-apt-repository ppa:ondrej/php && apt-get update
 ```
+On debian stable this may be worth a look: https://deb.sury.org/
 
 To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
 
