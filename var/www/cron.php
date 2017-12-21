@@ -148,7 +148,7 @@ foreach($onions as $onion){
 	//delete all log files
 	exec("rm -f /var/log/nginx/*$onion[0].onion.log*");
 	//delete user from database
-	$db->exec("DROP USER '$onion[0].onion'@'localhost';");
+	$db->exec("DROP USER '$onion[0].onion'@'%';");
 	$db->exec("DROP DATABASE IF EXISTS `$onion[0]`;");
 	$db->exec('FLUSH PRIVILEGES;');
 	//delete user from user database

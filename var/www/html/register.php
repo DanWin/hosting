@@ -124,10 +124,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}elseif($ok){
 		$stmt=$db->prepare('INSERT INTO users (username, password, onion, private_key, dateadded, public, php, autoindex) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
 		$stmt->execute([$_POST['username'], $hash, $onion, $priv_key, time(), $public, $php, $autoindex]);
-		$create_user=$db->prepare("CREATE USER '$onion.onion'@'localhost' IDENTIFIED BY ?;");
+		$create_user=$db->prepare("CREATE USER '$onion.onion'@'%' IDENTIFIED BY ?;");
 		$create_user->execute([$_POST['pass']]);
 		$db->exec("CREATE DATABASE IF NOT EXISTS `$onion`;");
-		$db->exec("GRANT ALL PRIVILEGES ON `$onion`.* TO '$onion.onion'@'localhost';");
+		$db->exec("GRANT ALL PRIVILEGES ON `$onion`.* TO '$onion.onion'@'%';");
 		$db->exec('FLUSH PRIVILEGES;');
 		$stmt=$db->prepare('INSERT INTO new_account (onion, password) VALUES (?, ?);');
 		$stmt->execute([$onion, get_system_hash($_POST['pass'])]);
