@@ -1,18 +1,28 @@
 <?php
 include('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
+if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVER['HTTP_HOST'])){
+	if(preg_match('/\.me$/', $_SERVER['HTTP_HOST'])){
+		$host='https://danwin1210.me';
+	}else{
+		$host='http://danwin1210.i2p';
+	}
+}else{
+	$host='http://tt3j2x4k5ycaa5zt.onion';
+}
 ?>
 <!DOCTYPE html><html><head>
 <title>Daniel's Hosting</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head><body>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
 <ul>
 <li>Free anonymous webhosting</li>
-<li>Chose between PHP 7.0, 7.1 or no PHP support</li>
+<li>Chose between PHP 7.0, 7.1, 7.2 or no PHP support</li>
 <li>Nginx Webserver</li>
 <li>SQLite support</li>
 <li>1 MariaDB (MySQL) database</li>
@@ -26,7 +36,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion address</li>
 <li>On request your own clearnet domain or a free subdomain of danwin1210.me. I can setup an I2P domain as well.</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="http://tt3j2x4k5ycaa5zt.onion/contact.php">contact me</a> and I'll see what I can do.</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="<?php echo "$host/contact.php"; ?>">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month</li>
 <li>More to come…</li>
 </ul>

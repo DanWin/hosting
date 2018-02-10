@@ -172,4 +172,3 @@ function get_system_hash($pass){
 	}
 	return crypt($pass, '$6$'.$salt.'$');
 }
-?>

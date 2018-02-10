@@ -14,7 +14,8 @@ if(!empty($_SESSION['hosting_username'])){
 echo '<!DOCTYPE html><html><head>';
 echo '<title>Daniel\'s Hosting - Register</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name=viewport content="width=device-width, initial-scale=1">';
+echo '<meta name="author" content="Daniel Winzen">';
+echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
 echo '<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
 if($_SERVER['REQUEST_METHOD']==='POST'){
@@ -107,7 +108,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		if(isset($_POST['public']) && $_POST['public']==1){
 			$public=1;
 		}
-		if(isset($_POST['php']) && in_array($_POST['php'], [1, 2])){
+		if(isset($_POST['php']) && in_array($_POST['php'], [1, 2, 3])){
 			$php=$_POST['php'];
 		}
 		if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
@@ -156,7 +157,7 @@ if($_SERVER['REQUEST_METHOD']!=='POST' || (isset($_POST['public']) && $_POST['pu
 }else{
 	$public='';
 }
-if(isset($_POST['autoindex']) && $_POST['public']==1){
+if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
 	$autoindex=' checked';
 }else{
 	$autoindex='';
@@ -164,14 +165,17 @@ if(isset($_POST['autoindex']) && $_POST['public']==1){
 $nophp='';
 $php70='';
 $php71='';
+$php72='';
 if(isset($_POST['php']) && $_POST['php']==0){
 	$nophp=' selected';
+}elseif(isset($_POST['php']) && $_POST['php']==1){
+	$php70=' selected';
 }elseif(isset($_POST['php']) && $_POST['php']==2){
 	$php71=' selected';
 }else{
-	$php70=' selected';
+	$php72=' selected';
 }
-echo '<tr><td>PHP version</td><td><select name="php"><option value="0"'.$nophp.'>None</option><option value="1" '.$php70.'>PHP 7.0</option><option value="2"'.$php71.'>PHP 7.1</option></select></td></tr>';
+echo '<tr><td>PHP version</td><td><select name="php"><option value="0"'.$nophp.'>None</option><option value="1" '.$php70.'>PHP 7.0</option><option value="2"'.$php71.'>PHP 7.1</option><option value="3"'.$php72.'>PHP 7.2</option></select></td></tr>';
 echo '<tr><td colspan=2><label><input type="checkbox" name="public" value="1"'.$public.'>Publish site on list of hosted sites</label></td></tr>';
 echo '<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"'.$autoindex.'>Enable autoindex (listing of files)</label></td></tr>';
 echo '<tr><td>Custom private key<br>(optional)</td><td><textarea name="private_key" rows="5" cols="28">';

@@ -54,4 +54,3 @@ echo '<tr><td>Today</td><td><a href="log.php?type=access&amp;old=0" target="_bla
 echo '<tr><td>Yesterday</td><td><a href="log.php?type=access&amp;old=1" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=1" target="_blank">error.log</a></td></tr>';
 echo '</table>';
 echo '</body></html>';
-?>

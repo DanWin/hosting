@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$stmt->execute([$user['onion'], $hash]);
 			$msg.='<p style="color:green;">Successfully changed system account password, change will take affect within the next minute.</p>';
 		}elseif($_REQUEST['type']==='sql'){
-			$stmt=$db->prepare("SET PASSWORD FOR '$user[onion].onion'@'localhost'=PASSWORD(?);");
+			$stmt=$db->prepare("SET PASSWORD FOR '$user[onion].onion'@'%'=PASSWORD(?);");
 			$stmt->execute([$_POST['newpass']]);
 			$db->exec('FLUSH PRIVILEGES;');
 			$msg.='<p style="color:green;">Successfully changed sql password.</p>';
@@ -41,7 +41,8 @@ header('Content-Type: text/html; charset=UTF-8');
 echo '<!DOCTYPE html><html><head>';
 echo '<title>Daniel\'s Hosting - Change password</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name=viewport content="width=device-width, initial-scale=1">';
+echo '<meta name="author" content="Daniel Winzen">';
+echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
 echo $msg;
 echo '<form method="POST" action="password.php"><table>';
@@ -69,4 +70,3 @@ echo '<tr><td colspan="2"><input type="submit" value="Reset"></td></tr>';
 echo '</table></form>';
 echo '<p><a href="home.php">Go back to dashboard.</a></p>';
 echo '</body></html>';
-?>

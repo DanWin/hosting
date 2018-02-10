@@ -65,6 +65,7 @@ const TYPES=[
 'xml'=>'doc',
 'doc'=>'doc',
 'docx'=>'doc',
+'css'=>'doc',
 'html'=>'doc',
 'htm'=>'doc',
 'shtml'=>'doc',
@@ -131,7 +132,7 @@ if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
 		$tmpfile='/tmp/'.uniqid();
 		touch($tmpfile);
 		ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
-		unlink($tmpflie);
+		unlink($tmpfile);
 }
 
 if(!empty($_POST['delete']) && !empty($_POST['files'])){

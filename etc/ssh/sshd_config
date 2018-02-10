@@ -31,7 +31,7 @@ ListenAddress ::
 #LoginGraceTime 2m
 PermitRootLogin prohibit-password
 #StrictModes yes
-MaxAuthTries 6
+MaxAuthTries 3
 #MaxSessions 10
 
 #PubkeyAuthentication yes
@@ -86,7 +86,7 @@ UsePAM yes
 #AllowAgentForwarding yes
 #AllowTcpForwarding yes
 #GatewayPorts no
-X11Forwarding yes
+X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
 #PermitTTY yes
@@ -131,4 +131,3 @@ Match Group www-data
         AllowTcpForwarding no
         X11Forwarding no
         DisableForwarding yes
-

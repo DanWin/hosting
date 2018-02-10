@@ -1,13 +1,26 @@
 server {
-	listen 80 default_server;
+	listen [::]:80;
+	server_name *.danwin1210.me;
+	location / {
+		return 301 https://danwin1210.me$request_uri;
+	}
+}
+server {
+#	add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; default-src 'self'; frame-ancestors 'self'; disown-opener; form-action 'self'; base-uri 'none'; report-uri https://danwin1210.me/csp-report.php" always;
+	add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; default-src 'self'; frame-ancestors 'self'; disown-opener; form-action 'self'; base-uri 'none'" always;
+	add_header Referrer-Policy origin-when-cross-origin always;
+	add_header X-Content-Type-Options nosniff always;
+	add_header X-Xss-Protection "1; mode=block" always;
+	listen [::]:80 ipv6only=off fastopen=100 backlog=2048 default_server;
+	listen unix:/var/run/nginx.sock backlog=2048 default_server;
 	root /var/www/html;
 	index index.php;
-	server_name dhosting4okcs22v.onion *.dhosting4okcs22v.onion;
+	server_name dhosting4okcs22v.onion *.dhosting4okcs22v.onion hosting.danwin1210.me z37pqzjrjc2zniidsdiol3zwrjpzf4rhdy2nlepcczmqrzvwuz4vbwad.onion *.z37pqzjrjc2zniidsdiol3zwrjpzf4rhdy2nlepcczmqrzvwuz4vbwad.onion;
 	location / {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+			fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
 		}
 	}
 	location /squirrelmail {
@@ -27,7 +40,7 @@ server {
 		root /usr/share/adminer;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/run/php/php7.1-fpm.sock;
+			fastcgi_pass unix:/run/php/php7.2-fpm.sock;
 		}
 	}
 	location /externals/jush/ {

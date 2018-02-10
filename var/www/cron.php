@@ -46,11 +46,14 @@ if($id[5]!=0){
 }
 
 $nginx="server {
-	listen 80;
+	listen [::]:80;
+	listen unix:/var/run/nginx.sock;
 	root /home/$onion.onion/www;
 	server_name $onion.onion *.$onion.onion;
 	access_log /var/log/nginx/access_$onion.onion.log custom;
+	access_log /home/$onion.onion/logs/access.log custom;
 	error_log /var/log/nginx/error_$onion.onion.log notice;
+	error_log /home/$onion.onion/logs/error.log notice;
 	disable_symlinks on from=/home/$onion.onion/www;
 	autoindex $autoindex;
 	location / {
@@ -67,7 +70,7 @@ listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
 pm = ondemand
-pm.max_children = 8
+pm.max_children = 10
 pm.process_idle_timeout = 10s;
 php_admin_value[sendmail_path] = '/usr/bin/php /var/www/sendmail_wrapper.php \"$onion.onion <$onion.onion@" . ADDRESS . ">\" | /usr/sbin/sendmail -t -i'
 php_admin_value[memory_limit] = 256M
@@ -84,10 +87,12 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 		file_put_contents("/etc/php/7.0/fpm/pool.d/$firstchar/$onion.conf", $php);
 	}elseif($id[4]==2){
 		file_put_contents("/etc/php/7.1/fpm/pool.d/$firstchar/$onion.conf", $php);
+	}elseif($id[4]==3){
+		file_put_contents("/etc/php/7.2/fpm/pool.d/$firstchar/$onion.conf", $php);
 	}
 	//save hidden service
 	mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion");
-	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", $onion);
+	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", "$onion.onion\n");
 	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", $priv_key);
 	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/", 0700);
 	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", 0600);
@@ -100,7 +105,7 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
 	//add hidden service to torrc
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 127.0.0.1:80\nHiddenServicePort 25 127.0.0.1:25\n";
+	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock\nHiddenServicePort 25 127.0.0.1:25\n";
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//remove from to-add queue
 	$del->execute([$onion]);
@@ -120,10 +125,13 @@ foreach($onions as $onion){
 	if(file_exists("/etc/php/7.1/fpm/pool.d/$firstchar/$onion[0].conf")){
 		unlink("/etc/php/7.1/fpm/pool.d/$firstchar/$onion[0].conf");
 	}
+	if(file_exists("/etc/php/7.2/fpm/pool.d/$firstchar/$onion[0].conf")){
+		unlink("/etc/php/7.2/fpm/pool.d/$firstchar/$onion[0].conf");
+	}
 	unlink("/etc/nginx/sites-enabled/$onion[0].onion");
 	//clean torrc from user
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 127.0.0.1:80\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
+	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//delete hidden service from tor
 	unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname");
@@ -134,8 +142,9 @@ foreach($onions as $onion){
 //reload services
 foreach($reload as $key => $val){
 	exec('service nginx reload');
-	exec("service php7.0-fpm@$key reload");
-	exec("service php7.1-fpm@$key reload");
+	exec("service php7.0-fpm@$key restart");
+	exec("service php7.1-fpm@$key restart");
+	exec("service php7.2-fpm@$key restart");
 	exec("service tor@$key reload");
 }
 
@@ -162,4 +171,3 @@ while($onion=$stmt->fetch(PDO::FETCH_NUM)){
 	exec('usermod -p '. escapeshellarg($onion[1]) . " $onion[0].onion");
 	$del->execute([$onion[0]]);
 }
-?>

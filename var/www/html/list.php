@@ -25,4 +25,3 @@ while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 }
 echo '</table>';
 echo '</body></html>';
-?>
