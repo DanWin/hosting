@@ -61,10 +61,9 @@ Replace the default domain with your domain in the following files:
 
 In /etc/postfix(-clearnet)/canonical don't change the line that has hosting.danwin1210.me in it. It is a clearnet/tor address rewriting rule, and if you have your own clearnet domain, you should copy this and modify your copy to preserve sending mail to my host via tor and not via clearnet:
 
-To allow sasl authentication, set start to yes in /etc/default/sasauthd and add postfix to the sasl group:
+To allow sasl authentication add postfix to the sasl group:
 ```
 usermod -aG sasl postfix
-service saslauthd restart
 ```
 
 This setup has two postfix instances, one for receiving and sending mail to other .onion services and one for rewriting addresses to pass them on to a clearnet facing mail relay. You may or may not want to create the second instance by running
@@ -111,6 +110,7 @@ Once it is downloaded, it will ask you for configuration. Things to change are:
 ```
 D. > select dovecot
 2. Server Settings > 1. Domain > Set your own .onion domain here
+2. Server Settings > B. Update SMTP settings > 7. SMTP Authentication -> y -> plain -> n User are authenticated using their username + password
 4. General Options > 9. Allow editing of identity > n Users should not be able to fake email addresses > y They should be able to change display name > y They should be able to set a reply to mail > y additional headers are not required
 10. Language settings > 4. Enable aggressive decoding
 11. Tweaks > 2. Ask user info on first login > n (commonly confuses users)
