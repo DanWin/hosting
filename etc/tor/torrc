@@ -1,7 +1,7 @@
 SOCKSPort 9050 # Default: Bind to localhost:9050 for local connections.
 
 HiddenServiceDir /var/lib/tor/hidden_service/
-HiddenServicePort 80
+HiddenServicePort 80 unix:/var/run/nginx.sock
 HiddenServicePort 25
 HiddenServicePort 143
 HiddenServicePort 110
