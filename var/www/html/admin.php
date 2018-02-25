@@ -38,8 +38,8 @@ if(empty($_SESSION['logged_in'])){
 }else{
 	echo '<p>';
 	if(REQUIRE_APPROVAL){
-		$db->query('SELECT COUNT(*) FROM new_account WHERE approved=0;');
-		$cnt=$db->fetch(PDO::FETCH_NUM)[0];
+		$stmt=$db->query('SELECT COUNT(*) FROM new_account WHERE approved=0;');
+		$cnt=$stmt->fetch(PDO::FETCH_NUM)[0];
 		echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=approve\">Approve pending sites ($cnt)</a> | ";
 	}
 	echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=list\">List of hidden hosted sites</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=delete\">Delete accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=logout\">Logout</a></p>";
