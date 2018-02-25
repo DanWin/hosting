@@ -11,7 +11,7 @@ exec('find /home -path "/home/*.onion/tmp/*" -cmin +1440 -delete');
 
 //delete unused accounts older than 30 days
 $all=scandir('/home');
-$stmt=$db->prepare('INSERT INTO del_account (onion) VALUES (?);');
+$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE onion=?;');
 foreach($all as $tmp){
 	if(!preg_match('~^[a-z2-7]{16}\.onion$~', $tmp)){
 		continue;

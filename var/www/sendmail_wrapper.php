@@ -1,7 +1,7 @@
 <?php
 $head=true;
 while($line=fgets(STDIN)){
-	if($head && stripos(ltrim($line), 'FROM:')===0){
+	if($head && stripos(ltrim($line), 'FROM')===0){
 		continue;
 	}
 	if($head && ($line==="\r\n" || $line==="\n")){

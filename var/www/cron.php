@@ -10,7 +10,8 @@ $reload=[];
 //add new accounts
 $del=$db->prepare("DELETE FROM new_account WHERE onion=?;");
 $update_priv=$db->prepare("UPDATE users SET private_key=? WHERE onion=?;");
-$stmt=$db->query("SELECT new_account.onion, users.username, new_account.password, users.private_key, users.php, users.autoindex FROM new_account INNER JOIN users ON (users.onion=new_account.onion) LIMIT 100;");
+$approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
+$stmt=$db->query("SELECT new_account.onion, users.username, new_account.password, users.private_key, users.php, users.autoindex FROM new_account INNER JOIN users ON (users.onion=new_account.onion) $approval LIMIT 100;");
 while($id=$stmt->fetch(PDO::FETCH_NUM)){
 	$onion=$id[0];
 	$firstchar=substr($onion, 0, 1);
@@ -113,7 +114,7 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 
 //delete old accounts
 $del=$db->prepare("DELETE FROM users WHERE onion=?");
-$stmt=$db->query("SELECT onion FROM del_account LIMIT 100;");
+$stmt=$db->query("SELECT onion FROM users WHERE todelete=1 LIMIT 100;");
 $onions=$stmt->fetchAll(PDO::FETCH_NUM);
 foreach($onions as $onion){
 	$firstchar=substr($onion[0], 0, 1);
@@ -134,9 +135,11 @@ foreach($onions as $onion){
 	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//delete hidden service from tor
-	unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname");
-	unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key");
-	rmdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/");
+	if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/")){
+		unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname");
+		unlink("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key");
+		rmdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/");
+	}
 }
 
 //reload services

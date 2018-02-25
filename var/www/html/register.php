@@ -17,6 +17,7 @@ echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
+echo '<h1>Hosting - Register</h1>';
 echo '<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
@@ -26,85 +27,63 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	$autoindex=0;
 	$hash='';
 	$priv_key='';
-	if(empty($_POST['pass'])){
-		echo '<p style="color:red;">Error, password empty.</p>';
+	if($error=check_captcha_error()){
+		echo "<p style=\"color:red;\">$error</p>";
+		$ok=false;
+	}elseif(empty($_POST['pass'])){
+		echo '<p style="color:red;">Error: password empty.</p>';
 		$ok=false;
 	}elseif(empty($_POST['passconfirm']) || $_POST['pass']!==$_POST['passconfirm']){
-		echo '<p style="color:red;">Error, password confirmation does not match.</p>';
+		echo '<p style="color:red;">Error: password confirmation does not match.</p>';
 		$ok=false;
-	}
-	if(empty($_POST['username'])){
-		echo '<p style="color:red;">Error, username empty.</p>';
+	}elseif(empty($_POST['username'])){
+		echo '<p style="color:red;">Error: username empty.</p>';
 		$ok=false;
 	}elseif(preg_match('/[^a-z0-9\-_\.]/', $_POST['username'])){
-		echo '<p style="color:red;">Error, username may only contain characters that are in the rage of a-z (lower case) - . _ and 0-9.</p>';
+		echo '<p style="color:red;">Error: username may only contain characters that are in the rage of a-z (lower case) - . _ and 0-9.</p>';
 		$ok=false;
 	}elseif(strlen($_POST['username'])>50){
-		echo '<p style="color:red;">Error, username may not be longer than 50 characters.</p>';
+		echo '<p style="color:red;">Error: username may not be longer than 50 characters.</p>';
 		$ok=false;
 	}else{
 		$stmt=$db->prepare('SELECT null FROM users WHERE username=?;');
 		$stmt->execute([$_POST['username']]);
 		if($stmt->fetch(PDO::FETCH_NUM)){
-			echo '<p style="color:red;">Error, this username is already registered.</p>';
+			echo '<p style="color:red;">Error: this username is already registered.</p>';
 			$ok=false;
 		}
 	}
-	if(CAPTCHA){
-		if(!isset($_REQUEST['challenge'])){
-			echo '<p style="color:red;">Error: Wrong Captcha</p>';
-			$ok=false;
-		}else{
-			$stmt=$db->prepare('SELECT code FROM captcha WHERE id=?;');
-			$stmt->execute([$_REQUEST['challenge']]);
-			$stmt->bindColumn(1, $code);
-			if(!$stmt->fetch(PDO::FETCH_BOUND)){
-				echo '<p style="color:red;">Error: Captcha expired</p>';
-				$ok=false;
-			}else{
-				$time=time();
-				$stmt=$db->prepare('DELETE FROM captcha WHERE id=? OR time<?;');
-				$stmt->execute([$_REQUEST['challenge'], $time-3600]);
-				if($_REQUEST['captcha']!==$code){
-					if(strrev($_REQUEST['captcha'])!==$code){
-						echo '<p style="color:red;">Error: Wrong captcha</p>';
+	if($ok){
+		$check=$db->prepare('SELECT null FROM users WHERE onion=?;');
+		if(isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
+			$priv_key=trim($_REQUEST['private_key']);
+			if(($pkey=openssl_pkey_get_private($priv_key))!==false){
+				$details=openssl_pkey_get_details($pkey);
+				if($details['bits']!==1024){
+					echo '<p style="color:red;">Error: private key not of bitsize 1024.</p>';
+					$ok=false;
+				}else{
+					$onion=get_onion($pkey);
+					$check->execute([$onion]);
+					if($check->fetch(PDO::FETCH_NUM)){
+						echo '<p style="color:red;">Error onion already exists.</p>';
 						$ok=false;
 					}
 				}
-			}
-		}
-	}
-	$check=$db->prepare('SELECT null FROM users WHERE onion=?;');
-	if(isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
-		$priv_key=trim($_REQUEST['private_key']);
-		if(($pkey=openssl_pkey_get_private($priv_key))!==false){
-			$details=openssl_pkey_get_details($pkey);
-			if($details['bits']!==1024){
-				echo '<p style="color:red;">Error, private key not of bitsize 1024.</p>';
-				$ok=false;
+				openssl_pkey_free($pkey);
 			}else{
-				$onion=get_onion($pkey);
-				$check->execute([$onion]);
-				if($check->fetch(PDO::FETCH_NUM)){
-					echo '<p style="color:red;">Error onion already exists.</p>';
-					$ok=false;
-				}
+				echo '<p style="color:red;">Error: private key invalid.</p>';
+				$ok=false;
 			}
-			openssl_pkey_free($pkey);
 		}else{
-			echo '<p style="color:red;">Error, private key invalid.</p>';
-			$ok=false;
+			do{
+				$pkey=openssl_pkey_new(['private_key_bits'=>1024, 'private_key_type'=>OPENSSL_KEYTYPE_RSA]);
+				openssl_pkey_export($pkey, $priv_key);
+				$onion=get_onion($pkey);
+				openssl_pkey_free($pkey);
+				$check->execute([$onion]);
+			}while($check->fetch(PDO::FETCH_NUM));
 		}
-	}else{
-		do{
-			$pkey=openssl_pkey_new(['private_key_bits'=>1024, 'private_key_type'=>OPENSSL_KEYTYPE_RSA]);
-			openssl_pkey_export($pkey, $priv_key);
-			$onion=get_onion($pkey);
-			openssl_pkey_free($pkey);
-			$check->execute([$onion]);
-		}while($check->fetch(PDO::FETCH_NUM));
-	}
-	if($ok){
 		if(isset($_POST['public']) && $_POST['public']==1){
 			$public=1;
 		}
@@ -119,7 +98,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 	$check=$db->prepare('SELECT null FROM users WHERE dateadded>?;');
 	$check->execute([time()-60]);
-	if($check->fetch(PDO::FETCH_NUM)){
+	if($ok && $check->fetch(PDO::FETCH_NUM)){
 		echo '<p style="color:red;">To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.</p>';
 		$ok=false;
 	}elseif($ok){
@@ -149,9 +128,7 @@ if(isset($_POST['username'])){
 echo '" required autofocus></td></tr>';
 echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
 echo '<tr><td>Confirm password</td><td><input type="password" name="passconfirm" required></td></tr>';
-if(CAPTCHA){
-	send_captcha();
-}
+send_captcha();
 if($_SERVER['REQUEST_METHOD']!=='POST' || (isset($_POST['public']) && $_POST['public']==1)){
 	$public=' checked';
 }else{

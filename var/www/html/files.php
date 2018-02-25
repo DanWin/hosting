@@ -173,10 +173,16 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 			continue;
 		}
 		$tmpfile='/tmp/'.uniqid().'.zip';
-		ftp_get($ftp, $tmpfile, $file, FTP_BINARY);
+		if(!ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
+			continue;
+		}
 		//prevent zip-bombs
 		$size=0;
 		$resource=zip_open($tmpfile);
+		if(!is_resource($resource)){
+			unlink($tmpfile);
+			continue;
+		}
 		while($dir_resource=zip_read($resource)) {
 			$size+=zip_entry_filesize($dir_resource);
 		}
@@ -198,8 +204,10 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 if(!empty($_FILES['files'])){
 	$c=count($_FILES['files']['name']);
 	for($i=0; $i<$c; ++$i){
-		ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
-		unlink($_FILES['files']['tmp_name'][$i]);
+		if($_FILES['files']['error'][$i]===UPLOAD_ERR_OK){
+			ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
+			unlink($_FILES['files']['tmp_name'][$i]);
+		}
 	}
 }
 

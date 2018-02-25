@@ -17,6 +17,7 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head><body>
+<h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
@@ -46,9 +47,8 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <li>No terroristic propaganda!</li>
 <li>No illegal content according to German law!</li>
 <li>No malware! (e.g. botnets)</li>
-<li>No phishing!</li>
-<li>No scams!</li>
-<li>No spam!</li>
+<li>No phishing, scams or spam!</li>
+<li>No mining without explicit user permission! (e.g. using coinhive)</li>
 <li>No shops, markets or any other sites dedicated to making money! (This is a FREE hosting!)</li>
 <li>No proxy scripts! (You are already using TOR and this will just burden the network)</li>
 <li>No IP logger or similar de-anonymizer sites!</li>

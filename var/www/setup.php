@@ -18,16 +18,29 @@ try{
 		die("Error: No database connection!\n");
 	}
 }
-if(!@$db->query('SELECT null FROM settings LIMIT 1;')){
+$version;
+if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';")){
 	//create tables
 	$db->exec('CREATE TABLE captcha (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, time int(11) NOT NULL, code char(5) COLLATE latin1_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
-	$db->exec('CREATE TABLE users (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, username varchar(50) COLLATE latin1_bin NOT NULL UNIQUE, password varchar(255) COLLATE latin1_bin NOT NULL, private_key varchar(1000) COLLATE latin1_bin NOT NULL, dateadded int(10) unsigned NOT NULL, public tinyint(3) unsigned NOT NULL, php tinyint(1) unsigned NOT NULL, autoindex tinyint(1) unsigned NOT NULL, KEY public (public), KEY dateadded (dateadded)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
-	$db->exec('CREATE TABLE del_account (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, CONSTRAINT del_account_ibfk_1 FOREIGN KEY (onion) REFERENCES users (onion) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
-	$db->exec('CREATE TABLE new_account (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, password varchar(255) COLLATE latin1_bin NOT NULL, CONSTRAINT new_account_ibfk_1 FOREIGN KEY (onion) REFERENCES users (onion) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec('CREATE TABLE users (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, username varchar(50) COLLATE latin1_bin NOT NULL UNIQUE, password varchar(255) COLLATE latin1_bin NOT NULL, private_key varchar(1000) COLLATE latin1_bin NOT NULL, dateadded int(10) unsigned NOT NULL, public tinyint(3) unsigned NOT NULL, php tinyint(1) unsigned NOT NULL, autoindex tinyint(1) unsigned NOT NULL, todelete tinyint(1) UNSIGNED NOT NULL, KEY public (public), KEY dateadded (dateadded), KEY todelete (todelete)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec('CREATE TABLE new_account (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, password varchar(255) COLLATE latin1_bin NOT NULL, approved tinyint(1) UNSIGNED NOT NULL, CONSTRAINT new_account_ibfk_1 FOREIGN KEY (onion) REFERENCES users (onion) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE pass_change (onion char(16) COLLATE latin1_bin NOT NULL PRIMARY KEY, password varchar(255) COLLATE latin1_bin NOT NULL, CONSTRAINT pass_change_ibfk_1 FOREIGN KEY (onion) REFERENCES users (onion) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
 	echo "Database has successfully been set up\n";
+}else{
+	$version=$version->fetch(PDO::FETCH_NUM)[0];
+	if($version<2){
+		$db->exec('ALTER TABLE users ADD todelete tinyint(1) UNSIGNED NOT NULL, ADD INDEX(todelete);');
+		$db->exec('ALTER TABLE new_account ADD approved tinyint(1) UNSIGNED NOT NULL;');
+		$db->exec('DROP TABLE del_account;');
+	}
+	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
+	$stmt->execute([DBVERSION]);
+	if(DBVERSION!=$version){
+		echo "Database has successfully been updated to the latest version\n";
+	}else{
+		echo "Database already up-to-date\n";
+	}
 }
-?>

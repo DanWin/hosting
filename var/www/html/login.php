@@ -15,32 +15,11 @@ $msg='';
 $username='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
-	if(CAPTCHA){
-		if(!isset($_REQUEST['challenge'])){
-			$msg.='<p style="color:red;">Error: Wrong Captcha</p>';
-			$ok=false;
-		}else{
-			$stmt=$db->prepare('SELECT code FROM captcha WHERE id=?;');
-			$stmt->execute([$_REQUEST['challenge']]);
-			$stmt->bindColumn(1, $code);
-			if(!$stmt->fetch(PDO::FETCH_BOUND)){
-				$msg.='<p style="color:red;">Error: Captcha expired</p>';
-				$ok=false;
-			}else{
-				$time=time();
-				$stmt=$db->prepare('DELETE FROM captcha WHERE id=? OR time<?;');
-				$stmt->execute([$_REQUEST['challenge'], $time-3600]);
-				if($_REQUEST['captcha']!==$code){
-					if(strrev($_REQUEST['captcha'])!==$code){
-						$msg.='<p style="color:red;">Error: Wrong captcha</p>';
-						$ok=false;
-					}
-				}
-			}
-		}
-	}
-	if(!isset($_POST['username']) || $_POST['username']===''){
-		$msg.='<p style="color:red;">Error, username may not be empty.</p>';
+	if($error=check_captcha_error()){
+		$msg.="<p style=\"color:red;\">$error</p>";
+		$ok=false;
+	}elseif(!isset($_POST['username']) || $_POST['username']===''){
+		$msg.='<p style="color:red;">Error: username may not be empty.</p>';
 		$ok=false;
 	}else{
 		$stmt=$db->prepare('SELECT username, password FROM users WHERE username=?;');
@@ -53,13 +32,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}
 		if($tmp){
 			if(!isset($_POST['pass']) || !password_verify($_POST['pass'], $tmp[1])){
-				$msg.='<p style="color:red;">Error, wrong password.</p>';
+				$msg.='<p style="color:red;">Error: wrong password.</p>';
 				$ok=false;
 			}else{
 				$username=$tmp[0];
 			}
 		}else{
-			$msg.='<p style="color:red;">Error, username was not found. If you forgot it, you can enter youraccount.onion instead.</p>';
+			$msg.='<p style="color:red;">Error: username was not found. If you forgot it, you can enter youraccount.onion instead.</p>';
 			$ok=false;
 		}
 	}
@@ -76,6 +55,7 @@ echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
+echo '<h1>Hosting - Login</h1>';
 echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
 echo $msg;
 echo '<form method="POST" action="login.php"><table>';
@@ -85,10 +65,8 @@ if(isset($_POST['username'])){
 }
 echo '" required autofocus></td></tr>';
 echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
-if(CAPTCHA){
-	send_captcha();
-}
+send_captcha();
 echo '<tr><td colspan="2"><input type="submit" value="Login"></td></tr>';
 echo '</table></form>';
-echo '<p>If you disabled cookies, please re-enable them. You currently can\'t log in without</p>';
+echo '<p>If you disabled cookies, please re-enable them. You can\'t log in without!</p>';
 echo '</body></html>';

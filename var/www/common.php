@@ -16,6 +16,8 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 'd41d8cd98f00b204e9800998ecf8427e', //empty file
 '7ae7e9bac6be76f00e0d95347111f037' //default file
 ];
+const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
+const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 
 function get_onion($pkey){
 	$keyData = openssl_pkey_get_details($pkey);
@@ -51,7 +53,7 @@ function base32_encode($input) {
 
 function send_captcha(){
 	global $db;
-	if(CAPTCHA===0 || !extension_loaded('gd')){
+	if(!CAPTCHA || !extension_loaded('gd')){
 		return;
 	}
 	$captchachars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -171,4 +173,30 @@ function get_system_hash($pass){
 		$salt.=$chars[random_int(0, strlen($chars)-1)];
 	}
 	return crypt($pass, '$6$'.$salt.'$');
+}
+
+function check_captcha_error(){
+	global $db;
+	if(CAPTCHA){
+		if(!isset($_REQUEST['challenge'])){
+			return 'Error: Wrong Captcha';
+		}else{
+			$stmt=$db->prepare('SELECT code FROM captcha WHERE id=?;');
+			$stmt->execute([$_REQUEST['challenge']]);
+			$stmt->bindColumn(1, $code);
+			if(!$stmt->fetch(PDO::FETCH_BOUND)){
+				return 'Error: Captcha expired';
+			}else{
+				$time=time();
+				$stmt=$db->prepare('DELETE FROM captcha WHERE id=? OR time<?;');
+				$stmt->execute([$_REQUEST['challenge'], $time-3600]);
+				if($_REQUEST['captcha']!==$code){
+					if(strrev($_REQUEST['captcha'])!==$code){
+						return 'Error: Wrong captcha';
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
