@@ -43,7 +43,7 @@ if(empty($_SESSION['logged_in'])){
 		echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=approve\">Approve pending sites ($cnt)</a> | ";
 	}
 	echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=list\">List of hidden hosted sites</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=delete\">Delete accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=logout\">Logout</a></p>";
-	if(empty($_REQUEST['action'])){
+	if(empty($_REQUEST['action']) || $_REQUEST['action']==='login'){
 		echo '<p>Welcome to the admin panel!</p>';
 	}elseif($_REQUEST['action']==='logout'){
 		session_destroy();
@@ -65,7 +65,7 @@ if(empty($_SESSION['logged_in'])){
 		}
 		echo '<table border="1">';
 		echo '<tr><td>Username</td><td>Onion address</td><td>Action</td></tr>';
-		$stmt=$db->query('SELECT username, onion FROM users INNER JOIN new_account ON (user.onion=new_account.onion) WHERE new_account.approved=0 ORDER BY users.username;');
+		$stmt=$db->query('SELECT users.username, users.onion FROM users INNER JOIN new_account ON (users.onion=new_account.onion) WHERE new_account.approved=0 ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td>$tmp[1].onion</td><td><input type=\"submit\" name=\"action\" value=\"approve\"><input type=\"submit\" name=\"action\" value=\"delete\"></td></tr></form>";
 		}
