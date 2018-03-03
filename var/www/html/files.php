@@ -392,9 +392,10 @@ function ftp_recursive_upload($ftp, $path){
 
 function ftp_recursive_delete($ftp, $file){
 	if(@ftp_chdir($ftp, $file)){
-		$list = ftp_nlist($ftp, '.');
-		foreach($list as $tmp){
-			ftp_recursive_delete($ftp, $tmp);
+		if($list = ftp_nlist($ftp, '.')){
+			foreach($list as $tmp){
+				ftp_recursive_delete($ftp, $tmp);
+			}
 		}
 		ftp_chdir($ftp, '..');
 		ftp_rmdir($ftp, $file);
@@ -433,11 +434,14 @@ function send_edit($ftp, $dir){
 	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $file){
 		echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="10" cols="30">';
-		ftp_get($ftp, $tmpfile, $file, FTP_BINARY);
-		echo htmlspecialchars(file_get_contents($tmpfile));
+		if(ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
+			echo htmlspecialchars(file_get_contents($tmpfile));
+		}
 		echo '</textarea></td></tr>';
 	}
-	unlink($tmpfile);
+	if(file_exists($tmpfile)){
+		unlink($tmpfile);
+	}
 	echo '</table>';
 	echo '<input type="submit" name="edit_2" value="Save"></form>';
 	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';

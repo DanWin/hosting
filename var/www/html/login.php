@@ -22,20 +22,29 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$msg.='<p style="color:red;">Error: username may not be empty.</p>';
 		$ok=false;
 	}else{
-		$stmt=$db->prepare('SELECT username, password FROM users WHERE username=?;');
+		$stmt=$db->prepare('SELECT username, password, onion FROM users WHERE username=?;');
 		$stmt->execute([$_POST['username']]);
 		$tmp=[];
 		if(($tmp=$stmt->fetch(PDO::FETCH_NUM))===false && preg_match('/^([2-7a-z]{16}).onion$/', $_POST['username'], $match)){
-			$stmt=$db->prepare('SELECT username, password FROM users WHERE onion=?;');
+			$stmt=$db->prepare('SELECT username, password, onion FROM users WHERE onion=?;');
 			$stmt->execute([$match[1]]);
 			$tmp=$stmt->fetch(PDO::FETCH_NUM);
 		}
 		if($tmp){
-			if(!isset($_POST['pass']) || !password_verify($_POST['pass'], $tmp[1])){
+			$username=$tmp[0];
+			$password=$tmp[1];
+			$stmt=$db->prepare('SELECT approved FROM new_account WHERE onion=?;');
+			$stmt->execute([$tmp[2]]);
+			if($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+				if(REQUIRE_APPROVAL && !$tmp[0]){
+					$msg.='<p style="color:red;">Error: Your account is pending admin approval. Please try again later.</p>';
+				}else{
+					$msg.='<p style="color:red;">Error: Your account is pending creation. Please try again in a minute.</p>';
+				}
+				$ok=false;
+			}elseif(!isset($_POST['pass']) || !password_verify($_POST['pass'], $password)){
 				$msg.='<p style="color:red;">Error: wrong password.</p>';
 				$ok=false;
-			}else{
-				$username=$tmp[0];
 			}
 		}else{
 			$msg.='<p style="color:red;">Error: username was not found. If you forgot it, you can enter youraccount.onion instead.</p>';
