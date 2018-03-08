@@ -36,6 +36,20 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec('ALTER TABLE new_account ADD approved tinyint(1) UNSIGNED NOT NULL;');
 		$db->exec('DROP TABLE del_account;');
 	}
+	if($version<3){
+		$stmt=$db->query("SELECT onion FROM users;");
+		while($id=$stmt->fetch(PDO::FETCH_NUM)){
+			$onion=$id[0];
+			$firstchar=substr($onion, 0, 1);
+			$replace=str_replace("listen unix:/var/run/nginx.sock;", "listen unix:/var/run/nginx/$onion backlog=2048;", file_get_contents("/etc/nginx/sites-enabled/$onion.onion"));
+			file_put_contents("/etc/nginx/sites-enabled/$onion.onion", $replace);
+			$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
+			$torrc=str_replace("$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock", "$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion", $torrc);
+			file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
+		}
+		exec('service nginx reload');
+		exec("service tor reload");
+	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
 	if(DBVERSION!=$version){

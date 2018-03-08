@@ -15,7 +15,7 @@ apt-get purge apache2* resolvconf
 
 If you are on Ubuntu, add the following PPA:
 ```
-add-apt-repository ppa:ondrej/php && apt-get update
+LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php && apt-get update
 ```
 On debian stable this may be worth a look: https://deb.sury.org/
 
@@ -123,6 +123,7 @@ Create a mysql user with all permissions for our hosting management:
 mysql
 CREATE USER 'hosting'@'localhost' IDENTIFIED BY 'MY_PASSWORD';
 GRANT ALL PRIVILEGES ON *.* TO 'hosting'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
 quit
 ```
 

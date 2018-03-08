@@ -48,7 +48,7 @@ if($id[5]!=0){
 
 $nginx="server {
 	listen [::]:80;
-	listen unix:/var/run/nginx.sock;
+	listen unix:/var/run/nginx/$onion;
 	root /home/$onion.onion/www;
 	server_name $onion.onion *.$onion.onion;
 	access_log /var/log/nginx/access_$onion.onion.log custom;
@@ -106,7 +106,7 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
 	//add hidden service to torrc
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock\nHiddenServicePort 25 127.0.0.1:25\n";
+	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion\nHiddenServicePort 25 127.0.0.1:25\n";
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//remove from to-add queue
 	$del->execute([$onion]);
@@ -132,7 +132,7 @@ foreach($onions as $onion){
 	unlink("/etc/nginx/sites-enabled/$onion[0].onion");
 	//clean torrc from user
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
+	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion[0]\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//delete hidden service from tor
 	if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/")){
