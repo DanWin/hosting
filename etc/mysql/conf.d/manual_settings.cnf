@@ -18,3 +18,4 @@ max_heap_table_size=16M
 join_buffer_size=4M
 aria_pagecache_buffer_size=8M
 aria_sort_buffer_size=8M
+open_files_limit=100000
