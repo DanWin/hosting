@@ -71,11 +71,11 @@ listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
 pm = ondemand
-pm.max_children = 10
+pm.max_children = 20
 pm.process_idle_timeout = 10s;
 php_admin_value[sendmail_path] = '/usr/bin/php /var/www/sendmail_wrapper.php \"$onion.onion <$onion.onion@" . ADDRESS . ">\" | /usr/sbin/sendmail -t -i'
 php_admin_value[memory_limit] = 256M
-php_admin_value[disable_functions] = exec,link,passthru,pcntl_alarm,pcntl_async_signals,pcntl_exec,pcntl_fork,pcntl_get_last_error,pcntl_getpriority,pcntl_setpriority,pcntl_signal,pcntl_signal_dispatch,pcntl_signal_get_handler,pcntl_sigprocmask,pcntl_sigtimedwait,pcntl_sigwaitinfo,pcntl_strerror,pcntl_waitpid,pcntl_wait,pcntl_wexitstatus,pcntl_wifcontinued,pcntl_wifexited,pcntl_wifsignaled,pcntl_wifstopped,pcntl_wstopsig,pcntl_wtermsig,popen,posix_ctermid,posix_getgrgid,posix_getgrnam,posix_getpgid,posix_getpwnam,posix_getpwuid,posix_getrlimit,posix_getsid,posix_kill,posix_setegid,posix_seteuid,posix_setgid,posix_setpgid,posix_setrlimit,posix_setuid,posix_ttyname,posix_uname,proc_open,shell_exec,socket_listen,socket_create_listen,socket_bind,stream_socket_server,symlink,system
+php_admin_value[disable_functions] = exec,link,passthru,pcntl_alarm,pcntl_async_signals,pcntl_exec,pcntl_fork,pcntl_get_last_error,pcntl_getpriority,pcntl_setpriority,pcntl_signal,pcntl_signal_dispatch,pcntl_signal_get_handler,pcntl_sigprocmask,pcntl_sigtimedwait,pcntl_sigwaitinfo,pcntl_strerror,pcntl_waitpid,pcntl_wait,pcntl_wexitstatus,pcntl_wifcontinued,pcntl_wifexited,pcntl_wifsignaled,pcntl_wifstopped,pcntl_wstopsig,pcntl_wtermsig,popen,posix_ctermid,posix_getgrgid,posix_getgrnam,posix_getpgid,posix_getpwnam,posix_getpwuid,posix_getrlimit,posix_getsid,posix_kill,posix_setegid,posix_seteuid,posix_setgid,posix_setpgid,posix_setrlimit,posix_setuid,posix_ttyname,posix_uname,proc_open,putenv,shell_exec,socket_listen,socket_create_listen,socket_bind,stream_socket_server,symlink,system
 php_admin_value[open_basedir] = /home/$onion.onion
 php_admin_value[upload_tmp_dir] = /home/$onion.onion/tmp
 php_admin_value[soap.wsdl_cache_dir] = /home/$onion.onion/tmp
@@ -143,8 +143,10 @@ foreach($onions as $onion){
 }
 
 //reload services
-foreach($reload as $key => $val){
+if(!empty($reload)){
 	exec('service nginx reload');
+}
+foreach($reload as $key => $val){
 	exec("service php7.0-fpm@$key restart");
 	exec("service php7.1-fpm@$key restart");
 	exec("service php7.2-fpm@$key restart");
