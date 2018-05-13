@@ -51,8 +51,8 @@ $nginx="server {
 	listen unix:/var/run/nginx/$onion;
 	root /home/$onion.onion/www;
 	server_name $onion.onion *.$onion.onion;
-	access_log /var/log/nginx/access_$onion.onion.log custom;
-	access_log /home/$onion.onion/logs/access.log custom;
+	access_log /var/log/nginx/access_$onion.onion.log custom buffer=32k flush=1m;
+	access_log /home/$onion.onion/logs/access.log custom buffer=32k flush=1m;
 	error_log /var/log/nginx/error_$onion.onion.log notice;
 	error_log /home/$onion.onion/logs/error.log notice;
 	disable_symlinks on from=/home/$onion.onion/www;
