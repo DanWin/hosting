@@ -25,8 +25,19 @@ while($id=$stmt->fetch(PDO::FETCH_NUM)){
 	$update_priv->execute([$priv_key, $onion]);
 	//add and manage rights of system user
 	exec('useradd -l -p '. escapeshellarg($id[2]) . " -g www-data -k /var/www/skel -m -s /usr/sbin/nologin $onion.onion");
-	exec("chown root:www-data /home/$onion.onion");
-	exec("chmod 550 /home/$onion.onion");
+	chown("/home/$onion.onion", 'root');
+	chgrp("/home/$onion.onion", 'www-data');
+	chmod("/home/$onion.onion", 0550);
+	foreach(['.ssh', 'data', 'Maildir', 'tmp'] as $dir){
+		mkdir("/home/$onion.onion/$dir", 0700);
+		chown("/home/$onion.onion/$dir", "$onion.onion");
+		chgrp("/home/$onion.onion/$dir", 'www-data');
+	}
+	foreach(['logs'] as $dir){
+		mkdir("/home/$onion.onion/$dir", 0550);
+		chown("/home/$onion.onion/$dir", "$onion.onion");
+		chgrp("/home/$onion.onion/$dir", 'www-data');
+	}
 
 //configuration for services
 
@@ -92,10 +103,9 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 		file_put_contents("/etc/php/7.2/fpm/pool.d/$firstchar/$onion.conf", $php);
 	}
 	//save hidden service
-	mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion");
+	mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion", 0700);
 	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", "$onion.onion\n");
 	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", $priv_key);
-	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/", 0700);
 	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", 0600);
 	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", 0600);
 	chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/", "_tor-$firstchar");

@@ -15,7 +15,7 @@ apt-get purge apache2* resolvconf
 
 If you are on Ubuntu, add the following PPA:
 ```
-LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php && apt-get update
+LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 ```
 On debian stable this may be worth a look: https://deb.sury.org/
 
@@ -137,11 +137,6 @@ php /var/www/setup.php
 Enable systemd timers to regularly run various managing tasks:
 ```
 systemctl enable hosting-del.timer && systemctl enable hosting.timer
-```
-
-Add empty directories that should be copied when creating a new user and set permissions correctly:
-```
-for dir in data logs Maildir tmp .ssh; do(mkdir /var/www/skel/$dir && chmod 750 /var/www/skel/$dir); done
 ```
 
 Final step is to reboot wait about 5 minutes for all services to start and check if everything is working by creating a test account.
