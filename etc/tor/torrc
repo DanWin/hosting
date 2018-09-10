@@ -58,15 +58,18 @@ HiddenServicePort 5047
 HiddenServicePort 5048
 HiddenServicePort 5049
 HiddenServicePort 5050
+HiddenServiceNumIntroductionPoints 5
 
+ClientUseIPv6 1
+ClientUseIPv4 1
 VirtualAddrNetworkIPv4 10.192.0.0/10
 VirtualAddrNetworkIPv6 [FC00::]/7
 AutomapHostsOnResolve 1
 TransPort 9040
 TransPort [::1]:9040
-DNSPort 53
-DNSPort [::1]:53
+DNSPort 54
+DNSPort [::1]:54
 MaxClientCircuitsPending 1024
-NumCPUs 2
 HardwareAccel 1
 AvoidDiskWrites 1
+NumEntryGuards 6
