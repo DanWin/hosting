@@ -39,7 +39,7 @@ iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
 )done
 #restrict local communication for php and webserver
 #allowed tcp ports
-for port in 3306 9040 9050 110 143 25 21 5000:5050; do(
+for port in 3306 9040 9050 110 143 25 21 5000:5050 53; do(
 iptables -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT;
 ip6tables -A OUTPUT -d ::1 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT
 )done
@@ -64,6 +64,8 @@ ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
 #allow local communication
 iptables -A OUTPUT -o lo -j ACCEPT
 ip6tables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+ip6tables -A INPUT -i lo -j ACCEPT
 #reject everything else
 iptables -A OUTPUT -j REJECT
 ip6tables -A OUTPUT -j REJECT
@@ -73,7 +75,7 @@ ip6tables -A OUTPUT -j REJECT
 #iptables -A INPUT -s $clearnet -j ACCEPT;
 #)done
 #drop everything else (uncomment after adding your own IP above)
-#iptables -A INPUT -i eth0 -j DROP
-#ip6tables -A INPUT -i eth0 -j DROP
+#iptables -A INPUT -j DROP
+#ip6tables -A INPUT -j DROP
 
 exit 0
