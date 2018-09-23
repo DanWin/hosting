@@ -160,7 +160,7 @@ if(isset($_REQUEST['private_key'])){
 	echo htmlspecialchars($_REQUEST['private_key']);
 }
 echo '</textarea></td></tr>';
-echo '<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="'.$host.'/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>';
+echo '<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>';
 echo '<tr><td colspan="2"><input type="submit" value="Register"></td></tr>';
 echo '</table></form>';
 echo '</body></html>';

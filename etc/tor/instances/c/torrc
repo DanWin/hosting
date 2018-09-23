@@ -2,6 +2,6 @@ ClientUseIPv6 1
 ClientUseIPv4 1
 SOCKSPort 0
 MaxClientCircuitsPending 1024
-HardwareAccel 1
-AvoidDiskWrites 1
 NumEntryGuards 6
+NumDirectoryGuards 6
+NumPrimaryGuards 6
