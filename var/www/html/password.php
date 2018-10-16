@@ -23,9 +23,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$stmt->execute([$hash, $user['username']]);
 			$msg.='<p style="color:green;">Successfully changed account password.</p>';
 		}elseif($_REQUEST['type']==='sys'){
-			$stmt=$db->prepare('INSERT INTO pass_change (onion, password) VALUES (?, ?);');
+			$stmt=$db->prepare('INSERT INTO pass_change (user_id, password) VALUES (?, ?);');
 			$hash=get_system_hash($_POST['newpass']);
-			$stmt->execute([$user['onion'], $hash]);
+			$stmt->execute([$user['id'], $hash]);
 			$msg.='<p style="color:green;">Successfully changed system account password, change will take affect within the next minute.</p>';
 		}elseif($_REQUEST['type']==='sql'){
 			$stmt=$db->prepare("SET PASSWORD FOR '$user[onion].onion'@'%'=PASSWORD(?);");

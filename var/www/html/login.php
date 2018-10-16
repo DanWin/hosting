@@ -33,7 +33,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		if($tmp){
 			$username=$tmp[0];
 			$password=$tmp[1];
-			$stmt=$db->prepare('SELECT approved FROM new_account WHERE onion=?;');
+			$stmt=$db->prepare('SELECT new_account.approved FROM new_account INNER JOIN users ON (users.id=new_account.user_id) WHERE users.onion=?;');
 			$stmt->execute([$tmp[2]]);
 			if($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 				if(REQUIRE_APPROVAL && !$tmp[0]){

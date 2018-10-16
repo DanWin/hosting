@@ -27,7 +27,7 @@ if(empty($_SESSION['logged_in'])){
 	echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><table>";
 	echo "<tr><td>Password </td><td><input type=\"password\" name=\"pass\" size=\"30\" required autofocus></td></tr>";
 	send_captcha();
-	echo "<tr><td colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"Login\"></td></tr>";
+	echo "<tr><td colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"login\"></td></tr>";
 	echo '</table></form>';
 	if($error){
 		echo "<p style=\"color:red;\">$error</p>";
@@ -59,13 +59,13 @@ if(empty($_SESSION['logged_in'])){
 		echo '</table>';
 	}elseif($_REQUEST['action']==='approve'){
 		if(!empty($_POST['onion'])){
-			$stmt=$db->prepare('UPDATE new_account SET approved=1 WHERE onion=?;');
+			$stmt=$db->prepare('UPDATE new_account INNER JOIN users ON (users.id=new_account.user_id) SET new_account.approved=1 WHERE users.onion=?;');
 			$stmt->execute([$_POST['onion']]);
 			echo '<p style="color:green;">Successfully approved</p>';
 		}
 		echo '<table border="1">';
 		echo '<tr><td>Username</td><td>Onion address</td><td>Action</td></tr>';
-		$stmt=$db->query('SELECT users.username, users.onion FROM users INNER JOIN new_account ON (users.onion=new_account.onion) WHERE new_account.approved=0 ORDER BY users.username;');
+		$stmt=$db->query('SELECT users.username, users.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) WHERE new_account.approved=0 ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td>$tmp[1].onion</td><td><input type=\"submit\" name=\"action\" value=\"approve\"><input type=\"submit\" name=\"action\" value=\"delete\"></td></tr></form>";
 		}

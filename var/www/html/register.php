@@ -104,13 +104,16 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}elseif($ok){
 		$stmt=$db->prepare('INSERT INTO users (username, password, onion, private_key, dateadded, public, php, autoindex) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
 		$stmt->execute([$_POST['username'], $hash, $onion, $priv_key, time(), $public, $php, $autoindex]);
+		$stmt=$db->prepare('SELECT id FROM users WHERE username=?;');
+		$stmt->execute([$_POST['username']]);
+		$user_id=$stmt->fetch(PDO::FETCH_NUM)[0];
 		$create_user=$db->prepare("CREATE USER '$onion.onion'@'%' IDENTIFIED BY ?;");
 		$create_user->execute([$_POST['pass']]);
 		$db->exec("CREATE DATABASE IF NOT EXISTS `$onion`;");
 		$db->exec("GRANT ALL PRIVILEGES ON `$onion`.* TO '$onion.onion'@'%';");
 		$db->exec('FLUSH PRIVILEGES;');
-		$stmt=$db->prepare('INSERT INTO new_account (onion, password) VALUES (?, ?);');
-		$stmt->execute([$onion, get_system_hash($_POST['pass'])]);
+		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
+		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);
 		if(EMAIL_TO!==''){
 			$title="A new hidden service $onion has been created";
 			$msg="A new hidden service http://$onion.onion has been created";

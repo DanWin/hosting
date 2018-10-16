@@ -8,10 +8,10 @@ try{
 $reload=[];
 
 //add new accounts
-$del=$db->prepare("DELETE FROM new_account WHERE onion=?;");
+$del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
 $update_priv=$db->prepare("UPDATE users SET private_key=? WHERE onion=?;");
 $approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
-$stmt=$db->query("SELECT new_account.onion, users.username, new_account.password, users.private_key, users.php, users.autoindex FROM new_account INNER JOIN users ON (users.onion=new_account.onion) $approval LIMIT 100;");
+$stmt=$db->query("SELECT users.onion, users.username, new_account.password, users.private_key, users.php, users.autoindex, users.id FROM new_account INNER JOIN users ON (users.id=new_account.user_id) $approval LIMIT 100;");
 while($id=$stmt->fetch(PDO::FETCH_NUM)){
 	$onion=$id[0];
 	$firstchar=substr($onion, 0, 1);
@@ -116,10 +116,10 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
 	//add hidden service to torrc
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion\nHiddenServicePort 25 127.0.0.1:25\n";
+	$torrc.="HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion\nHiddenServicePort 25\n";
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//remove from to-add queue
-	$del->execute([$onion]);
+	$del->execute([$id[6]]);
 }
 
 //delete old accounts
@@ -142,7 +142,7 @@ foreach($onions as $onion){
 	unlink("/etc/nginx/sites-enabled/$onion[0].onion");
 	//clean torrc from user
 	$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion[0]\nHiddenServicePort 25 127.0.0.1:25\n", '', $torrc);
+	$torrc=str_replace("HiddenServiceDir /var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion[0]\nHiddenServicePort 25\n", '', $torrc);
 	file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
 	//delete hidden service from tor
 	if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/")){
@@ -180,9 +180,9 @@ foreach($onions as $onion){
 }
 
 // update passwords
-$stmt=$db->query("SELECT onion, password FROM pass_change LIMIT 100;");
-$del=$db->prepare("DELETE FROM pass_change WHERE onion=?;");
+$stmt=$db->query("SELECT users.onion, pass_change.password, users.id FROM pass_change INNER JOIN users ON (users.id=pass_change.user_id) LIMIT 100;");
+$del=$db->prepare("DELETE FROM pass_change WHERE user_id=?;");
 while($onion=$stmt->fetch(PDO::FETCH_NUM)){
 	exec('usermod -p '. escapeshellarg($onion[1]) . " $onion[0].onion");
-	$del->execute([$onion[0]]);
+	$del->execute([$onion[2]]);
 }
