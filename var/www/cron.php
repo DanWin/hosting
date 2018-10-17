@@ -62,8 +62,8 @@ $nginx="server {
 	listen unix:/var/run/nginx/$onion;
 	root /home/$onion.onion/www;
 	server_name $onion.onion *.$onion.onion;
-	access_log /var/log/nginx/access_$onion.onion.log custom buffer=32k flush=1m;
-	access_log /home/$onion.onion/logs/access.log custom buffer=32k flush=1m;
+	access_log /var/log/nginx/access_$onion.onion.log custom buffer=16k flush=1m;
+	access_log /home/$onion.onion/logs/access.log custom buffer=16k flush=1m;
 	error_log /var/log/nginx/error_$onion.onion.log notice;
 	error_log /home/$onion.onion/logs/error.log notice;
 	disable_symlinks on from=/home/$onion.onion/www;
@@ -124,7 +124,7 @@ php_admin_value[session.save_path] = /home/$onion.onion/tmp
 
 //delete old accounts
 $del=$db->prepare("DELETE FROM users WHERE onion=?");
-$stmt=$db->query("SELECT onion FROM users WHERE todelete=1 LIMIT 100;");
+$stmt=$db->query("SELECT onion, id, mysql_user FROM users WHERE todelete=1 LIMIT 100;");
 $onions=$stmt->fetchAll(PDO::FETCH_NUM);
 foreach($onions as $onion){
 	$firstchar=substr($onion[0], 0, 1);
@@ -164,6 +164,7 @@ foreach($reload as $key => $val){
 }
 
 //continue deleting old accounts
+$stmt=$db->prepare('SELECT mysql_database FROM mysql_databases WHERE user_id=?;');
 foreach($onions as $onion){
 	//kill processes of the user to allow deleting system users
 	exec("skill -u $onion[0].onion");
@@ -172,8 +173,11 @@ foreach($onions as $onion){
 	//delete all log files
 	exec("rm -f /var/log/nginx/*$onion[0].onion.log*");
 	//delete user from database
-	$db->exec("DROP USER '$onion[0].onion'@'%';");
-	$db->exec("DROP DATABASE IF EXISTS `$onion[0]`;");
+	$db->exec("DROP USER '$onion[2]'@'%';");
+	$stmt->execute([$onion[1]]);
+	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+		$db->exec("DROP DATABASE IF EXISTS `$tmp[0]`;");
+	}
 	$db->exec('FLUSH PRIVILEGES;');
 	//delete user from user database
 	$del->execute([$onion[0]]);

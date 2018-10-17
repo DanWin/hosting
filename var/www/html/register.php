@@ -102,11 +102,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		echo '<p style="color:red;">To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.</p>';
 		$ok=false;
 	}elseif($ok){
-		$stmt=$db->prepare('INSERT INTO users (username, password, onion, private_key, dateadded, public, php, autoindex) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], $hash, $onion, $priv_key, time(), $public, $php, $autoindex]);
+		$stmt=$db->prepare('INSERT INTO users (username, password, onion, private_key, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);');
+		$stmt->execute([$_POST['username'], $hash, $onion, $priv_key, time(), $public, $php, $autoindex, "$onion.onion"]);
 		$stmt=$db->prepare('SELECT id FROM users WHERE username=?;');
 		$stmt->execute([$_POST['username']]);
 		$user_id=$stmt->fetch(PDO::FETCH_NUM)[0];
+		$stmt=$db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
+		$stmt->execute([$user_id, $onion]);
 		$create_user=$db->prepare("CREATE USER '$onion.onion'@'%' IDENTIFIED BY ?;");
 		$create_user->execute([$_POST['pass']]);
 		$db->exec("CREATE DATABASE IF NOT EXISTS `$onion`;");
