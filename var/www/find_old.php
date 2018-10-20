@@ -6,15 +6,14 @@ try{
 	die('No Connection to MySQL database!');
 }
 
-//delete tmp files older than 24 hours
-exec('find /home -path "/home/*/tmp/*" -cmin +1440 -delete');
-
 //delete unused accounts older than 30 days
 $del=$db->prepare('UPDATE users SET todelete=1 WHERE id=?;');
 $stmt=$db->prepare('SELECT system_account, id FROM users WHERE dateadded<?;');
 $stmt->execute([time()-60*60*24*30]);
 $all=$stmt->fetchAll(PDO::FETCH_NUM);
 foreach($all as $tmp){
+	//delete tmp files older than 24 hours
+	exec("find /home/$tmp[0]/tmp -path '/home/$tmp[0]/tmp/*' -cmin +1440 -delete");
 	if(filemtime("/home/$tmp[0]")>time()-60*60*24*30){
 		continue;
 	}
