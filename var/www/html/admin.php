@@ -52,7 +52,7 @@ if(empty($_SESSION['logged_in'])){
 	}elseif($_REQUEST['action']==='list'){
 		echo '<table border="1">';
 		echo '<tr><td>Onion link</td></tr>';
-		$stmt=$db->query('SELECT onion FROM users WHERE public=0 ORDER BY onion;');
+		$stmt=$db->query('SELECT onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE users.public=0 ORDER BY onions.onion;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 			echo "<tr><td><a href=\"http://$tmp[0].onion\" target=\"_blank\">$tmp[0].onion</a></td></tr>";
 		}
@@ -65,7 +65,7 @@ if(empty($_SESSION['logged_in'])){
 		}
 		echo '<table border="1">';
 		echo '<tr><td>Username</td><td>Onion address</td><td>Action</td></tr>';
-		$stmt=$db->query('SELECT users.username, users.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) WHERE new_account.approved=0 ORDER BY users.username;');
+		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) WHERE new_account.approved=0 ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td>$tmp[1].onion</td><td><input type=\"submit\" name=\"action\" value=\"approve\"><input type=\"submit\" name=\"action\" value=\"delete\"></td></tr></form>";
 		}
@@ -81,11 +81,11 @@ if(empty($_SESSION['logged_in'])){
 		echo '<input type="submit" name="action" value="delete"></form><br>';
 		if(!empty($_POST['onion'])){
 			if(preg_match('~^([a-z2-7]{16})(\.onion)?$~', $_POST['onion'], $match)){
-				$stmt=$db->prepare('SELECT null FROM users WHERE onion=?;');
+				$stmt=$db->prepare('SELECT user_id FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
-				if($stmt->fetch(PDO::FETCH_NUM)){
-					$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE onion=?;');
-					$stmt->execute([$match[1]]);
+				if($user_id=$stmt->fetch(PDO::FETCH_NUM)){
+					$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE id=?;');
+					$stmt->execute($user_id);
 					echo "<p style=\"color:green;\">Successfully queued for deletion!</p>";
 				}else{
 					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";

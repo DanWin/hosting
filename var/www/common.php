@@ -4,12 +4,12 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=5; //database layout version
+const DBVERSION=6; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4okcs22v.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
 'dhosting4okcs22v.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
-'danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'', 'imap'=>'', 'smtp'=>'']
+'hosting.danwin1210.me'=>['sftp'=>222, 'ftp'=>21, 'pop3'=>'1995', 'imap'=>'1993', 'smtp'=>'1465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
@@ -199,4 +199,29 @@ function check_captcha_error(){
 		}
 	}
 	return false;
+}
+
+function rewrite_torrc(PDO $db, string $key){
+$torrc="ClientUseIPv6 1
+ClientUseIPv4 1
+SOCKSPort 0
+MaxClientCircuitsPending 1024
+NumEntryGuards 6
+NumDirectoryGuards 6
+NumPrimaryGuards 6
+";
+	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND enabled=1;');
+	$stmt->execute(["$key%"]);
+	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+		$torrc.="HiddenServiceDir /var/lib/tor-instances/$key/hidden_service_$tmp[0].onion/
+HiddenServiceNumIntroductionPoints $tmp[2]
+HiddenServiceVersion $tmp[4]
+HiddenServicePort 80 unix:/var/run/nginx/$tmp[1]
+";
+		if($tmp[3]){
+			$torrc.="HiddenServicePort 25\n";
+		}
+	}
+	file_put_contents("/etc/tor/instances/$key/torrc", $torrc);
+	exec("service tor@$key reload");
 }

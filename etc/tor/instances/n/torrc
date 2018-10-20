@@ -1,7 +1,0 @@
-ClientUseIPv6 1
-ClientUseIPv4 1
-SOCKSPort 0
-MaxClientCircuitsPending 1024
-NumEntryGuards 6
-NumDirectoryGuards 6
-NumPrimaryGuards 6

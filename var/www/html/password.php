@@ -19,8 +19,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}else{
 		if($_REQUEST['type']==='acc'){
 			$hash=password_hash($_POST['newpass'], PASSWORD_DEFAULT);
-			$stmt=$db->prepare('UPDATE users SET password=? WHERE username=?;');
-			$stmt->execute([$hash, $user['username']]);
+			$stmt=$db->prepare('UPDATE users SET password=? WHERE id=?;');
+			$stmt->execute([$hash, $user['id']]);
 			$msg.='<p style="color:green;">Successfully changed account password.</p>';
 		}elseif($_REQUEST['type']==='sys'){
 			$stmt=$db->prepare('INSERT INTO pass_change (user_id, password) VALUES (?, ?);');
@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$stmt->execute([$user['id'], $hash]);
 			$msg.='<p style="color:green;">Successfully changed system account password, change will take affect within the next minute.</p>';
 		}elseif($_REQUEST['type']==='sql'){
-			$stmt=$db->prepare("SET PASSWORD FOR '$user[onion].onion'@'%'=PASSWORD(?);");
+			$stmt=$db->prepare("SET PASSWORD FOR '$user[mysql_user]'@'%'=PASSWORD(?);");
 			$stmt->execute([$_POST['newpass']]);
 			$db->exec('FLUSH PRIVILEGES;');
 			$msg.='<p style="color:green;">Successfully changed sql password.</p>';

@@ -12,8 +12,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	if(!isset($_POST['pass']) || !password_verify($_POST['pass'], $user['password'])){
 		$msg.='<p style="color:red;">Wrong password.</p>';
 	}else{
-		$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE onion=?;');
-		$stmt->execute([$user['onion']]);
+		$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE id=?;');
+		$stmt->execute([$user['id']]);
 		session_destroy();
 		header('Location: login.php');
 		exit;

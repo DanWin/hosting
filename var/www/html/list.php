@@ -21,9 +21,9 @@ $hidden=$stmt->fetch(PDO::FETCH_NUM);
 echo "<p>Here a list of $count[0] public hosted sites ($hidden[0] sites hidden):</p>";
 echo '<table border="1">';
 echo '<tr><td>Onion link</td></tr>';
-$stmt=$db->query('SELECT username, onion FROM users WHERE public=1 ORDER BY onion;');
+$stmt=$db->query('SELECT onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE users.public=1 ORDER BY onions.onion;');
 while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-	echo "<tr><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td></tr>";
+	echo "<tr><td><a href=\"http://$tmp[0].onion\" target=\"_blank\">$tmp[0].onion</a></td></tr>";
 }
 echo '</table>';
 echo '</body></html>';

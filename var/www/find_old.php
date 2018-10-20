@@ -7,30 +7,28 @@ try{
 }
 
 //delete tmp files older than 24 hours
-exec('find /home -path "/home/*.onion/tmp/*" -cmin +1440 -delete');
+exec('find /home -path "/home/*/tmp/*" -cmin +1440 -delete');
 
 //delete unused accounts older than 30 days
-$del=$db->prepare('UPDATE users SET todelete=1 WHERE onion=?;');
-$stmt=$db->prepare('SELECT onion FROM users WHERE dateadded<?;');
+$del=$db->prepare('UPDATE users SET todelete=1 WHERE id=?;');
+$stmt=$db->prepare('SELECT system_account, id FROM users WHERE dateadded<?;');
 $stmt->execute([time()-60*60*24*30]);
 $all=$stmt->fetchAll(PDO::FETCH_NUM);
 foreach($all as $tmp){
-	$tmp=$tmp[0].'.onion';
-	if(filemtime("/home/$tmp")>time()-60*60*24*30){
+	if(filemtime("/home/$tmp[0]")>time()-60*60*24*30){
 		continue;
 	}
-	$count_www=count(scandir("/home/$tmp/www/"));
+	$count_www=count(scandir("/home/$tmp[0]/www/"));
 	//check data empty and www no more than 1 file
-	if($count_www>3 || count(scandir("/home/$tmp/data/"))>2){
+	if($count_www>3 || count(scandir("/home/$tmp[0]/data/"))>2){
 		continue;
 	}
 	//check www empty or index unmodified
 	if($count_www===3){
-		if(!file_exists("/home/$tmp/www/index.hosting.html") || !in_array(md5_file("/home/$tmp/www/index.hosting.html"), INDEX_MD5S)){
+		if(!file_exists("/home/$tmp[0]/www/index.hosting.html") || !in_array(md5_file("/home/$tmp[0]/www/index.hosting.html"), INDEX_MD5S)){
 			continue;
 		}
 	}
 	//no data found, safe to delete
-//	$del->execute([substr($tmp, 0, 16)]);
-var_dump($tmp);
+	$del->execute([substr($tmp[1], 0, 16)]);
 }

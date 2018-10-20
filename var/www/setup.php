@@ -22,11 +22,12 @@ $version;
 if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';")){
 	//create tables
 	$db->exec('CREATE TABLE captcha (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, time int(11) NOT NULL, code char(5) COLLATE latin1_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
-	$db->exec('CREATE TABLE users (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, onion char(16) COLLATE latin1_bin NOT NULL UNIQUE, username varchar(50) COLLATE latin1_bin NOT NULL UNIQUE, password varchar(255) COLLATE latin1_bin NOT NULL, private_key varchar(1000) COLLATE latin1_bin NOT NULL, dateadded int(10) unsigned NOT NULL, public tinyint(3) unsigned NOT NULL, php tinyint(1) unsigned NOT NULL, autoindex tinyint(1) unsigned NOT NULL, todelete tinyint(1) UNSIGNED NOT NULL, mysql_user varchar(32) NOT NULL, KEY public (public), KEY dateadded (dateadded), KEY todelete (todelete)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec('CREATE TABLE users (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, system_account varchar(32) COLLATE latin1_bin NOT NULL UNIQUE, username varchar(50) COLLATE latin1_bin NOT NULL UNIQUE, password varchar(255) COLLATE latin1_bin NOT NULL, dateadded int(10) unsigned NOT NULL, public tinyint(1) unsigned NOT NULL, php tinyint(1) unsigned NOT NULL, autoindex tinyint(1) unsigned NOT NULL, todelete tinyint(1) UNSIGNED NOT NULL, mysql_user varchar(32) NOT NULL, KEY dateadded (dateadded), KEY public (public), KEY todelete (todelete)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE new_account (user_id int(11) NOT NULL PRIMARY KEY, password varchar(255) COLLATE latin1_bin NOT NULL, approved tinyint(1) UNSIGNED NOT NULL, CONSTRAINT new_account_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE pass_change (user_id int(11) NOT NULL PRIMARY KEY, password varchar(255) COLLATE latin1_bin NOT NULL, CONSTRAINT pass_change_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
-	$db->exec('CREATE TABLE mysql_databases (user_id int(11) NOT NULL KEY, mysql_database varchar(64) COLLATE latin1_bin NOT NULL, CONSTRAINT mysql_database_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec('CREATE TABLE mysql_databases (user_id int(11) NOT NULL, mysql_database varchar(64) COLLATE latin1_bin NOT NULL, KEY user_id, CONSTRAINT mysql_database_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec("CREATE TABLE onions (user_id int(11) NOT NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
 	echo "Database has successfully been set up\n";
@@ -36,20 +37,6 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec('ALTER TABLE users ADD todelete tinyint(1) UNSIGNED NOT NULL, ADD INDEX(todelete);');
 		$db->exec('ALTER TABLE new_account ADD approved tinyint(1) UNSIGNED NOT NULL;');
 		$db->exec('DROP TABLE del_account;');
-	}
-	if($version<3){
-		$stmt=$db->query("SELECT onion FROM users;");
-		while($id=$stmt->fetch(PDO::FETCH_NUM)){
-			$onion=$id[0];
-			$firstchar=substr($onion, 0, 1);
-			$replace=str_replace("listen unix:/var/run/nginx.sock;", "listen unix:/var/run/nginx/$onion backlog=2048;", file_get_contents("/etc/nginx/sites-enabled/$onion.onion"));
-			file_put_contents("/etc/nginx/sites-enabled/$onion.onion", $replace);
-			$torrc=file_get_contents("/etc/tor/instances/$firstchar/torrc");
-			$torrc=str_replace("$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx.sock", "$onion.onion/\nHiddenServicePort 80 unix:/var/run/nginx/$onion", $torrc);
-			file_put_contents("/etc/tor/instances/$firstchar/torrc", $torrc);
-		}
-		exec('service nginx reload');
-		exec("service tor reload");
 	}
 	if($version<4){
 		$db->exec('ALTER TABLE new_account DROP FOREIGN KEY new_account_ibfk_1;');
@@ -71,6 +58,25 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec("UPDATE users SET mysql_user=CONCAT(onion, '.onion');");
 		$db->exec('CREATE TABLE mysql_databases (user_id int(11) NOT NULL KEY, mysql_database varchar(64) COLLATE latin1_bin NOT NULL, CONSTRAINT mysql_database_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 		$db->exec("INSERT INTO mysql_databases (user_id, mysql_database) SELECT id, onion FROM users;");
+	}
+	if($version<6){
+		$db->exec('ALTER TABLE mysql_databases DROP PRIMARY KEY, ADD INDEX user_id (user_id);');
+		$db->exec("CREATE TABLE onions (user_id int(11) NOT NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
+		$db->exec("INSERT INTO onions (user_id, onion, private_key, version) SELECT id, onion, private_key, 2 FROM users;");
+		$db->exec('ALTER TABLE users DROP private_key;');
+		$db->exec('ALTER TABLE users CHANGE onion system_account varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL;');
+		$db->exec("UPDATE users SET system_account = CONCAT(system_account, '.onion');");
+		$stmt=$db->query("SELECT system_account FROM users;");
+		while($id=$stmt->fetch(PDO::FETCH_NUM)){
+			$system_account=$id[0];
+			$onion=substr($id[0], 0, 16);
+			$replace=preg_replace("~listen\sunix:/var/run/nginx(/[a-z2-7]{16}|\.sock)(\sbacklog=2048)?;~", "listen unix:/var/run/nginx/$system_account backlog=2048;", file_get_contents("/etc/nginx/sites-enabled/$system_account"));
+			file_put_contents("/etc/nginx/sites-enabled/$system_account", $replace);
+		}
+		foreach(['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] as $key){
+			rewrite_torrc($db, $key);
+		}
+		exec('service nginx reload');
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);

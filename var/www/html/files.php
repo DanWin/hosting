@@ -15,7 +15,7 @@ if(empty($_SESSION['ftp_pass'])){
 	exit;
 }
 $ftp=ftp_connect('127.0.0.1') or die ('No Connection to FTP server!');
-if(@!ftp_login($ftp, "$user[onion].onion", $_SESSION['ftp_pass'])){
+if(@!ftp_login($ftp, $user[system_account], $_SESSION['ftp_pass'])){
 	send_login();
 	exit;
 }

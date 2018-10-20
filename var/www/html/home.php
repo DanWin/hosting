@@ -15,22 +15,34 @@ echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
 echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a target=\"_blank\" href=\"files.php\">FileManager</a> | <a href=\"delete.php\">Delete account</a></p>";
-echo "<p>Enter system account password to check your $user[onion].onion@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[onion].onion\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
-echo '<h3>Domain</h3>';
+echo "<p>Enter system account password to check your $user[system_account]@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[system_account]\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
+echo '<h3>Domains</h3>';
 echo '<table border="1">';
-echo '<tr><th>Onion</th><th>Private key</th></tr>';
-echo "<tr><td><a href=\"http://$user[onion].onion\" target=\"_blank\">$user[onion].onion</a></td><td>";
-if(isset($_REQUEST['show_priv'])){
-	echo "<pre>$user[private_key]</pre>";
-}else{
-	echo '<a href="home.php?show_priv=1">Show private key</a>';
+echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th></tr>';
+$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros  FROM onions WHERE user_id=?;');
+$stmt->execute([$user['id']]);
+while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
+	echo "<tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
+	if(isset($_REQUEST['show_priv'])){
+		echo "<pre>$onion[private_key]</pre>";
+	}else{
+		echo '<a href="home.php?show_priv=1">Show private key</a>';
+	}
+	echo '</td><td>';
+	echo $onion['enabled'] ? 'Yes' : 'No';
+	echo '</td><td>';
+	echo $onion['enable_smtp'] ? 'Yes' : 'No';
+	echo "</td><td>$onion[num_intros]</td></tr>";
 }
-echo '</td></tr>';
 echo '</table>';
 echo '<h3>MySQL Database</h3>';
 echo '<table border="1">';
 echo '<tr><th>Database</th><th>Host</th><th>User</th></tr>';
-echo "<tr><td>$user[onion]</td><td>localhost</td><td>$user[onion].onion</td></tr>";
+$stmt=$db->prepare('SELECT mysql_database  FROM mysql_databases WHERE user_id=?;');
+$stmt->execute([$user['id']]);
+while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
+	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td></tr>";
+}
 echo '</table>';
 echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';
 echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration.</p>';
@@ -38,7 +50,7 @@ echo '<h3>System Account</h3>';
 echo '<table border="1">';
 echo '<tr><th>Username</th><th>Host</th><th>FTP Port</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>';
 foreach(SERVERS as $server=>$tmp){
-	echo "<tr><td>$user[onion].onion</td><td>$server</td><td>$tmp[ftp]</td><td>$tmp[sftp]</td><td>$tmp[pop3]</td><td>$tmp[imap]</td><td>$tmp[smtp]</td></tr>";
+	echo "<tr><td>$user[system_account]</td><td>$server</td><td>$tmp[ftp]</td><td>$tmp[sftp]</td><td>$tmp[pop3]</td><td>$tmp[imap]</td><td>$tmp[smtp]</td></tr>";
 }
 echo '</table>';
 echo '<p><a href="password.php?type=sys">Change system account password</a></p>';

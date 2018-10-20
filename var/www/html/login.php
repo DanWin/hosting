@@ -22,18 +22,18 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$msg.='<p style="color:red;">Error: username may not be empty.</p>';
 		$ok=false;
 	}else{
-		$stmt=$db->prepare('SELECT username, password, onion FROM users WHERE username=?;');
+		$stmt=$db->prepare('SELECT username, password, id FROM users WHERE username=?;');
 		$stmt->execute([$_POST['username']]);
 		$tmp=[];
 		if(($tmp=$stmt->fetch(PDO::FETCH_NUM))===false && preg_match('/^([2-7a-z]{16}).onion$/', $_POST['username'], $match)){
-			$stmt=$db->prepare('SELECT username, password, onion FROM users WHERE onion=?;');
+			$stmt=$db->prepare('SELECT users.username, users.password, users.id FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.onion=?;');
 			$stmt->execute([$match[1]]);
 			$tmp=$stmt->fetch(PDO::FETCH_NUM);
 		}
 		if($tmp){
 			$username=$tmp[0];
 			$password=$tmp[1];
-			$stmt=$db->prepare('SELECT new_account.approved FROM new_account INNER JOIN users ON (users.id=new_account.user_id) WHERE users.onion=?;');
+			$stmt=$db->prepare('SELECT new_account.approved FROM new_account INNER JOIN users ON (users.id=new_account.user_id) WHERE users.id=?;');
 			$stmt->execute([$tmp[2]]);
 			if($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 				if(REQUIRE_APPROVAL && !$tmp[0]){

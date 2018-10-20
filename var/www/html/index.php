@@ -31,7 +31,7 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <li>Web-based file management</li>
 <li>FTP access</li>
 <li>SFTP access</li>
-<li>No disk quota</li>
+<li>No disk quota, but please be fair about your disk usage</li>
 <li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet)</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
@@ -53,5 +53,6 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <li>No proxy scripts! (You are already using TOR and this will just burden the network)</li>
 <li>No IP logger or similar de-anonymizer sites!</li>
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
+<li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
 </ul>
 </body></html>
