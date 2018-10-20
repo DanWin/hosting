@@ -18,8 +18,8 @@ echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a hre
 echo "<p>Enter system account password to check your $user[system_account]@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[system_account]\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
 echo '<h3>Domains</h3>';
 echo '<table border="1">';
-echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th></tr>';
-$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros  FROM onions WHERE user_id=?;');
+echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rendezvous circuit</th></tr>';
+$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id=?;');
 $stmt->execute([$user['id']]);
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo "<tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
@@ -32,7 +32,10 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo $onion['enabled'] ? 'Yes' : 'No';
 	echo '</td><td>';
 	echo $onion['enable_smtp'] ? 'Yes' : 'No';
-	echo "</td><td>$onion[num_intros]</td></tr>";
+	echo '</td>';
+	echo "<td>$onion[num_intros]</td>";
+	echo "<td>$onion[max_streams]</td>";
+	echo '</tr>';
 }
 echo '</table>';
 echo '<h3>MySQL Database</h3>';

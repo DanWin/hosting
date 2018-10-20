@@ -5,7 +5,14 @@ try{
 }catch(PDOException $e){
 	die('No Connection to MySQL database!');
 }
+
+//instances to reload
 $reload=[];
+$stmt=$db->query('SELECT id FROM service_instances WHERE reload=1;');
+while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+        $reload[$tmp[0]]=true;
+}
+$db->query('UPDATE service_instances SET reload=0 WHERE reload=1;');
 
 //add new accounts
 $del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
@@ -34,7 +41,7 @@ while($id=$stmt->fetch(PDO::FETCH_NUM)){
 		chown("/home/$system_account/$dir", $system_account);
 		chgrp("/home/$system_account/$dir", 'www-data');
 	}
-	foreach(['logs']){
+	foreach(['logs'] as $dir){
 		mkdir("/home/$system_account/$dir", 0550);
 		chown("/home/$system_account/$dir", $system_account);
 		chgrp("/home/$system_account/$dir", 'www-data');
@@ -139,7 +146,9 @@ foreach($onions as $onion){
 			unlink("/etc/php/$v/fpm/pool.d/$firstchar/".substr($onion[0], 0, 16).".conf");
 		}
 	}
-	unlink("/etc/nginx/sites-enabled/$onion[0]");
+	if(file_exists("/etc/nginx/sites-enabled/$onion[0]")){
+		unlink("/etc/nginx/sites-enabled/$onion[0]");
+	}
 	$stmt->execute([$onion[1]]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 		//delete hidden service from tor
