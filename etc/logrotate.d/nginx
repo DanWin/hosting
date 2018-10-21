@@ -16,13 +16,14 @@
 		invoke-rc.d nginx rotate >/dev/null 2>&1
 	endscript
 }
-/home/*.onion/logs/*.log {
+/home/*/logs/*.log {
 	daily
 	missingok
 	rotate 1
 	nocompress
 	delaycompress
 	notifempty
+	su root www-data
 	create 0640 www-data www-data
 	sharedscripts
 	prerotate
