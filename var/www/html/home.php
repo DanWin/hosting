@@ -7,6 +7,33 @@ try{
 }
 session_start();
 $user=check_login();
+if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
+	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion=? AND users.id=?;');
+	$stmt->execute([$_REQUEST['onion'], $user['id']]);
+	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
+		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion=?;');
+		$enabled = isset($_REQUEST['enabled']) ? 1 : 0;
+		$enable_smtp = isset($_REQUEST['enable_smtp']) ? 1 : 0;
+		$num_intros = intval($_REQUEST['num_intros']);
+		if($num_intros<3){
+				$num_intros = 3;
+		}elseif($onion[0]==2 && $num_intros>10){
+			$num_intros = 10;
+		}elseif($num_intros>20){
+			$num_intros = 20;
+		}
+		$max_streams = intval($_REQUEST['max_streams']);
+		if($max_streams<0){
+			$max_streams = 0;
+		}elseif($max_streams>65535){
+			$max_streams = 65535;
+		}
+		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id=?');
+		$stmt->execute([substr($_REQUEST['onion'], 0, 1)]);
+	}
+}
+
 header('Content-Type: text/html; charset=UTF-8');
 echo '<!DOCTYPE html><html><head>';
 echo '<title>Daniel\'s Hosting - Dashboard</title>';
@@ -18,24 +45,25 @@ echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a hre
 echo "<p>Enter system account password to check your $user[system_account]@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[system_account]\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
 echo '<h3>Domains</h3>';
 echo '<table border="1">';
-echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rendezvous circuit</th></tr>';
+echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
 $stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id=?;');
 $stmt->execute([$user['id']]);
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
-	echo "<tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
+	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"onion\" value=\"$onion[onion]\"><tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
 	if(isset($_REQUEST['show_priv'])){
 		echo "<pre>$onion[private_key]</pre>";
 	}else{
 		echo '<a href="home.php?show_priv=1">Show private key</a>';
 	}
-	echo '</td><td>';
-	echo $onion['enabled'] ? 'Yes' : 'No';
-	echo '</td><td>';
-	echo $onion['enable_smtp'] ? 'Yes' : 'No';
-	echo '</td>';
-	echo "<td>$onion[num_intros]</td>";
-	echo "<td>$onion[max_streams]</td>";
-	echo '</tr>';
+	echo '</td><td><label><input type="checkbox" name="enabled" value="1"';
+	echo $onion['enabled'] ? ' checked' : '';
+	echo '>Enabled</label></td>';
+	echo '<td><label><input type="checkbox" name="enable_smtp" value="1"';
+	echo $onion['enable_smtp'] ? ' checked' : '';
+	echo '>Enabled</label></td>';
+	echo '<td><input type="number" name="num_intros" min="3" max="20" value="'.$onion['num_intros'].'"></td>';
+	echo '<td><input type="number" name="max_streams" min="0" max="65535" value="'.$onion['max_streams'].'"></td>';
+	echo '<td><button type="submit" name="action" value="edit">Save</button></td></tr>';
 }
 echo '</table>';
 echo '<h3>MySQL Database</h3>';

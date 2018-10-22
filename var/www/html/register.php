@@ -104,9 +104,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}elseif($ok){
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
 		$stmt->execute([$_POST['username'], "$onion.onion", $hash, time(), $public, $php, $autoindex, "$onion.onion"]);
-		$stmt=$db->prepare('SELECT id FROM users WHERE username=?;');
-		$stmt->execute([$_POST['username']]);
-		$user_id=$stmt->fetch(PDO::FETCH_NUM)[0];
+		$user_id = $db->lastInsertId();
 		$stmt=$db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
 		$stmt->execute([$user_id, $onion]);
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
