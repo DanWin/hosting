@@ -87,8 +87,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		if(isset($_POST['public']) && $_POST['public']==1){
 			$public=1;
 		}
-		if(isset($_POST['php']) && in_array($_POST['php'], [1, 2, 3])){
-			$php=$_POST['php'];
+		if(isset($_POST['php'])){
+			foreach(PHP_VERSIONS as $key=>$version){
+				if($_POST['php']===$version){
+					$php=$key;
+					break;
+				}
+			}
 		}
 		if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
 			$autoindex=1;
@@ -144,20 +149,17 @@ if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
 }else{
 	$autoindex='';
 }
-$nophp='';
-$php70='';
-$php71='';
-$php72='';
-if(isset($_POST['php']) && $_POST['php']==0){
-	$nophp=' selected';
-}elseif(isset($_POST['php']) && $_POST['php']==1){
-	$php70=' selected';
-}elseif(isset($_POST['php']) && $_POST['php']==2){
-	$php71=' selected';
-}else{
-	$php72=' selected';
+echo '<tr><td>PHP version</td><td><select name="php">
+<option value="0"';
+echo (isset($_POST['php']) && $_POST['php']==0) ? ' selected' : '';
+echo '>None</option>';
+$default_version='7.2';
+foreach(PHP_VERSIONS as $version){
+	echo "<option value=\"$version\"";
+	echo (isset($_POST['php']) && $_POST['php']===$version || (!isset($_POST['php']) && $version===$default_version)) ? ' selected' : '';
+	echo ">PHP $version</option>";
 }
-echo '<tr><td>PHP version</td><td><select name="php"><option value="0"'.$nophp.'>None</option><option value="1" '.$php70.'>PHP 7.0</option><option value="2"'.$php71.'>PHP 7.1</option><option value="3"'.$php72.'>PHP 7.2</option></select></td></tr>';
+echo '</select></td></tr>';
 echo '<tr><td colspan=2><label><input type="checkbox" name="public" value="1"'.$public.'>Publish site on list of hosted sites</label></td></tr>';
 echo '<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"'.$autoindex.'>Enable autoindex (listing of files)</label></td></tr>';
 echo '<tr><td>Custom private key<br>(optional)</td><td><textarea name="private_key" rows="5" cols="28">';

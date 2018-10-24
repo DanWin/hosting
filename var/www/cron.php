@@ -10,7 +10,7 @@ try{
 $reload=[];
 $stmt=$db->query('SELECT id FROM service_instances WHERE reload=1;');
 while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-        $reload[$tmp[0]]=true;
+	$reload[$tmp[0]]=true;
 }
 $db->query('UPDATE service_instances SET reload=0 WHERE reload=1;');
 
@@ -103,12 +103,11 @@ php_admin_value[session.save_path] = /home/$system_account/tmp
 
 	//save configuration files
 	file_put_contents("/etc/nginx/sites-enabled/$system_account", $nginx);
-	if($id[4]==1){
-		file_put_contents("/etc/php/7.0/fpm/pool.d/$firstchar/$system_account.conf", $php);
-	}elseif($id[4]==2){
-		file_put_contents("/etc/php/7.1/fpm/pool.d/$firstchar/$system_account.conf", $php);
-	}elseif($id[4]==3){
-		file_put_contents("/etc/php/7.2/fpm/pool.d/$firstchar/$system_account.conf", $php);
+	foreach(PHP_VERSIONS as $key=>$version){
+		if($id[4]==$key){
+			file_put_contents("/etc/php/$version/fpm/pool.d/$firstchar/$system_account.conf", $php);
+			break;
+		}
 	}
 	//save hidden service
 	mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion", 0700);
@@ -136,7 +135,7 @@ foreach($onions as $onion){
 	$firstchar=substr($onion[0], 0, 1);
 	$reload[$firstchar]=true;
 	//delete config files
-	foreach(['7.0', '7.1', '7.2'] as $v){
+	foreach(PHP_VERSIONS as $v){
 		// new naming schema
 		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/$onion[0].conf")){
 			unlink("/etc/php/$v/fpm/pool.d/$firstchar/$onion[0].conf");
@@ -166,9 +165,9 @@ if(!empty($reload)){
 	exec('service nginx reload');
 }
 foreach($reload as $key => $val){
-	exec("service php7.0-fpm@$key restart");
-	exec("service php7.1-fpm@$key restart");
-	exec("service php7.2-fpm@$key restart");
+	foreach(PHP_VERSIONS as $version){
+		exec("service php$version-fpm@$key restart");
+	}
 	rewrite_torrc($db, $key);
 }
 

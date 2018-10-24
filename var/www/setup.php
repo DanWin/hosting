@@ -29,13 +29,69 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec("CREATE TABLE onions (user_id int(11) NOT NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', max_streams tinyint(3) unsigned NOT NULL DEFAULT '20', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec("CREATE TABLE service_instances (id char(1) NOT NULL PRIMARY KEY, reload tinyint(1) UNSIGNED NOT NULL DEFAULT '0', KEY reload (reload)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$stmt=$db->prepare('INSERT INTO service_instances (id) VALUES (?);');
-	foreach(['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] as $key){
+	foreach(SERVICE_INSTANCES as $key){
 		$stmt->execute([$key]);
 	}
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
-	echo "Database has successfully been set up\n";
+	foreach(PHP_VERSIONS as $version){
+		if(!file_exists("/etc/php/$version/fpm/conf.d/")){
+			mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
+		}
+		file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.conf", PHP_CONFIG);
+		if(!file_exists("/etc/php/$version/cli/conf.d/")){
+			mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
+		}
+		file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.conf", PHP_CONFIG);
+		$fpm_config = "[global]
+pid = /run/php/php$version-fpm.pid
+error_log = /var/log/php$version-fpm.log
+process_control_timeout = 10
+include=/etc/php/$version/fpm/pool.d/*.conf
+";
+		file_put_contents("/etc/php/$version/fpm/php-fpm.conf", $fpm_config);
+		$pool_config = "[www]
+user = www-data
+group = www-data
+listen = /run/php/php$version-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 25
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+php_admin_value[mysqli.allow_persistent] = On
+";
+		if(!file_exists("/etc/php/$version/fpm/pool.d/")){
+			mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
+		}
+		file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
+		foreach(SERVICE_INSTANCES as $instance){
+			$fpm_config = "[global]
+pid = /run/php/php$version-fpm-$instance.pid
+error_log = /var/log/php$version-fpm-$instance.log
+process_control_timeout = 10
+include=/etc/php/$version/fpm/pool.d/$instance/*.conf
+";
+			file_put_contents("/etc/php/$version/fpm/php-fpm-$instance.conf", $fpm_config);
+			$pool_config = "[www]
+user = www-data
+group = www-data
+listen = /run/php/$version-$instance
+listen.owner = www-data
+listen.group = www-data
+pm = ondemand
+pm.max_children = 8
+";
+			if(!file_exists("/etc/php/$version/fpm/pool.d/$instance/")){
+				mkdir("/etc/php/$version/fpm/pool.d/$instance/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/fpm/pool.d/$instance/www.conf", $pool_config);
+		}
+	}
+	echo "Database and files have successfully been set up\n";
 }else{
 	$version=$version->fetch(PDO::FETCH_NUM)[0];
 	if($version<2){
@@ -84,15 +140,73 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec("ALTER TABLE onions ADD max_streams tinyint(3) unsigned NOT NULL DEFAULT '20';");
 		$db->exec("CREATE TABLE service_instances (id char(1) NOT NULL PRIMARY KEY, reload tinyint(1) UNSIGNED NOT NULL DEFAULT '0', KEY reload (reload)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 		$stmt=$db->prepare('INSERT INTO service_instances (id, reload) VALUES (?, 1)');
-		foreach(['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] as $key){
+		foreach(SERVICE_INSTANCES as $key){
 			$stmt->execute([$key]);
+		}
+	}
+	if($version<8){
+		foreach(PHP_VERSIONS as $version){
+			if(!file_exists("/etc/php/$version/fpm/conf.d/")){
+				mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.conf", PHP_CONFIG);
+			if(!file_exists("/etc/php/$version/cli/conf.d/")){
+				mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.conf", PHP_CONFIG);
+			$fpm_config = "[global]
+pid = /run/php/php$version-fpm.pid
+error_log = /var/log/php$version-fpm.log
+process_control_timeout = 10
+include=/etc/php/$version/fpm/pool.d/*.conf
+";
+			file_put_contents("/etc/php/$version/fpm/php-fpm.conf", $fpm_config);
+			$pool_config = "[www]
+user = www-data
+group = www-data
+listen = /run/php/php$version-fpm.sock
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 25
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+php_admin_value[mysqli.allow_persistent] = On
+";
+			if(!file_exists("/etc/php/$version/fpm/pool.d/")){
+				mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
+			foreach(SERVICE_INSTANCES as $instance){
+				$fpm_config = "[global]
+pid = /run/php/php$version-fpm-$instance.pid
+error_log = /var/log/php$version-fpm-$instance.log
+process_control_timeout = 10
+include=/etc/php/$version/fpm/pool.d/$instance/*.conf
+";
+				file_put_contents("/etc/php/$version/fpm/php-fpm-$instance.conf", $fpm_config);
+				$pool_config = "[www]
+user = www-data
+group = www-data
+listen = /run/php/$version-$instance
+listen.owner = www-data
+listen.group = www-data
+pm = ondemand
+pm.max_children = 8
+";
+				if(!file_exists("/etc/php/$version/fpm/pool.d/$instance/")){
+					mkdir("/etc/php/$version/fpm/pool.d/$instance/", 0755, true);
+				}
+				file_put_contents("/etc/php/$version/fpm/pool.d/$instance/www.conf", $pool_config);
+			}
 		}
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
 	if(DBVERSION!=$version){
-		echo "Database has successfully been updated to the latest version\n";
+		echo "Database and files have successfully been updated to the latest version\n";
 	}else{
-		echo "Database already up-to-date\n";
+		echo "Database and files already up-to-date\n";
 	}
 }

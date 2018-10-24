@@ -4,7 +4,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=7; //database layout version
+const DBVERSION=8; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4okcs22v.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
@@ -18,6 +18,29 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
+const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+const PHP_VERSIONS=[1 => '7.0', 2 => '7.1', 3 => '7.2', 4 => '7.3'];
+const PHP_CONFIG='memory_limit = 256M
+error_reporting = E_ALL
+post_max_size = 10G
+upload_max_filesize = 10G
+max_file_uploads = 100
+date.timezone = UTC
+pdo_odbc.connection_pooling=off
+odbc.allow_persistent = Off
+ibase.allow_persistent = 0
+mysqli.allow_persistent = Off
+pgsql.allow_persistent = Off
+opcache.enable=1
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=20000
+opcache.use_cwd=1
+opcache.validate_timestamps=1
+opcache.revalidate_freq=2
+opcache.revalidate_path=1
+opcache.save_comments=1
+opcache.optimization_level=0xffffffff
+opcache.validate_permission=1';
 
 function get_onion($pkey){
 	$keyData = openssl_pkey_get_details($pkey);
