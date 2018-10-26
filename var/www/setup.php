@@ -39,11 +39,11 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		if(!file_exists("/etc/php/$version/fpm/conf.d/")){
 			mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
 		}
-		file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.conf", PHP_CONFIG);
+		file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.ini", PHP_CONFIG);
 		if(!file_exists("/etc/php/$version/cli/conf.d/")){
 			mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
 		}
-		file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.conf", PHP_CONFIG);
+		file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.ini", PHP_CONFIG);
 		$fpm_config = "[global]
 pid = /run/php/php$version-fpm.pid
 error_log = /var/log/php$version-fpm.log
@@ -134,7 +134,6 @@ pm.max_children = 8
 			$replace=preg_replace("~listen\sunix:/var/run/nginx(/[a-z2-7]{16}|\.sock)(\sbacklog=2048)?;~", "listen unix:/var/run/nginx/$system_account backlog=2048;", file_get_contents("/etc/nginx/sites-enabled/$system_account"));
 			file_put_contents("/etc/nginx/sites-enabled/$system_account", $replace);
 		}
-		exec('service nginx reload');
 	}
 	if($version<7){
 		$db->exec("ALTER TABLE onions ADD max_streams tinyint(3) unsigned NOT NULL DEFAULT '20';");
@@ -146,14 +145,6 @@ pm.max_children = 8
 	}
 	if($version<8){
 		foreach(PHP_VERSIONS as $version){
-			if(!file_exists("/etc/php/$version/fpm/conf.d/")){
-				mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
-			}
-			file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.conf", PHP_CONFIG);
-			if(!file_exists("/etc/php/$version/cli/conf.d/")){
-				mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
-			}
-			file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.conf", PHP_CONFIG);
 			$fpm_config = "[global]
 pid = /run/php/php$version-fpm.pid
 error_log = /var/log/php$version-fpm.log
@@ -201,6 +192,25 @@ pm.max_children = 8
 				file_put_contents("/etc/php/$version/fpm/pool.d/$instance/www.conf", $pool_config);
 			}
 		}
+	}
+	if($version<9){
+		foreach(PHP_VERSIONS as $version){
+			if(file_exists("/etc/php/$version/cli/conf.d/99-hosting.conf")){
+				unlink("/etc/php/$version/cli/conf.d/99-hosting.conf");
+			}
+			if(file_exists("/etc/php/$version/fpm/conf.d/99-hosting.conf")){
+				unlink("/etc/php/$version/fpm/conf.d/99-hosting.conf");
+			}
+			if(!file_exists("/etc/php/$version/fpm/conf.d/")){
+				mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.ini", PHP_CONFIG);
+			if(!file_exists("/etc/php/$version/cli/conf.d/")){
+				mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
+			}
+			file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.ini", PHP_CONFIG);
+		}
+		$db->exec('UPDATE service_instances SET reload=1;');
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
