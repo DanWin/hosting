@@ -23,7 +23,7 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <p>What you will get:</p>
 <ul>
 <li>Free anonymous webhosting</li>
-<li>Chose between PHP 7.0, 7.1, 7.2 or no PHP support</li>
+<li>Chose between PHP <?php echo implode(', ', PHP_VERSIONS); ?> or no PHP support</li>
 <li>Nginx Webserver</li>
 <li>SQLite support</li>
 <li>1 MariaDB (MySQL) database</li>
