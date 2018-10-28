@@ -4,7 +4,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=9; //database layout version
+const DBVERSION=10; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4okcs22v.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
@@ -19,7 +19,8 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-const PHP_VERSIONS=[1 => '7.0', 2 => '7.1', 3 => '7.2', 4 => '7.3'];
+const DISABLED_PHP_VERSIONS=[1 => '7.0'];
+const PHP_VERSIONS=[2 => '7.1', 3 => '7.2', 4 => '7.3'];
 const PHP_CONFIG='memory_limit = 256M
 error_reporting = E_ALL
 post_max_size = 10G
@@ -40,7 +41,51 @@ opcache.revalidate_freq=2
 opcache.revalidate_path=1
 opcache.save_comments=1
 opcache.optimization_level=0xffffffff
-opcache.validate_permission=1';
+opcache.validate_permission=1
+';
+const NGINX_DEFAULT = 'server {
+	listen unix:/var/run/nginx/suspended backlog=2048;
+	add_header Content-Type text/html;
+	location / {
+		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
+	}
+}
+server {
+	listen [::]:80 ipv6only=off fastopen=100 backlog=2048 default_server;
+	listen unix:/var/run/nginx.sock backlog=2048 default_server;
+	root /var/www/html;
+	index index.php;
+	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
+	location / {
+		try_files $uri $uri/ =404;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+		}
+	}
+	location /phpmyadmin {
+		root /usr/share;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+		}
+	}
+	location /adminer {
+		root /usr/share/adminer;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+		}
+	}
+	location /externals/jush/ {
+		root /usr/share/adminer;
+	}
+	location /nginx/ {
+		root /var/log/;
+		internal;
+	}
+}
+';
 
 function get_onion($pkey){
 	$keyData = openssl_pkey_get_details($pkey);
@@ -233,15 +278,20 @@ NumEntryGuards 6
 NumDirectoryGuards 6
 NumPrimaryGuards 6
 ";
-	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND onions.enabled=1;');
+	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account);');
 	$stmt->execute(["$key%"]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+if($tmp[6]==1){
+	$socket=$tmp[1];
+}else{
+	$socket='suspended';
+}
 		$torrc.="HiddenServiceDir /var/lib/tor-instances/$key/hidden_service_$tmp[0].onion/
 HiddenServiceNumIntroductionPoints $tmp[2]
 HiddenServiceVersion $tmp[4]
 HiddenServiceMaxStreamsCloseCircuit 1
 HiddenServiceMaxStreams $tmp[5]
-HiddenServicePort 80 unix:/var/run/nginx/$tmp[1]
+HiddenServicePort 80 unix:/var/run/nginx/$socket
 ";
 		if($tmp[3]){
 			$torrc.="HiddenServicePort 25\n";

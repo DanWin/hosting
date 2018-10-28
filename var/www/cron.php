@@ -16,21 +16,15 @@ $db->query('UPDATE service_instances SET reload=0 WHERE reload=1;');
 
 //add new accounts
 $del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
-$update_priv=$db->prepare("UPDATE onions SET private_key=? WHERE user_id=?;");
+$enable_onion=$db->prepare("UPDATE onions SET enabled=2 WHERE onion=?;");
 $approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
-$stmt=$db->query("SELECT users.system_account, users.username, new_account.password, onions.private_key, users.php, users.autoindex, users.id, onions.onion FROM new_account INNER JOIN users ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) $approval LIMIT 100;");
+$stmt=$db->query("SELECT users.system_account, users.username, new_account.password, users.php, users.autoindex, users.id, onions.onion FROM new_account INNER JOIN users ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) $approval LIMIT 100;");
 while($id=$stmt->fetch(PDO::FETCH_NUM)){
-	$onion=$id[7];
+	$onion=$id[6];
 	$system_account=$id[0];
 	$firstchar=substr($system_account, 0, 1);
 	$reload[$firstchar]=true;
-	//php openssl implementation has some issues, re-export using native openssl
-	$pkey=openssl_pkey_get_private($id[3]);
-	openssl_pkey_export_to_file($pkey, 'key.tmp');
-	openssl_pkey_free($pkey);
-	$priv_key=shell_exec('openssl rsa < key.tmp');
-	unlink('key.tmp');
-	$update_priv->execute([$priv_key, $id[6]]);
+	$enable_onion->execute([$id[6]]);
 	//add and manage rights of system user
 	exec('useradd -l -p ' . escapeshellarg($id[2]) . ' -g www-data -k /var/www/skel -m -s /usr/sbin/nologin ' . escapeshellarg($system_account));
 	chown("/home/$system_account", 'root');
@@ -49,7 +43,7 @@ while($id=$stmt->fetch(PDO::FETCH_NUM)){
 
 //configuration for services
 
-if($id[4]>0){
+if($id[3]>0){
 $php_location="
 		location ~ [^/]\.php(/|\$) {
 			include snippets/fastcgi-php.conf;
@@ -59,7 +53,7 @@ $php_location="
 }else{
 	$php_location='';
 }
-if($id[5]){
+if($id[4]){
 	$autoindex='on';
 }else{
 	$autoindex='off';
@@ -104,61 +98,97 @@ php_admin_value[session.save_path] = /home/$system_account/tmp
 	//save configuration files
 	file_put_contents("/etc/nginx/sites-enabled/$system_account", $nginx);
 	foreach(PHP_VERSIONS as $key=>$version){
-		if($id[4]==$key){
+		if($id[3]==$key){
 			file_put_contents("/etc/php/$version/fpm/pool.d/$firstchar/$system_account.conf", $php);
 			break;
 		}
 	}
-	//save hidden service
-	mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion", 0700);
-	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", "$onion.onion\n");
-	file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", $priv_key);
-	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", 0600);
-	chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", 0600);
-	chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/", "_tor-$firstchar");
-	chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", "_tor-$firstchar");
-	chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
-	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/", "_tor-$firstchar");
-	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/hostname", "_tor-$firstchar");
-	chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion.onion/private_key", "_tor-$firstchar");
 	//remove from to-add queue
-	$del->execute([$id[6]]);
+	$del->execute([$id[5]]);
+}
+
+//add hidden services to tor
+$update_onion=$db->prepare('UPDATE onions SET private_key=?, enabled=1 WHERE onion=?;');
+$stmt=$db->query('SELECT onion, private_key, version FROM onions WHERE enabled=2;');
+$onions=$stmt->fetchAll(PDO::FETCH_NUM);
+foreach($onions as $onion){
+	$firstchar=substr($onion[0], 0, 1);
+	$reload[$firstchar]=true;
+	if($onion[2]==2){
+		//php openssl implementation has some issues, re-export using native openssl
+		$pkey=openssl_pkey_get_private($onion[1]);
+		openssl_pkey_export_to_file($pkey, 'key.tmp');
+		openssl_pkey_free($pkey);
+		$priv_key=shell_exec('openssl rsa < key.tmp');
+		unlink('key.tmp');
+		//save hidden service
+		mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion", 0700);
+		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "$onion[0].onion\n");
+		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", $priv_key);
+		chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", 0600);
+		chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", 0600);
+		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
+		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "_tor-$firstchar");
+		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", "_tor-$firstchar");
+		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
+		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "_tor-$firstchar");
+		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", "_tor-$firstchar");
+		$update_onion->execute([$priv_key, $onion[0]]);
+	}
 }
 
 //delete old accounts
 $del=$db->prepare("DELETE FROM users WHERE id=?;");
 $stmt=$db->query("SELECT system_account, id, mysql_user FROM users WHERE todelete=1 LIMIT 100;");
+$accounts=$stmt->fetchAll(PDO::FETCH_NUM);
+$mark_onions=$db->prepare('UPDATE onions SET enabled=-1 WHERE user_id=? AND enabled!=-2;');
+foreach($accounts as $account){
+	$firstchar=substr($account[0], 0, 1);
+	$reload[$firstchar]=true;
+	//delete config files
+	foreach(DISABLED_PHP_VERSIONS as $v){
+		// new naming schema
+		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/$account[0].conf")){
+			unlink("/etc/php/$v/fpm/pool.d/$firstchar/$account[0].conf");
+		}
+		// old naming schema
+		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/".substr($account[0], 0, 16).".conf")){
+			unlink("/etc/php/$v/fpm/pool.d/$firstchar/".substr($account[0], 0, 16).".conf");
+		}
+	}
+	foreach(PHP_VERSIONS as $v){
+		// new naming schema
+		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/$account[0].conf")){
+			unlink("/etc/php/$v/fpm/pool.d/$firstchar/$account[0].conf");
+		}
+		// old naming schema
+		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/".substr($account[0], 0, 16).".conf")){
+			unlink("/etc/php/$v/fpm/pool.d/$firstchar/".substr($account[0], 0, 16).".conf");
+		}
+	}
+	if(file_exists("/etc/nginx/sites-enabled/$account[0]")){
+		unlink("/etc/nginx/sites-enabled/$account[0]");
+	}
+	$mark_onions->execute([$account[1]]);
+}
+
+//delete hidden services from tor
+$del_onions=$db->prepare('DELETE FROM onions WHERE onion=?;');
+$stmt=$db->query('SELECT onion FROM onions WHERE enabled=-1;');
 $onions=$stmt->fetchAll(PDO::FETCH_NUM);
-$stmt=$db->prepare('SELECT onion FROM onions WHERE user_id=?;');
-$del_onions=$db->prepare('DELETE FROM onions WHERE user_id=?;');
 foreach($onions as $onion){
 	$firstchar=substr($onion[0], 0, 1);
 	$reload[$firstchar]=true;
-	//delete config files
-	foreach(PHP_VERSIONS as $v){
-		// new naming schema
-		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/$onion[0].conf")){
-			unlink("/etc/php/$v/fpm/pool.d/$firstchar/$onion[0].conf");
+	if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/")){
+		foreach(glob("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/*") as $file){
+			unlink($file);
 		}
-		// old naming schema
-		if(file_exists("/etc/php/$v/fpm/pool.d/$firstchar/".substr($onion[0], 0, 16).".conf")){
-			unlink("/etc/php/$v/fpm/pool.d/$firstchar/".substr($onion[0], 0, 16).".conf");
-		}
+		rmdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/");
 	}
-	if(file_exists("/etc/nginx/sites-enabled/$onion[0]")){
-		unlink("/etc/nginx/sites-enabled/$onion[0]");
-	}
-	$stmt->execute([$onion[1]]);
-	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-		//delete hidden service from tor
-		if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$tmp[0].onion/")){
-			unlink("/var/lib/tor-instances/$firstchar/hidden_service_$tmp[0].onion/hostname");
-			unlink("/var/lib/tor-instances/$firstchar/hidden_service_$tmp[0].onion/private_key");
-			rmdir("/var/lib/tor-instances/$firstchar/hidden_service_$tmp[0].onion/");
-		}
-	}
-	$del_onions->execute([$onion[1]]);
+	$del_onions->execute([$onion[0]]);
 }
+
+
 
 //reload services
 if(!empty($reload)){
@@ -173,39 +203,39 @@ foreach($reload as $key => $val){
 
 //continue deleting old accounts
 $stmt=$db->prepare('SELECT mysql_database FROM mysql_databases WHERE user_id=?;');
-foreach($onions as $onion){
+foreach($accounts as $account){
 	//kill processes of the user to allow deleting system users
-	exec('skill -u ' . escapeshellarg($onion[0]));
+	exec('skill -u ' . escapeshellarg($account[0]));
 	//delete user and group
-	exec('userdel -rf ' . escapeshellarg($onion[0]));
+	exec('userdel -rf ' . escapeshellarg($account[0]));
 	//delete all log files
-	if(file_exists("/var/log/nginx/access_$onion[0].log")){
-		unlink("/var/log/nginx/access_$onion[0].log");
+	if(file_exists("/var/log/nginx/access_$account[0].log")){
+		unlink("/var/log/nginx/access_$account[0].log");
 	}
-	if(file_exists("/var/log/nginx/access_$onion[0].log.1")){
-		unlink("/var/log/nginx/access_$onion[0].log.1");
+	if(file_exists("/var/log/nginx/access_$account[0].log.1")){
+		unlink("/var/log/nginx/access_$account[0].log.1");
 	}
-	if(file_exists("/var/log/nginx/error_$onion[0].log")){
-		unlink("/var/log/nginx/error_$onion[0].log");
+	if(file_exists("/var/log/nginx/error_$account[0].log")){
+		unlink("/var/log/nginx/error_$account[0].log");
 	}
-	if(file_exists("/var/log/nginx/error_$onion[0].log.1")){
-		unlink("/var/log/nginx/error_$onion[0].log.1");
+	if(file_exists("/var/log/nginx/error_$account[0].log.1")){
+		unlink("/var/log/nginx/error_$account[0].log.1");
 	}
 	//delete user from database
-	$db->exec("DROP USER '$onion[2]'@'%';");
-	$stmt->execute([$onion[1]]);
+	$db->exec("DROP USER '$account[2]'@'%';");
+	$stmt->execute([$account[1]]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 		$db->exec("DROP DATABASE IF EXISTS `$tmp[0]`;");
 	}
 	$db->exec('FLUSH PRIVILEGES;');
 	//delete user from user database
-	$del->execute([$onion[1]]);
+	$del->execute([$account[1]]);
 }
 
 // update passwords
 $stmt=$db->query("SELECT users.system_account, pass_change.password, users.id FROM pass_change INNER JOIN users ON (users.id=pass_change.user_id) LIMIT 100;");
 $del=$db->prepare("DELETE FROM pass_change WHERE user_id=?;");
-while($onion=$stmt->fetch(PDO::FETCH_NUM)){
-	exec('usermod -p '. escapeshellarg($onion[1]) . ' ' . escapeshellarg($onion[0]));
-	$del->execute([$onion[2]]);
+while($account=$stmt->fetch(PDO::FETCH_NUM)){
+	exec('usermod -p '. escapeshellarg($account[1]) . ' ' . escapeshellarg($account[0]));
+	$del->execute([$account[2]]);
 }

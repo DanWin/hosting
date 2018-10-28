@@ -42,7 +42,7 @@ if(empty($_SESSION['logged_in'])){
 		$cnt=$stmt->fetch(PDO::FETCH_NUM)[0];
 		echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=approve\">Approve pending sites ($cnt)</a> | ";
 	}
-	echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=list\">List of accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=delete\">Delete accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=edit\">Edit hidden services</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=logout\">Logout</a></p>";
+	echo "<a href=\"$_SERVER[SCRIPT_NAME]?action=list\">List of accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=delete\">Delete accounts</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=suspend\">Suspend hidden services</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=edit\">Edit hidden services</a> | <a href=\"$_SERVER[SCRIPT_NAME]?action=logout\">Logout</a></p>";
 	if(empty($_REQUEST['action']) || $_REQUEST['action']==='login'){
 		echo '<p>Welcome to the admin panel!</p>';
 	}elseif($_REQUEST['action']==='logout'){
@@ -87,6 +87,32 @@ if(empty($_SESSION['logged_in'])){
 					$stmt=$db->prepare('UPDATE users SET todelete=1 WHERE id=?;');
 					$stmt->execute($user_id);
 					echo "<p style=\"color:green;\">Successfully queued for deletion!</p>";
+				}else{
+					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";
+				}
+			}else{
+				echo "<p style=\"color:red;\">Invalid onion address!</p>";
+			}
+		}
+	}elseif($_REQUEST['action']==='suspend'){
+		echo '<p>Suspend hidden service:</p>';
+		echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\">";
+		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
+		if(isSet($_POST['onion'])){
+			echo htmlspecialchars($_POST['onion']);
+		}
+		echo '" required autofocus></p>';
+		echo '<input type="submit" name="action" value="suspend"></form><br>';
+		if(!empty($_POST['onion'])){
+			if(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
+				$stmt=$db->prepare('SELECT null FROM onions WHERE onion=?;');
+				$stmt->execute([$match[1]]);
+				if($stmt->fetch(PDO::FETCH_NUM)){
+					$stmt=$db->prepare('UPDATE onions SET enabled=-2 WHERE onion=?;');
+					$stmt->execute([$match[1]]);
+					echo "<p style=\"color:green;\">Successfully queued for suspension!</p>";
+					$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id=?');
+					$stmt->execute([substr($match[1], 0, 1)]);
 				}else{
 					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";
 				}

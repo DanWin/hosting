@@ -8,7 +8,7 @@ try{
 session_start();
 $user=check_login();
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
-	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion=? AND users.id=?;');
+	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion=? AND users.id=? AND onions.enabled IN (0, 1);');
 	$stmt->execute([$_REQUEST['onion'], $user['id']]);
 	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
 		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion=?;');
@@ -63,7 +63,12 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '>Enabled</label></td>';
 	echo '<td><input type="number" name="num_intros" min="3" max="20" value="'.$onion['num_intros'].'"></td>';
 	echo '<td><input type="number" name="max_streams" min="0" max="65535" value="'.$onion['max_streams'].'"></td>';
-	echo '<td><button type="submit" name="action" value="edit">Save</button></td></tr>';
+	if(in_array($onion['enabled'], [0, 1])){
+		echo '<td><button type="submit" name="action" value="edit">Save</button></td>';
+	}else{
+		echo '<td>Unavailable</td>';
+	}
+	echo '</tr>';
 }
 echo '</table>';
 echo '<h3>MySQL Database</h3>';
