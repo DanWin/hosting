@@ -193,6 +193,9 @@ foreach($onions as $onion){
 //reload services
 if(!empty($reload)){
 	exec('service nginx reload');
+	foreach(DISABLED_PHP_VERSIONS as $version){
+		exec("service php$version-fpm reload");
+	}
 }
 foreach($reload as $key => $val){
 	foreach(PHP_VERSIONS as $version){
