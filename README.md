@@ -133,6 +133,11 @@ quit
 
 Then edit the database configuration in /var/www/common.php and /etc/postfix/sql/alias.cf
 
+Install sodium_compat for v3 hidden_service support
+```
+cd /var/www && composer install
+```
+
 Last but not least setup the database by running
 ```
 php /var/www/setup.php

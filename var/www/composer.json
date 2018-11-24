@@ -1,0 +1,5 @@
+{
+    "require": {
+        "paragonie/sodium_compat": "^1.7"
+    }
+}
