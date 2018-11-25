@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/vendor/autoload.php');
 const DBHOST='localhost'; // Database host
 const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
@@ -87,31 +88,44 @@ server {
 }
 ';
 
-function get_onion($pkey){
+function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
-	return base32_encode(hex2bin(substr(sha1(substr(base64_decode(substr($keyData['key'], 27, -26)), 22)), 0, 20)));
+	$pk = base64_decode(substr($keyData['key'], 27, -26));
+	$skipped_first_22 = substr($pk, 22);
+	$first_80_bits_of_sha1 = hex2bin(substr(sha1($skipped_first_22), 0, 20));
+	return base32_encode($first_80_bits_of_sha1);
 }
 
-function base32_encode($input) {
-	$map = array(
+function get_onion_v3(string $sk) : string {
+	if(PHP_INT_SIZE === 4){
+		$pk = ParagonIE_Sodium_Core32_Ed25519::sk_to_pk($sk);
+	}else{
+		$pk = ParagonIE_Sodium_Core_Ed25519::sk_to_pk($sk);
+	}
+	$checksum = substr(hash('SHA3-256', '.onion checksum' . $pk . hex2bin('03'), true), 0, 2);
+	return base32_encode($pk . $checksum . hex2bin('03'));
+}
+
+function base32_encode(string $input) : string {
+	$map = [
 		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', //  7
 		'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', // 15
 		'q', 'r', 's', 't', 'u', 'v', 'w', 'x', // 23
 		'y', 'z', '2', '3', '4', '5', '6', '7', // 31
-	);
+	];
 	if(empty($input)){
 		return '';
 	}
 	$input = str_split($input);
 	$binaryString = '';
-	$c=count($input);
+	$c = count($input);
 	for($i = 0; $i < $c; ++$i) {
 		$binaryString .= str_pad(decbin(ord($input[$i])), 8, '0', STR_PAD_LEFT);
 	}
 	$fiveBitBinaryArray = str_split($binaryString, 5);
 	$base32 = '';
-	$i=0;
-	$c=count($fiveBitBinaryArray);
+	$i = 0;
+	$c = count($fiveBitBinaryArray);
 	while($i < $c) {
 		$base32 .= $map[bindec($fiveBitBinaryArray[$i])];
 		++$i;
@@ -119,85 +133,85 @@ function base32_encode($input) {
 	return $base32;
 }
 
-function send_captcha(){
+function send_captcha() {
 	global $db;
 	if(!CAPTCHA || !extension_loaded('gd')){
 		return;
 	}
-	$captchachars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-	$length=strlen($captchachars)-1;
-	$code='';
-	for($i=0;$i<5;++$i){
-		$code.=$captchachars[mt_rand(0, $length)];
+	$captchachars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+	$length = strlen($captchachars)-1;
+	$code = '';
+	for($i = 0; $i < 5; ++$i){
+		$code .= $captchachars[mt_rand(0, $length)];
 	}
-	$randid=mt_rand();
-	$time=time();
-	$stmt=$db->prepare('INSERT INTO captcha (id, time, code) VALUES (?, ?, ?);');
+	$randid = mt_rand();
+	$time = time();
+	$stmt = $db->prepare('INSERT INTO captcha (id, time, code) VALUES (?, ?, ?);');
 	$stmt->execute([$randid, $time, $code]);
 	echo "<tr><td>Copy: ";
-	if(CAPTCHA===1){
-		$im=imagecreatetruecolor(55, 24);
-		$bg=imagecolorallocate($im, 0, 0, 0);
-		$fg=imagecolorallocate($im, 255, 255, 255);
+	if(CAPTCHA === 1){
+		$im = imagecreatetruecolor(55, 24);
+		$bg = imagecolorallocate($im, 0, 0, 0);
+		$fg = imagecolorallocate($im, 255, 255, 255);
 		imagefill($im, 0, 0, $bg);
 		imagestring($im, 5, 5, 5, $code, $fg);
 		echo '<img width="55" height="24" src="data:image/gif;base64,';
-	}elseif(CAPTCHA===2){
-		$im=imagecreatetruecolor(55, 24);
-		$bg=imagecolorallocate($im, 0, 0, 0);
-		$fg=imagecolorallocate($im, 255, 255, 255);
+	}elseif(CAPTCHA === 2){
+		$im = imagecreatetruecolor(55, 24);
+		$bg = imagecolorallocate($im, 0, 0, 0);
+		$fg = imagecolorallocate($im, 255, 255, 255);
 		imagefill($im, 0, 0, $bg);
 		imagestring($im, 5, 5, 5, $code, $fg);
-		$line=imagecolorallocate($im, 255, 255, 255);
-		for($i=0;$i<2;++$i){
+		$line = imagecolorallocate($im, 255, 255, 255);
+		for($i = 0; $i < 2; ++$i){
 			imageline($im, 0, mt_rand(0, 24), 55, mt_rand(0, 24), $line);
 		}
-		$dots=imagecolorallocate($im, 255, 255, 255);
-		for($i=0;$i<100;++$i){
+		$dots = imagecolorallocate($im, 255, 255, 255);
+		for($i = 0; $i < 100; ++$i){
 			imagesetpixel($im, mt_rand(0, 55), mt_rand(0, 24), $dots);
 		}
 		echo '<img width="55" height="24" src="data:image/gif;base64,';
 	}else{
-		$im=imagecreatetruecolor(150, 200);
-		$bg=imagecolorallocate($im, 0, 0, 0);
-		$fg=imagecolorallocate($im, 255, 255, 255);
+		$im = imagecreatetruecolor(150, 200);
+		$bg = imagecolorallocate($im, 0, 0, 0);
+		$fg = imagecolorallocate($im, 255, 255, 255);
 		imagefill($im, 0, 0, $bg);
-		$line=imagecolorallocate($im, 100, 100, 100);
-		for($i=0;$i<5;++$i){
+		$line = imagecolorallocate($im, 100, 100, 100);
+		for($i = 0; $i < 5; ++$i){
 			imageline($im, 0, mt_rand(0, 200), 150, mt_rand(0, 200), $line);
 		}
-		$dots=imagecolorallocate($im, 200, 200, 200);
-		for($i=0;$i<1000;++$i){
+		$dots = imagecolorallocate($im, 200, 200, 200);
+		for($i = 0; $i < 1000; ++$i){
 			imagesetpixel($im, mt_rand(0, 150), mt_rand(0, 200), $dots);
 		}
-		$chars=[];
-		for($i=0;$i<10;++$i){
-			$found=false;
+		$chars = [];
+		for($i = 0; $i < 10; ++$i){
+			$found = false;
 			while(!$found){
-				$x=mt_rand(10, 140);
-				$y=mt_rand(10, 180);
-				$found=true;
+				$x = mt_rand(10, 140);
+				$y = mt_rand(10, 180);
+				$found = true;
 				foreach($chars as $char){
-					if($char['x']>=$x && ($char['x']-$x)<25){
-						$found=false;
-					}elseif($char['x']<$x && ($x-$char['x'])<25){
-						$found=false;
+					if($char['x'] >= $x && ($char['x'] - $x) < 25){
+						$found = false;
+					}elseif($char['x'] < $x && ($x - $char['x']) < 25){
+						$found = false;
 					}
 					if(!$found){
-						if($char['y']>=$y && ($char['y']-$y)<25){
+						if($char['y'] >= $y && ($char['y'] - $y) < 25){
 							break;
-						}elseif($char['y']<$y && ($y-$char['y'])<25){
+						}elseif($char['y'] < $y && ($y - $char['y']) < 25){
 							break;
 						}else{
-							$found=true;
+							$found = true;
 						}
 					}
 				}
 			}
-			$chars[]=['x', 'y'];
-			$chars[$i]['x']=$x;
-			$chars[$i]['y']=$y;
-			if($i<5){
+			$chars []= ['x', 'y'];
+			$chars[$i]['x'] = $x;
+			$chars[$i]['y'] = $y;
+			if($i < 5){
 				imagechar($im, 5, $chars[$i]['x'], $chars[$i]['y'], $captchachars[mt_rand(0, $length)], $fg);
 			}else{
 				imagechar($im, 5, $chars[$i]['x'], $chars[$i]['y'], $code[$i-5], $fg);
@@ -205,7 +219,7 @@ function send_captcha(){
 		}
 		$follow=imagecolorallocate($im, 200, 0, 0);
 		imagearc($im, $chars[5]['x']+4, $chars[5]['y']+8, 16, 16, 0, 360, $follow);
-		for($i=5;$i<9;++$i){
+		for($i = 5; $i < 9; ++$i){
 			imageline($im, $chars[$i]['x']+4, $chars[$i]['y']+8, $chars[$i+1]['x']+4, $chars[$i+1]['y']+8, $follow);
 		}
 		echo '<img width="150" height="200" src="data:image/gif;base64,';
@@ -234,16 +248,16 @@ function check_login(){
 	return $user;
 }
 
-function get_system_hash($pass){
-	$chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
-	$salt='';
-	for($i=0;$i<16;++$i){
-		$salt.=$chars[random_int(0, strlen($chars)-1)];
+function get_system_hash($pass) {
+	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
+	$salt = '';
+	for($i = 0; $i < 16; ++$i){
+		$salt .= $chars[random_int(0, strlen($chars)-1)];
 	}
-	return crypt($pass, '$6$'.$salt.'$');
+	return crypt($pass, '$6$' . $salt . '$');
 }
 
-function check_captcha_error(){
+function check_captcha_error() {
 	global $db;
 	if(CAPTCHA){
 		if(!isset($_REQUEST['challenge'])){
@@ -299,4 +313,58 @@ HiddenServicePort 80 unix:/var/run/nginx/$socket
 	}
 	file_put_contents("/etc/tor/instances/$key/torrc", $torrc);
 	exec("service tor@$key reload");
+}
+
+function private_key_to_onion(string $priv_key) : array {
+	$ok = true;
+	$message = '';
+	$onion = '';
+	$priv_key = trim($priv_key);
+	if(($pkey = openssl_pkey_get_private($priv_key)) !== false){
+		$details=openssl_pkey_get_details($pkey);
+		if($details['bits'] !== 1024){
+			$message = 'Error: private key not of bitsize 1024.';
+			$ok = false;
+		}else{
+			$onion = get_onion_v2($pkey);
+		}
+		openssl_pkey_free($pkey);
+		return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+	} elseif(($priv = base64_decode($priv_key, true)) !== false){
+		if(strpos($priv, '== ed25519v1-secret: type0 ==' . hex2bin('000000')) !== 0 || strlen($priv) !== 96){
+			$message = 'Error: v3 secret key invalid.';
+			$ok = false;
+		} else {
+			$onion = get_onion_v3(substr($priv, 32));
+		}
+		return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+	}
+	$message = 'Error: private key invalid.';
+	$ok = false;
+	return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+}
+
+function generate_new_onion(int $version = 3) : array {
+	$priv_key = '';
+	$onion = '';
+	if($version === 2){
+		$pkey = openssl_pkey_new(['private_key_bits' => 1024, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
+		openssl_pkey_export($pkey, $priv_key);
+		$onion = get_onion_v2($pkey);
+		openssl_pkey_free($pkey);
+	} else {
+		$seed = random_bytes(32);
+		$sk = ed25519_seckey_expand($seed);
+		$priv_key = base64_encode('== ed25519v1-secret: type0 ==' . hex2bin('000000') . $sk);
+		$onion = get_onion_v3($sk);
+	}
+	return ['priv_key' => $priv_key, 'onion' => $onion];
+}
+
+function ed25519_seckey_expand(string $seed) : string {
+	$sk = hash('sha512', substr($seed, 0, 32), true);
+	$sk[0] = chr(ord($sk[0]) & 248);
+	$sk[31] = chr(ord($sk[31]) & 63);
+	$sk[31] = chr(ord($sk[31]) | 64);
+	return $sk;
 }

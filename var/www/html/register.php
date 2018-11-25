@@ -54,33 +54,27 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}
 	}
 	if($ok){
-		$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 		if(isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
-			$priv_key=trim($_REQUEST['private_key']);
-			if(($pkey=openssl_pkey_get_private($priv_key))!==false){
-				$details=openssl_pkey_get_details($pkey);
-				if($details['bits']!==1024){
-					echo '<p style="color:red;">Error: private key not of bitsize 1024.</p>';
-					$ok=false;
-				}else{
-					$onion=get_onion($pkey);
-					$check->execute([$onion]);
-					if($check->fetch(PDO::FETCH_NUM)){
-						echo '<p style="color:red;">Error onion already exists.</p>';
-						$ok=false;
-					}
+			$priv_key = trim($_REQUEST['private_key']);
+			$data = private_key_to_onion($priv_key);
+			$onion = $data['onion'];
+			if(!$data['ok']){
+				echo "<p style=\"color:red;\">$data[message]</p>";
+				$ok = false;
+			} else {
+				$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
+				$check->execute([$onion]);
+				if($check->fetch(PDO::FETCH_NUM)){
+					echo '<p style="color:red;">Error onion already exists.</p>';
+					$ok = false;
 				}
-				openssl_pkey_free($pkey);
-			}else{
-				echo '<p style="color:red;">Error: private key invalid.</p>';
-				$ok=false;
 			}
 		}else{
+			$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 			do{
-				$pkey=openssl_pkey_new(['private_key_bits'=>1024, 'private_key_type'=>OPENSSL_KEYTYPE_RSA]);
-				openssl_pkey_export($pkey, $priv_key);
-				$onion=get_onion($pkey);
-				openssl_pkey_free($pkey);
+				$data = generate_new_onion(2);
+				$priv_key = $data['priv_key'];
+				$onion = $data['onion'];
 				$check->execute([$onion]);
 			}while($check->fetch(PDO::FETCH_NUM));
 		}
