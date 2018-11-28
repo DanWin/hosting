@@ -1,7 +1,7 @@
 <?php
 include('../common.php');
 try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
+	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT, PDO::ATTR_EMULATE_PREPARES=>false]);
 }catch(PDOException $e){
 	die('No Connection to MySQL database!');
 }
