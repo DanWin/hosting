@@ -90,12 +90,6 @@ tmpfs /tmp tmpfs defaults 0 0
 tmpfs /var/log/nginx tmpfs rw,user 0 0
 ```
 
-If you expect a large number of registrations (10.000 or more), you should make sure your system has enough UIDs to assign. The easiest way to do so is by limiting newusers to one ID per user by adding the following to /etc/login.defs
-```
-SUB_GID_COUNT 1
-SUB_UID_COUNT 1
-```
-
 As time syncronisation is important, you should configure ntp servers in /etc/systemd/timesyncd.conf and make them match with the entries in /etc/rc.local iptables configuration
 
 To create all required tor and php instances run the following commands:
