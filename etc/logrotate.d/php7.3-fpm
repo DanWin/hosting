@@ -1,4 +1,4 @@
-/var/log/php7.2-fpm*.log {
+/var/log/php7.3-fpm*.log {
 	rotate 1
 	daily
 	missingok
@@ -6,6 +6,6 @@
 	compress
 	delaycompress
 	postrotate
-		/usr/lib/php/php7.2-fpm-reopenlogs
+		/usr/lib/php/php7.3-fpm-reopenlogs
 	endscript
 }
