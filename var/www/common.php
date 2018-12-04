@@ -22,6 +22,7 @@ const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 const DISABLED_PHP_VERSIONS=[];
 const PHP_VERSIONS=[4 => '7.3'];
+const DEFAULT_PHP_VERSION='7.3';
 const PHP_CONFIG='memory_limit = 256M
 error_reporting = E_ALL
 post_max_size = 10G

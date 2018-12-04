@@ -147,10 +147,9 @@ echo '<tr><td>PHP version</td><td><select name="php">
 <option value="0"';
 echo (isset($_POST['php']) && $_POST['php']==0) ? ' selected' : '';
 echo '>None</option>';
-$default_version='7.2';
 foreach(PHP_VERSIONS as $version){
 	echo "<option value=\"$version\"";
-	echo (isset($_POST['php']) && $_POST['php']===$version || (!isset($_POST['php']) && $version===$default_version)) ? ' selected' : '';
+	echo (isset($_POST['php']) && $_POST['php']===$version || (!isset($_POST['php']) && $version===DEFAULT_PHP_VERSION)) ? ' selected' : '';
 	echo ">PHP $version</option>";
 }
 echo '</select></td></tr>';
