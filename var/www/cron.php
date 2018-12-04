@@ -206,6 +206,7 @@ foreach($reload as $key => $val){
 
 //continue deleting old accounts
 $stmt=$db->prepare('SELECT mysql_database FROM mysql_databases WHERE user_id=?;');
+$drop_user=$db->prepare("DROP USER ?@'%';");
 foreach($accounts as $account){
 	//kill processes of the user to allow deleting system users
 	exec('skill -u ' . escapeshellarg($account[0]));
@@ -225,7 +226,7 @@ foreach($accounts as $account){
 		unlink("/var/log/nginx/error_$account[0].log.1");
 	}
 	//delete user from database
-	$db->exec("DROP USER '$account[2]'@'%';");
+	$drop_user->execute([$account[2]]);
 	$stmt->execute([$account[1]]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 		$db->exec("DROP DATABASE IF EXISTS `$tmp[0]`;");

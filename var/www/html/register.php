@@ -108,10 +108,11 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$stmt->execute([$user_id, $onion]);
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
 		$stmt->execute([$user_id, $onion, $priv_key, 2]);
-		$create_user=$db->prepare("CREATE USER '$onion.onion'@'%' IDENTIFIED BY ?;");
-		$create_user->execute([$_POST['pass']]);
+		$create_user=$db->prepare("CREATE USER ?@'%' IDENTIFIED BY ?;");
+		$create_user->execute(["$onion.onion", $_POST['pass']]);
 		$db->exec("CREATE DATABASE IF NOT EXISTS `$onion`;");
-		$db->exec("GRANT ALL PRIVILEGES ON `$onion`.* TO '$onion.onion'@'%';");
+		$stmt=$db->prepare("GRANT ALL PRIVILEGES ON `$onion`.* TO ?@'%';");
+		$stmt->execute(["$onion.onion"]);
 		$db->exec('FLUSH PRIVILEGES;');
 		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
 		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);
