@@ -123,17 +123,24 @@ foreach($onions as $onion){
 		unlink('key.tmp');
 		//save hidden service
 		mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion", 0700);
-		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "$onion[0].onion\n");
 		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", $priv_key);
-		chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", 0600);
 		chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", 0600);
 		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
-		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "_tor-$firstchar");
 		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", "_tor-$firstchar");
 		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
-		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hostname", "_tor-$firstchar");
 		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", "_tor-$firstchar");
 		$update_onion->execute([$priv_key, $onion[0]]);
+	}elseif($onion[2]==3){
+		$priv_key=base64_decode($onion[1]);
+		//save hidden service
+		mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion", 0700);
+		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hs_ed25519_secret_key", $priv_key);
+		chmod("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hs_ed25519_secret_key", 0600);
+		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
+		chown("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hs_ed25519_secret_key", "_tor-$firstchar");
+		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/", "_tor-$firstchar");
+		chgrp("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/hs_ed25519_secret_key", "_tor-$firstchar");
+		$update_onion->execute([$onion[1], $onion[0]]);
 	}
 }
 
