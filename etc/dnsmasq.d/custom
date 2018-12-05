@@ -1,4 +1,4 @@
-interface=*
+interface=lo
 server=127.0.0.1#54
 no-resolv
 cache-size=10000
