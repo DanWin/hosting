@@ -21,6 +21,8 @@ On debian stable this may be worth a look: https://deb.sury.org/
 
 To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
 
+To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
+
 The following command will install all required packages:
 ```
 apt-get --no-install-recommends install apt-transport-tor aspell clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables locales-all logrotate mariadb-server nginx-light postfix postfix-mysql \
