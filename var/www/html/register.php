@@ -72,7 +72,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}else{
 			$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 			do{
-				$data = generate_new_onion(2);
+				$data = generate_new_onion(3);
 				$priv_key = $data['priv_key'];
 				$onion = $data['onion'];
 				$check->execute([$onion]);
@@ -102,17 +102,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$ok=false;
 	}elseif($ok){
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], "$onion.onion", $hash, time(), $public, $php, $autoindex, "$onion.onion"]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public, $php, $autoindex, substr("$onion.onion", 0, 32)]);
 		$user_id = $db->lastInsertId();
 		$stmt=$db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
-		$stmt->execute([$user_id, $onion]);
+		$stmt->execute([$user_id, substr($onion, 0, 32)]);
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
-		$stmt->execute([$user_id, $onion, $priv_key, 2]);
+		$stmt->execute([$user_id, $onion, $priv_key, 3]);
 		$create_user=$db->prepare("CREATE USER ?@'%' IDENTIFIED BY ?;");
-		$create_user->execute(["$onion.onion", $_POST['pass']]);
-		$db->exec("CREATE DATABASE IF NOT EXISTS `$onion`;");
-		$stmt=$db->prepare("GRANT ALL PRIVILEGES ON `$onion`.* TO ?@'%';");
-		$stmt->execute(["$onion.onion"]);
+		$create_user->execute([substr("$onion.onion", 0, 32), $_POST['pass']]);
+		$db->exec("CREATE DATABASE IF NOT EXISTS `" . substr($onion, 0, 32) . "`;");
+		$stmt=$db->prepare("GRANT ALL PRIVILEGES ON `" . substr($onion, 0, 32) . "`.* TO ?@'%';");
+		$stmt->execute([substr("$onion.onion", 0, 32)]);
 		$db->exec('FLUSH PRIVILEGES;');
 		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
 		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);
