@@ -321,7 +321,9 @@ function private_key_to_onion(string $priv_key) : array {
 	$message = '';
 	$onion = '';
 	$priv_key = trim($priv_key);
+	$version = 0;
 	if(($pkey = openssl_pkey_get_private($priv_key)) !== false){
+		$version = 2;
 		$details=openssl_pkey_get_details($pkey);
 		if($details['bits'] !== 1024){
 			$message = 'Error: private key not of bitsize 1024.';
@@ -330,19 +332,20 @@ function private_key_to_onion(string $priv_key) : array {
 			$onion = get_onion_v2($pkey);
 		}
 		openssl_pkey_free($pkey);
-		return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+		return ['ok' => $ok, 'message' => $message, 'onion' => $onion, 'version' => $version];
 	} elseif(($priv = base64_decode($priv_key, true)) !== false){
+		$version = 3;
 		if(strpos($priv, '== ed25519v1-secret: type0 ==' . hex2bin('000000')) !== 0 || strlen($priv) !== 96){
 			$message = 'Error: v3 secret key invalid.';
 			$ok = false;
 		} else {
 			$onion = get_onion_v3(substr($priv, 32));
 		}
-		return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+		return ['ok' => $ok, 'message' => $message, 'onion' => $onion, 'version' => $version];
 	}
 	$message = 'Error: private key invalid.';
 	$ok = false;
-	return ['ok' => $ok, 'message' => $message, 'onion' => $onion];
+	return ['ok' => $ok, 'message' => $message, 'onion' => $onion, 'version' => $version];
 }
 
 function generate_new_onion(int $version = 3) : array {
@@ -359,7 +362,7 @@ function generate_new_onion(int $version = 3) : array {
 		$priv_key = base64_encode('== ed25519v1-secret: type0 ==' . hex2bin('000000') . $sk);
 		$onion = get_onion_v3($sk);
 	}
-	return ['priv_key' => $priv_key, 'onion' => $onion];
+	return ['priv_key' => $priv_key, 'onion' => $onion, 'version' => $version];
 }
 
 function ed25519_seckey_expand(string $seed) : string {

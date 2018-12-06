@@ -11,22 +11,35 @@ if(!empty($_SESSION['hosting_username'])){
 	header('Location: home.php');
 	exit;
 }
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Register</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-echo '</head><body>';
-echo '<h1>Hosting - Register</h1>';
-echo '<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
+?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Register</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
+</head><body>
+<h1>Hosting - Register</h1>
+<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
+<?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
 	$onion='';
-	$public=0;
+	$onion_version=3;
+	$public_list=0;
 	$php=0;
 	$autoindex=0;
 	$hash='';
 	$priv_key='';
+	if(isset($_POST['public']) && $_POST['public']==1){
+		$public_list=1;
+	}
+	if(isset($_POST['php']) && in_array($_POST['php'], PHP_VERSIONS)){
+		$php = $_POST['php'];
+	}
+	if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
+		$autoindex=1;
+	}
 	if($error=check_captcha_error()){
 		echo "<p style=\"color:red;\">$error</p>";
 		$ok=false;
@@ -54,10 +67,11 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}
 	}
 	if($ok){
-		if(isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
+		if(isset($_REQUEST['onion_type']) && $_REQUEST['onion_type']==='custom' && isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
 			$priv_key = trim($_REQUEST['private_key']);
 			$data = private_key_to_onion($priv_key);
 			$onion = $data['onion'];
+			$onion_version = $data['version'];
 			if(!$data['ok']){
 				echo "<p style=\"color:red;\">$data[message]</p>";
 				$ok = false;
@@ -70,27 +84,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 				}
 			}
 		}else{
+			if(isset($_REQUEST['onion_type']) && in_array($_REQUEST['onion_type'], [2, 3])){
+				$onion_version = $_REQUEST['onion_type'];
+			}
 			$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 			do{
-				$data = generate_new_onion(3);
+				$data = generate_new_onion($onion_version);
 				$priv_key = $data['priv_key'];
 				$onion = $data['onion'];
+				$onion_version = $data['version'];
 				$check->execute([$onion]);
 			}while($check->fetch(PDO::FETCH_NUM));
-		}
-		if(isset($_POST['public']) && $_POST['public']==1){
-			$public=1;
-		}
-		if(isset($_POST['php'])){
-			foreach(PHP_VERSIONS as $key=>$version){
-				if($_POST['php']===$version){
-					$php=$key;
-					break;
-				}
-			}
-		}
-		if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
-			$autoindex=1;
 		}
 		$priv_key=trim(str_replace("\r", '', $priv_key));
 		$hash=password_hash($_POST['pass'], PASSWORD_DEFAULT);
@@ -102,12 +106,12 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$ok=false;
 	}elseif($ok){
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public, $php, $autoindex, substr("$onion.onion", 0, 32)]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, substr("$onion.onion", 0, 32)]);
 		$user_id = $db->lastInsertId();
 		$stmt=$db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
 		$stmt->execute([$user_id, substr($onion, 0, 32)]);
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
-		$stmt->execute([$user_id, $onion, $priv_key, 3]);
+		$stmt->execute([$user_id, $onion, $priv_key, $onion_version]);
 		$create_user=$db->prepare("CREATE USER ?@'%' IDENTIFIED BY ?;");
 		$create_user->execute([substr("$onion.onion", 0, 32), $_POST['pass']]);
 		$db->exec("CREATE DATABASE IF NOT EXISTS `" . substr($onion, 0, 32) . "`;");
@@ -125,43 +129,47 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		echo "<p style=\"color:green;\">Your onion domain <a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a> has successfully been created. Please wait up to one minute until the changes have been processed. You can then login <a href=\"login.php\">here</a>.</p>";
 	}
 }
-echo '<form method="POST" action="register.php"><table>';
-echo '<tr><td>Username</td><td><input type="text" name="username" value="';
-if(isset($_POST['username'])){
-	echo htmlspecialchars($_POST['username']);
-}
-echo '" required autofocus></td></tr>';
-echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
-echo '<tr><td>Confirm password</td><td><input type="password" name="passconfirm" required></td></tr>';
+?>
+<form method="POST" action="register.php"><table>
+<tr><td>Username</td><td><input type="text" name="username" value="<?php
+echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '';
+?>" required autofocus></td></tr>
+<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>
+<tr><td>Confirm password</td><td><input type="password" name="passconfirm" required></td></tr>
+<?php
 send_captcha();
-if($_SERVER['REQUEST_METHOD']!=='POST' || (isset($_POST['public']) && $_POST['public']==1)){
-	$public=' checked';
+if($_SERVER['REQUEST_METHOD']!=='POST' || (isset($public_list) && $public_list==1)){
+	$public_list=' checked';
 }else{
-	$public='';
+	$public_list='';
 }
-if(isset($_POST['autoindex']) && $_POST['autoindex']==1){
+if(isset($autoindex) && $autoindex==1){
 	$autoindex=' checked';
 }else{
 	$autoindex='';
 }
-echo '<tr><td>PHP version</td><td><select name="php">
-<option value="0"';
-echo (isset($_POST['php']) && $_POST['php']==0) ? ' selected' : '';
-echo '>None</option>';
-foreach(PHP_VERSIONS as $version){
-	echo "<option value=\"$version\"";
-	echo (isset($_POST['php']) && $_POST['php']===$version || (!isset($_POST['php']) && $version===DEFAULT_PHP_VERSION)) ? ' selected' : '';
+?>
+<tr><td>PHP version</td><td><select name="php">
+<option value="0">None</option>
+<?php
+foreach(PHP_VERSIONS as $key => $version){
+	echo "<option value=\"$key\"";
+	echo ((isset($_POST['php']) && $_POST['php']==$key) || (!isset($_POST['php']) && $version===DEFAULT_PHP_VERSION)) ? ' selected' : '';
 	echo ">PHP $version</option>";
 }
-echo '</select></td></tr>';
-echo '<tr><td colspan=2><label><input type="checkbox" name="public" value="1"'.$public.'>Publish site on list of hosted sites</label></td></tr>';
-echo '<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"'.$autoindex.'>Enable autoindex (listing of files)</label></td></tr>';
-echo '<tr><td>Custom private key<br>(optional)</td><td><textarea name="private_key" rows="5" cols="28">';
-if(isset($_REQUEST['private_key'])){
-	echo htmlspecialchars($_REQUEST['private_key']);
-}
-echo '</textarea></td></tr>';
-echo '<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>';
-echo '<tr><td colspan="2"><input type="submit" value="Register"></td></tr>';
-echo '</table></form>';
-echo '</body></html>';
+?>
+</select></td></tr>
+<tr><td colspan=2><label><input type="checkbox" name="public" value="1"<?php echo $public_list; ?>>Publish site on list of hosted sites</label></td></tr>
+<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"<?php echo $autoindex; ?>>Enable autoindex (listing of files)</label></td></tr>
+<tr><td colspan=2>Type of hidden service:<br>
+<label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || isset($_POST['onion_type']) && $_POST['onion_type']==3) ? ' checked' : ''; ?>>Random v3 Address</label>
+<label><input type="radio" name="onion_type" value="2"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : ''; ?>>Random v2 Address</label>
+<label><input id="custom_onion" type="radio" name="onion_type" value="custom"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : ''; ?>>Custom private key
+<textarea id="private_key" name="private_key" rows="5" cols="28">
+<?php echo isset($_REQUEST['private_key']) ? htmlspecialchars($_REQUEST['private_key']) : ''; ?>
+</textarea>
+</label></td></tr>
+<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>
+<tr><td colspan="2"><input type="submit" value="Register"></td></tr>
+</table></form>
+</body></html>
