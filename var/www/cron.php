@@ -117,10 +117,9 @@ foreach($onions as $onion){
 	if($onion[2]==2){
 		//php openssl implementation has some issues, re-export using native openssl
 		$pkey=openssl_pkey_get_private($onion[1]);
-		openssl_pkey_export_to_file($pkey, 'key.tmp');
+		openssl_pkey_export($pkey, $exported);
 		openssl_pkey_free($pkey);
-		$priv_key=shell_exec('openssl rsa < key.tmp');
-		unlink('key.tmp');
+		$priv_key=shell_exec('echo ' . escapeshellarg($exported) . ' | openssl rsa');
 		//save hidden service
 		mkdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion", 0700);
 		file_put_contents("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/private_key", $priv_key);
