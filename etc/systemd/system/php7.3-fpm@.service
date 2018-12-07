@@ -12,6 +12,20 @@ ExecStart=/usr/sbin/php-fpm7.3 --nodaemonize --fpm-config /etc/php/7.3/fpm/php-f
 ExecReload=/bin/kill -USR2 $MAINPID
 LimitNOFILE=100000
 TimeoutStartSec=300
+ProtectSystem=strict
+PrivateTmp=true
+# sendmail requires it... enable once chrooted
+#NoNewPrivileges=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+SystemCallArchitectures=native
+BindPaths=/var/log/
+BindPaths=/var/run/php/
+BindPaths=/run/php/
+InaccessiblePaths=/root/
 
 [Install]
 WantedBy=multi-user.target
