@@ -27,7 +27,7 @@ The following command will install all required packages:
 ```
 apt-get --no-install-recommends install apt-transport-tor aspell clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables locales-all logrotate mariadb-server nginx-light postfix postfix-mysql \
 php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
-phpmyadmin php-apcu php-gnupg php-imagick sasl2-bin ssh subversion tor vsftpd && apt-get --no-install-recommends install adminer
+phpmyadmin php-apcu php-gnupg php-imagick quota quotatool sasl2-bin ssh subversion tor vsftpd && apt-get --no-install-recommends install adminer
 ```
 
 For optimum spell checking capabilities you can optionally install the following packages:
@@ -42,12 +42,12 @@ deb tor+http://vwakviie2ienjx6t.onion/debian sid main
 deb tor+http://sdscoq7snqtznauu.onion/torproject.org sid main
 ```
 
-Copy (and modify according to your needs) the site files in var/www to /var/www and the configuration files in etc to /etc after installation has finished. Then restart tor:
+Copy (and modify according to your needs) the site files in `var/www` to `/var/www` and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
 ```
-service tor restart
+systemctl deamon-reload && service tor restart && service dnsmasq restart
 ```
 
-Now there should be an onion domain in /var/lib/tor/hidden_service/hostname:
+Now there should be an onion domain in `/var/lib/tor/hidden_service/hostname`:
 ```
 cat /var/lib/tor/hidden_service/hostname
 ```
@@ -64,9 +64,9 @@ Replace the default domain with your domain in the following files:
 /etc/postfix-clearnet/canonical
 ```
 
-In /etc/postfix(-clearnet)/canonical don't change the line that has hosting.danwin1210.me in it. It is a clearnet/tor address rewriting rule, and if you have your own clearnet domain, you should copy this and modify your copy to preserve sending mail to my host via tor and not via clearnet:
+In `/etc/postfix(-clearnet)/canonical` don't change the line that has `hosting.danwin1210.me` in it. It is a clearnet/tor address rewriting rule, and if you have your own clearnet domain, you should copy this and modify your copy to preserve sending mail to my host via tor and not via clearnet:
 
-To allow sasl authentication add postfix to the sasl group:
+To allow sasl authentication add the `postfix` user to the `sasl` group:
 ```
 usermod -aG sasl postfix
 ```
@@ -82,17 +82,18 @@ If you created an instance, uncomment the clearnet relay related config in etc/p
 
 After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
 ```
+postalias /etc/aliases
 postmap /etc/postfix/canonical /etc/postfix/sender_login_maps /etc/postfix/transport
 postmap /etc/postfix-clearnet/canonical /etc/postfix-clearnet/sasl_password /etc/postfix-clearnet/transport #only if you have a second instance
 ```
 
-To save temporary files in memory, add the following to /etc/fstab
+To save temporary files in memory, add the following to `/etc/fstab`:
 ```
 tmpfs /tmp tmpfs defaults 0 0
 tmpfs /var/log/nginx tmpfs rw,user 0 0
 ```
 
-As time syncronisation is important, you should configure ntp servers in /etc/systemd/timesyncd.conf and make them match with the entries in /etc/rc.local iptables configuration
+As time syncronisation is important, you should configure ntp servers in `/etc/systemd/timesyncd.conf` and make them match with the entries in `/etc/rc.local` iptables configuration
 
 To create all required tor and php instances run the following commands:
 ```
@@ -100,7 +101,14 @@ for instance in 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z;
 for instance in default 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(systemctl enable php7.3-fpm@$instance;) done
 ```
 
-For web based mail management grab the latest squirrelmail and install it in /var/www/html/squirrelmail:
+Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the /home mountpoint. Then initialize quota:
+```
+mount -o remount /home
+quotacheck -cu /home
+quotaon /home
+```
+
+For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
 ```
 cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure && mkdir /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach && chown www-data:www-data /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach
 ```
@@ -126,7 +134,7 @@ FLUSH PRIVILEGES;
 quit
 ```
 
-Then edit the database configuration in /var/www/common.php and /etc/postfix/sql/alias.cf
+Then edit the database configuration in `/var/www/common.php` and `/etc/postfix/sql/alias.cf`
 
 Install sodium_compat for v3 hidden_service support
 ```
