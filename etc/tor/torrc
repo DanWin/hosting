@@ -58,6 +58,7 @@ HiddenServicePort 5047
 HiddenServicePort 5048
 HiddenServicePort 5049
 HiddenServicePort 5050
+HiddenServiceVersion 3
 HiddenServiceNumIntroductionPoints 5
 
 ClientUseIPv6 1
