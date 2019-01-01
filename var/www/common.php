@@ -1,15 +1,15 @@
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
-const DBHOST='localhost'; // Database host
+const DBHOST='127.0.0.1'; // Database host
 const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=11; //database layout version
+const DBVERSION=12; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
-const ADDRESS='dhosting4okcs22v.onion'; // our own address
+const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
-'dhosting4okcs22v.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
+'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
 'hosting.danwin1210.me'=>['sftp'=>222, 'ftp'=>21, 'pop3'=>'1995', 'imap'=>'1993', 'smtp'=>'1465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
@@ -44,6 +44,7 @@ opcache.revalidate_path=1
 opcache.save_comments=1
 opcache.optimization_level=0xffffffff
 opcache.validate_permission=1
+opcache.validate_root=1
 ';
 const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=2048;
@@ -62,21 +63,31 @@ server {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+			fastcgi_param SCRIPT_FILENAME html/$fastcgi_script_name;
+			fastcgi_pass unix:/var/run/php/7.3-hosting;
+		}
+	}
+	location /squirrelmail {
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_pass unix:/var/run/php/7.3-squirrelmail;
 		}
 	}
 	location /phpmyadmin {
 		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_pass unix:/run/php/7.3-phpmyadmin;
 		}
 	}
 	location /adminer {
 		root /usr/share/adminer;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_pass unix:/run/php/7.3-adminer;
 		}
 	}
 	location /externals/jush/ {
@@ -293,7 +304,7 @@ NumEntryGuards 6
 NumDirectoryGuards 6
 NumPrimaryGuards 6
 ";
-	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account);');
+	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
 	$stmt->execute(["$key%"]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 if($tmp[6]==1){
@@ -371,4 +382,77 @@ function ed25519_seckey_expand(string $seed) : string {
 	$sk[31] = chr(ord($sk[31]) & 63);
 	$sk[31] = chr(ord($sk[31]) | 64);
 	return $sk;
+}
+
+function rewrite_nginx_config(PDO $db){
+	$nginx='';
+	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		if($tmp['php']>0){
+			$php_location="
+		location ~ [^/]\.php(/|\$) {
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass unix:/run/php/$tmp[system_account];
+		}";
+		}else{
+			$php_location='';
+		}
+		$autoindex = $tmp['autoindex'] ? 'on' : 'off';
+		$nginx.="server {
+	listen [::]:80;
+	listen unix:/var/run/nginx/$tmp[system_account];
+	root /home/$tmp[system_account]/www;
+	server_name $tmp[onion].onion *.$tmp[onion].onion;
+	access_log /var/log/nginx/access_$tmp[system_account].log custom buffer=4k flush=1m;
+	access_log /home/$tmp[system_account]/logs/access.log custom buffer=4k flush=1m;
+	error_log /var/log/nginx/error_$tmp[system_account].log notice;
+	error_log /home/$tmp[system_account]/logs/error.log notice;
+	disable_symlinks on from=/home/$tmp[system_account];
+	autoindex $autoindex;
+	location / {
+		try_files \$uri \$uri/ =404;$php_location
+	}
+}
+";
+
+		file_put_contents("/etc/nginx/sites-enabled/hosted_sites", $nginx);
+		exec("service nginx reload");
+	}
+}
+
+function rewrite_php_config(PDO $db, string $key){
+	$stmt=$db->prepare("SELECT system_account FROM users WHERE system_account LIKE ? AND php=? AND todelete!=1 AND id NOT IN (SELECT user_id FROM new_account);");
+	foreach(array_replace(PHP_VERSIONS, DISABLED_PHP_VERSIONS) as $php_key => $version){
+		$stmt->execute(["$key%", $php_key]);
+			$php = "[www]
+user = www-data
+group = www-data
+listen = /run/php/$version-$key
+listen.owner = www-data
+listen.group = www-data
+pm = ondemand
+pm.max_children = 8
+";
+		while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+			$php.='['.$tmp['system_account']."]
+user = $tmp[system_account]
+group = www-data
+listen = /run/php/$tmp[system_account]
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0660
+pm = ondemand
+pm.max_children = 20
+pm.process_idle_timeout = 10s;
+chroot = /home/$tmp[system_account]
+php_admin_value[memory_limit] = 256M
+php_admin_value[disable_functions] = exec,link,passthru,pcntl_alarm,pcntl_async_signals,pcntl_exec,pcntl_fork,pcntl_get_last_error,pcntl_getpriority,pcntl_setpriority,pcntl_signal,pcntl_signal_dispatch,pcntl_signal_get_handler,pcntl_sigprocmask,pcntl_sigtimedwait,pcntl_sigwaitinfo,pcntl_strerror,pcntl_waitpid,pcntl_wait,pcntl_wexitstatus,pcntl_wifcontinued,pcntl_wifexited,pcntl_wifsignaled,pcntl_wifstopped,pcntl_wstopsig,pcntl_wtermsig,popen,posix_ctermid,posix_getgrgid,posix_getgrnam,posix_getpgid,posix_getpwnam,posix_getpwuid,posix_getrlimit,posix_getsid,posix_kill,posix_setegid,posix_seteuid,posix_setgid,posix_setpgid,posix_setrlimit,posix_setuid,posix_ttyname,posix_uname,proc_open,putenv,shell_exec,socket_listen,socket_create_listen,socket_bind,stream_socket_server,symlink,system
+php_admin_value[upload_tmp_dir] = /tmp
+php_admin_value[soap.wsdl_cache_dir] = /tmp
+php_admin_value[session.save_path] = /tmp
+";
+		}
+		file_put_contents("/etc/php/$version/fpm/pool.d/$key/www.conf", $php);
+		exec("service php$version-fpm@$key restart");
+	}
 }

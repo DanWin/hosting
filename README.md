@@ -128,8 +128,8 @@ D. > select dovecot
 Create a mysql user with all permissions for our hosting management:
 ```
 mysql
-CREATE USER 'hosting'@'localhost' IDENTIFIED BY 'MY_PASSWORD';
-GRANT ALL PRIVILEGES ON *.* TO 'hosting'@'localhost' WITH GRANT OPTION;
+CREATE USER 'hosting'@'%' IDENTIFIED BY 'MY_PASSWORD';
+GRANT ALL PRIVILEGES ON *.* TO 'hosting'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 quit
 ```
@@ -156,4 +156,4 @@ Final step is to reboot wait about 5 minutes for all services to start and check
 Live demo:
 ----------
 
-If you want to see the setup in action or create your own site on my server, you can visit my [TOR hidden service](http://dhosting4okcs22v.onion) or via [my clearnet proxy](https://hosting.danwin1210.me) if you don't have TOR installed.
+If you want to see the setup in action or create your own site on my server, you can visit my [TOR hidden service](http://dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion) or via [my clearnet proxy](https://hosting.danwin1210.me) if you don't have TOR installed.

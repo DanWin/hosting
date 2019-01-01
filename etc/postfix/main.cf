@@ -1,11 +1,5 @@
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
-
-# Debian specific:  Specifying a file name will cause the first
-# line of that file to be used as the name.  The Debian default
-# is /etc/mailname.
-#myorigin = /etc/mailname
-
 smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
 biff = no
 
@@ -27,17 +21,17 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
 
-myhostname = dhosting4okcs22v.onion
+myhostname = dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-myorigin = dhosting4okcs22v.onion
-mydestination = dhosting4okcs22v.onion localhost dhosting
+myorigin = dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion
+mydestination = dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion localhost dhosting
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
-relay_domains = !dhosting4okcs22v.onion onion lelantos.org mail2tor.com anoninbox.net anonplus.org o3mail.org volatile.ch danwin1210.me bitmai.la volatile.bz bitmessage.ch elude.in secmail.pro vfemail.net anonymail.tech
+relay_domains = !dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion onion lelantos.org mail2tor.com anoninbox.net anonplus.org o3mail.org volatile.ch danwin1210.me bitmai.la volatile.bz bitmessage.ch elude.in secmail.pro vfemail.net anonymail.tech
 home_mailbox = Maildir/
 canonical_maps = proxy:mysql:/etc/postfix/sql/alias.cf regexp:/etc/postfix/canonical
 ignore_mx_lookup_error = yes
@@ -46,7 +40,7 @@ message_drop_headers = bcc content-length resent-bcc return-path x-mailer receiv
 
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_security_options = noanonymous
-smtpd_sasl_local_domain = dhosting4okcs22v.onion
+smtpd_sasl_local_domain = dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion
 smtpd_recipient_limit = 10
 smtpd_sender_login_maps = regexp:/etc/postfix/sender_login_maps
 smtpd_sender_restrictions = reject_sender_login_mismatch, permit_sasl_authenticated

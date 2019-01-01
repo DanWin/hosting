@@ -2,4 +2,4 @@ user = hosting
 password = MY_PASSWORD
 hosts = localhost
 dbname = hosting
-query = SELECT '%d@dhosting4okcs22v.onion' FROM users WHERE '%d' = system_account
+query = SELECT '%d@dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion' FROM users WHERE '%d' = system_account

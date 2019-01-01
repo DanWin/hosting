@@ -22,6 +22,7 @@ ProtectKernelModules=true
 ProtectControlGroups=true
 LockPersonality=true
 SystemCallArchitectures=native
+BindPaths=/var/www/
 BindPaths=/var/log/
 BindPaths=/var/run/php/
 BindPaths=/run/php/

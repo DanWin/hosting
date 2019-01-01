@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	if(isset($_POST['public']) && $_POST['public']==1){
 		$public_list=1;
 	}
-	if(isset($_POST['php']) && in_array($_POST['php'], PHP_VERSIONS)){
+	if(isset($_POST['php']) && array_key_exists($_POST['php'], PHP_VERSIONS)){
 		$php = $_POST['php'];
 	}
 	if(isset($_POST['autoindex']) && $_POST['autoindex']==1){

@@ -19,6 +19,7 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 </head><body>
 <h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
+<p>After the hack that took place on November 15th, the hosting is finally back. There are just a few more things that need to be done before I can enable account registration. Due to a temporary loss of motivation in mid-december I'm behind schedule by about 2 weeks as initially planned, but new year, new opportunity. Registrations will open soon, once the last necessary changes are done, stay tuned.</p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
 <ul>
@@ -26,13 +27,13 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <li>Chose between PHP <?php echo implode(', ', PHP_VERSIONS); ?> or no PHP support</li>
 <li>Nginx Webserver</li>
 <li>SQLite support</li>
-<li>1 MariaDB (MySQL) database</li>
+<li>MariaDB (MySQL) database support</li>
 <li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
 <li>Web-based file management</li>
 <li>FTP access</li>
 <li>SFTP access</li>
-<li>No disk quota, but please be fair about your disk usage</li>
-<li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet)</li>
+<li>No disk quota, but please be fair about your disk usage - quota will come</li>
+<li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet) - not yet working but will return in future</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion address</li>
