@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
-const DBHOST='127.0.0.1'; // Database host
+const DBHOST='localhost'; // Database host
 const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
@@ -15,7 +15,8 @@ const SERVERS=[ //servers and ports we are running on
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
 'd41d8cd98f00b204e9800998ecf8427e', //empty file
-'7ae7e9bac6be76f00e0d95347111f037' //default file
+'7ae7e9bac6be76f00e0d95347111f037', //default file
+'703fac6634bf637f942db8906092d0ab', //new default file
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
@@ -63,14 +64,14 @@ server {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME html/$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-hosting;
 		}
 	}
 	location /squirrelmail {
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-squirrelmail;
 		}
 	}
@@ -78,7 +79,7 @@ server {
 		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-phpmyadmin;
 		}
 	}
@@ -86,7 +87,7 @@ server {
 		root /usr/share/adminer;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-adminer;
 		}
 	}
@@ -415,9 +416,19 @@ function rewrite_nginx_config(PDO $db){
 }
 ";
 
-		file_put_contents("/etc/nginx/sites-enabled/hosted_sites", $nginx);
-		exec("service nginx reload");
 	}
+	file_put_contents("/etc/nginx/sites-enabled/hosted_sites", $nginx);
+	$nginx='';
+	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		$nginx.="server {
+	listen unix:/home/$tmp[system_account]/var/run/mysqld/mysqld.sock;
+	proxy_pass unix:/var/run/mysqld/mysqld.sock;
+}
+";
+	}
+	file_put_contents("/etc/nginx/streams-enabled/hosted_sites", $nginx);
+	exec("service nginx reload");
 }
 
 function rewrite_php_config(PDO $db, string $key){

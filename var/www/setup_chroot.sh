@@ -61,6 +61,7 @@ CHROOT_DIRECTORY_STRUCTURE=(
     '/usr/sbin'
     '/var'
     '/var/run'
+    '/var/run/mysqld'
 )
 BINARIES_GENERAL=(
     '/usr/lib/openssh/sftp-server'

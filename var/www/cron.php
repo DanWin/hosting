@@ -140,7 +140,7 @@ foreach($accounts as $account){
 	$drop_user->execute([$account[2]]);
 	$stmt->execute([$account[1]]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-		$db->exec("DROP DATABASE IF EXISTS `$tmp[0]`;");
+		$db->exec('DROP DATABASE IF EXISTS `'.preg_replace('/[^a-z0-9]/i', '', $tmp[0]).'`;');
 	}
 	$db->exec('FLUSH PRIVILEGES;');
 	//delete user from user database

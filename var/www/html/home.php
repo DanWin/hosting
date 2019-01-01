@@ -77,7 +77,7 @@ echo '<tr><th>Database</th><th>Host</th><th>User</th></tr>';
 $stmt=$db->prepare('SELECT mysql_database  FROM mysql_databases WHERE user_id=?;');
 $stmt->execute([$user['id']]);
 while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
-	echo "<tr><td>$mysql[mysql_database]</td><td>127.0.0.1</td><td>$user[mysql_user]</td></tr>";
+	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td></tr>";
 }
 echo '</table>';
 echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';

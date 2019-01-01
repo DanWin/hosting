@@ -35,7 +35,6 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
-	exec('/var/www/setup_chroot.sh /var/www');
 	echo "Database and files have successfully been set up\n";
 }else{
 	$version=$version->fetch(PDO::FETCH_NUM)[0];
@@ -122,8 +121,6 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 			// some software may break when absolute installation path changes, add symlinks to prevent that
 			symlink('.', '/home/'.$tmp['system_account'].'/home');
 			symlink('.', '/home/'.$tmp['system_account'].'/'.$tmp['system_account']);
-			exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
-			exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
 			$firstchar=substr($tmp['system_account'], 0, 1);
 			//delete config files
 			foreach(array_replace(PHP_VERSIONS, DISABLED_PHP_VERSIONS) as $v){
@@ -139,9 +136,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 			if(file_exists("/etc/nginx/sites-enabled/$tmp[system_account]")){
 				unlink("/etc/nginx/sites-enabled/$tmp[system_account]");
 			}
-			exec('/var/www/setup_chroot.sh /var/www');
 		}
-		$db->exec('UPDATE service_instances SET reload=1;');
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
@@ -235,11 +230,22 @@ php_admin_value[open_basedir] = /usr/share/adminer:/tmp
 		file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
 		exec("service php$version-fpm@default reload");
 	}
-	file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
-	exec("service nginx reload");
-	if(DBVERSION!=$version){
-		echo "Database and files have successfully been updated to the latest version\n";
-	}else{
-		echo "Database and files already up-to-date\n";
+	echo "Updating chroots, this might take a while…\n";
+	exec('/var/www/setup_chroot.sh /var/www');
+	$stmt=$db->query('SELECT system_account FROM users;');
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
+		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
 	}
+	file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
+	if(!file_exists("/etc/nginx/streams-enabled/")){
+		mkdir("/etc/nginx/streams-enabled/", 0755, true);
+	}
+	file_put_contents('/etc/nginx/streams-enabled/default', "server {
+	listen unix:/var/www/var/run/mysqld/mysqld.sock;
+	proxy_pass unix:/var/run/mysqld/mysqld.sock;
+}");
+	exec("service nginx reload");
+	$db->exec('UPDATE service_instances SET reload=1;');
+	echo "Done - Database and files have been updated to the latest version :)\n";
 }
