@@ -22,6 +22,4 @@ header("Content-disposition: filename=\"$type.log\"");
 header('Pragma: no-cache');
 header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
 header('Expires: 0');
-if(file_exists("/var/log/nginx/{$type}_$user[system_account].log$old")){
-	header("X-Accel-Redirect: /nginx/{$type}_$user[system_account].log$old");
-}
+header("X-Accel-Redirect: /nginx/{$type}_$user[system_account].log$old");
