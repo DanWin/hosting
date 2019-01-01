@@ -64,7 +64,7 @@ server {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME html$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-hosting;
 		}
 	}
@@ -419,7 +419,7 @@ function rewrite_nginx_config(PDO $db){
 	}
 	file_put_contents("/etc/nginx/sites-enabled/hosted_sites", $nginx);
 	$nginx='';
-	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
+	$stmt=$db->query("SELECT system_account FROM users WHERE id NOT IN (SELECT user_id FROM new_account) AND todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$nginx.="server {
 	listen unix:/home/$tmp[system_account]/var/run/mysqld/mysqld.sock;
