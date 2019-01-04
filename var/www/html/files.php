@@ -309,11 +309,11 @@ if($order==='A'){
 <th><a href="files.php?path=<?php echo $dir; ?>&amp;C=S&amp;O=<?php echo $sizeurl; ?>">Size</a></th>
 </tr>
 <tr><td colspan="4"><hr></td></tr>
-<tr><td></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>">Parent Directory</a></td></tr>
+<tr><td id="checkAllParent"></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>">Parent Directory</a></td></tr>
 <?php
 foreach($list as $element){
 	get_properties($element['name'], $icon, $element['size']);
-	echo '<tr><td><input type="checkbox" name="files[]" value="'.htmlspecialchars($element['name'])."\"></td><td class=\"$icon\"></td><td><a href=\"files.php?path=$dir".str_replace('%2F', '/', rawurlencode($element['name'])).'">'.htmlspecialchars($element['name']).'</a></td><td>'.date("Y-m-d H:i", $element['mtime'])."</td><td>$element[size]</td></tr>";
+	echo '<tr><td><input type="checkbox" class="fileCheck" name="files[]" value="'.htmlspecialchars($element['name'])."\"></td><td class=\"$icon\"></td><td><a href=\"files.php?path=$dir".str_replace('%2F', '/', rawurlencode($element['name'])).'">'.htmlspecialchars($element['name']).'</a></td><td>'.date("Y-m-d H:i", $element['mtime'])."</td><td>$element[size]</td></tr>";
 }
 ?>
 <tr><td colspan="4"><hr></td></tr>
@@ -323,6 +323,15 @@ foreach($list as $element){
 <input type="submit" name="edit" value="Edit">
 <input type="submit" name="unzip" value="Unzip"><br><br>
 </form>
+<script>
+document.getElementById('checkAllParent').innerHTML = '<input type="checkbox" onclick="toggle(this);">';
+function toggle(source) {
+  checkboxes = document.getElementsByClassName('fileCheck');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+</script>
 </body></html>
 <?php
 
