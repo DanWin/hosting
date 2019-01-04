@@ -309,7 +309,7 @@ if($order==='A'){
 <th><a href="files.php?path=<?php echo $dir; ?>&amp;C=S&amp;O=<?php echo $sizeurl; ?>">Size</a></th>
 </tr>
 <tr><td colspan="4"><hr></td></tr>
-<tr><td><input type="checkbox" onclick="toggle(this);"></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>">Parent Directory</a></td></tr>
+<tr><td id="checkAllParent"></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>">Parent Directory</a></td></tr>
 <?php
 foreach($list as $element){
 	get_properties($element['name'], $icon, $element['size']);
@@ -324,6 +324,7 @@ foreach($list as $element){
 <input type="submit" name="unzip" value="Unzip"><br><br>
 </form>
 <script>
+document.getElementById('checkAllParent').innerHTML = '<input type="checkbox" onclick="toggle(this);">';
 function toggle(source) {
   checkboxes = document.getElementsByClassName('fileCheck');
   for(var i=0, n=checkboxes.length;i<n;i++) {
