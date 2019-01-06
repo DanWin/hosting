@@ -107,4 +107,3 @@ Match User root
 
 Match Group www-data
         ChrootDirectory %h
-        ForceCommand internal-sftp
