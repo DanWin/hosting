@@ -48,7 +48,6 @@ cat /var/lib/tor/hidden_service/hostname
 
 Replace the default domain with your domain in the following files:
 ```
-/etc/nginx/sites-enabled/default
 /etc/postfix/sql/alias.cf
 /etc/postfix/sender_login_maps
 /etc/postfix/main.cf
