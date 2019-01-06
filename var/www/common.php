@@ -19,11 +19,12 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 '703fac6634bf637f942db8906092d0ab', //new default file
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
+const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-const DISABLED_PHP_VERSIONS=[];
-const PHP_VERSIONS=[4 => '7.3'];
-const DEFAULT_PHP_VERSION='7.3';
+const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
+const PHP_VERSIONS=[4 => '7.3']; //currently active php versions
+const DEFAULT_PHP_VERSION='7.3'; //default php version
 const PHP_CONFIG='memory_limit = 256M
 error_reporting = E_ALL
 post_max_size = 10G

@@ -102,6 +102,7 @@ BINARIES_GENERAL=(
     '/usr/bin/unzip'
     '/usr/bin/curl'
     '/usr/bin/rsync'
+    '/usr/bin/scp'
     '/usr/bin/wget'
     '/usr/bin/php7.3'
     '/usr/bin/mysql'

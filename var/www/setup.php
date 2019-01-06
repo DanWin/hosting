@@ -233,7 +233,10 @@ php_admin_value[open_basedir] = /usr/share/adminer:/tmp
 	echo "Updating chroots, this might take a while…\n";
 	exec('/var/www/setup_chroot.sh /var/www');
 	$stmt=$db->query('SELECT system_account FROM users;');
+	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		echo "Updating chroot for user $tmp[system_account]…\n";
+		exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
 		exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
 		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
 	}
