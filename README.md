@@ -10,7 +10,7 @@ The configuration was tested with a standard Debian sid and Ubuntu 16.04 LTS ins
 
 Uninstall packages that may interfere with this setup:
 ```
-apt-get purge apache2* resolvconf exim4*
+apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.service
 ```
 
 If you are on Ubuntu, add the following PPA:
