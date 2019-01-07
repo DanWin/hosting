@@ -105,19 +105,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		echo '<p style="color:red;">To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.</p>';
 		$ok=false;
 	}elseif($ok){
+		$mysql_user = add_mysql_user($db, $_POST['pass']);
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, substr("$onion.onion", 0, 32)]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user]);
 		$user_id = $db->lastInsertId();
-		$stmt=$db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
-		$stmt->execute([$user_id, substr($onion, 0, 32)]);
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
 		$stmt->execute([$user_id, $onion, $priv_key, $onion_version]);
-		$create_user=$db->prepare("CREATE USER ?@'%' IDENTIFIED BY ?;");
-		$create_user->execute([substr("$onion.onion", 0, 32), $_POST['pass']]);
-		$db->exec("CREATE DATABASE IF NOT EXISTS `" . substr($onion, 0, 32) . "`;");
-		$stmt=$db->prepare("GRANT ALL PRIVILEGES ON `" . substr($onion, 0, 32) . "`.* TO ?@'%';");
-		$stmt->execute([substr("$onion.onion", 0, 32)]);
-		$db->exec('FLUSH PRIVILEGES;');
+		add_user_db($db, $user_id);
 		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
 		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);
 		if(EMAIL_TO!==''){

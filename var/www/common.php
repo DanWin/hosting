@@ -101,6 +101,7 @@ server {
 	}
 }
 ';
+const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -467,4 +468,41 @@ php_admin_value[session.save_path] = /tmp
 		file_put_contents("/etc/php/$version/fpm/pool.d/$key/www.conf", $php);
 		exec("service php$version-fpm@$key restart");
 	}
+}
+
+function add_mysql_user(PDO $db, string $password) : string {
+	$mysql_user = '';
+	$stmt = $db->prepare('SELECT null FROM users WHERE mysql_user = ?;');
+	do {
+		$mysql_user = substr(preg_replace('/[^a-z0-9]/i', '', base64_encode(random_bytes(32))), 0, 32);
+		$stmt->execute([$mysql_user]);
+	} while($stmt->fetch());
+	$create_user = $db->prepare("CREATE USER ?@'%' IDENTIFIED BY ?;");
+	$create_user->execute([$mysql_user, $password]);
+	return $mysql_user;
+}
+
+function add_user_db(PDO $db, int $user_id) : ?string {
+	$mysql_db = '';
+	$stmt = $db->prepare('SELECT COUNT(*) FROM mysql_databases WHERE user_id = ?;');
+	$stmt->execute([$user_id]);
+	$count = $stmt->fetch(PDO::FETCH_NUM);
+	if($count[0]>=MAX_NUM_USER_DBS) {
+		return null;
+	}
+	$stmt = $db->prepare('SELECT null FROM mysql_databases WHERE mysql_database = ?;');
+	do {
+		$mysql_db = substr(preg_replace('/[^a-z0-9]/i', '', base64_encode(random_bytes(32))), 0, 32);
+		$stmt->execute([$mysql_db]);
+	} while($stmt->fetch());
+	$stmt = $db->prepare('INSERT INTO mysql_databases (user_id, mysql_database) VALUES (?, ?);');
+	$stmt->execute([$user_id, $mysql_db]);
+	$db->exec("CREATE DATABASE IF NOT EXISTS `" . $mysql_db . "`;");
+	$stmt = $db->prepare('SELECT mysql_user FROM users WHERE id = ?;');
+	$stmt->execute([$user_id]);
+	$user = $stmt->fetch(PDO::FETCH_ASSOC);
+	$stmt=$db->prepare("GRANT ALL PRIVILEGES ON `" . $mysql_db . "`.* TO ?@'%';");
+	$stmt->execute([$user['mysql_user']]);
+	$db->exec('FLUSH PRIVILEGES;');
+	return $mysql_db;
 }

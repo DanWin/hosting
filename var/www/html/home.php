@@ -7,11 +7,14 @@ try{
 }
 session_start();
 $user=check_login();
+if(isset($_REQUEST['action']) && $_REQUEST['action']==='add_db'){
+	add_user_db($db, $user['id']);
+}
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
-	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion=? AND users.id=? AND onions.enabled IN (0, 1);');
+	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
 	$stmt->execute([$_REQUEST['onion'], $user['id']]);
 	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
-		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion=?;');
+		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion = ?;');
 		$enabled = isset($_REQUEST['enabled']) ? 1 : 0;
 		$enable_smtp = isset($_REQUEST['enable_smtp']) ? 1 : 0;
 		$num_intros = intval($_REQUEST['num_intros']);
@@ -29,7 +32,7 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 			$max_streams = 65535;
 		}
 		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
-		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id=?');
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
 		$stmt->execute([substr($_REQUEST['onion'], 0, 1)]);
 	}
 }
@@ -46,7 +49,7 @@ echo "<p>Enter system account password to check your $user[system_account]@" . A
 echo '<h3>Domains</h3>';
 echo '<table border="1">';
 echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
-$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id=?;');
+$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"onion\" value=\"$onion[onion]\"><tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
@@ -68,18 +71,23 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	}else{
 		echo '<td>Unavailable</td>';
 	}
-	echo '</tr>';
+	echo '</tr></form>';
 }
 echo '</table>';
 echo '<h3>MySQL Database</h3>';
 echo '<table border="1">';
 echo '<tr><th>Database</th><th>Host</th><th>User</th></tr>';
-$stmt=$db->prepare('SELECT mysql_database  FROM mysql_databases WHERE user_id=?;');
+$stmt=$db->prepare('SELECT mysql_database FROM mysql_databases WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
+$count_dbs = 0;
 while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
+	++$count_dbs;
 	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td></tr>";
 }
 echo '</table>';
+if($count_dbs<MAX_NUM_USER_DBS){
+	echo '<p><form action="home.php" method="post"><button type="submit" name="action" value="add_db">Add new database</button></form></p>';
+}
 echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';
 echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration.</p>';
 echo '<h3>System Account</h3>';
