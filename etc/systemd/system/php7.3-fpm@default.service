@@ -22,13 +22,16 @@ ProtectKernelModules=true
 ProtectControlGroups=true
 LockPersonality=true
 SystemCallArchitectures=native
-BindPaths=/var/www/
 BindPaths=/var/log/
 BindPaths=/var/run/php/
 BindPaths=/run/php/
 BindPaths=/var/lib/php/sessions
 BindPaths=/var/local/squirrelmail/
+BindPaths=/var/www/
 InaccessiblePaths=/root/
+CPUQuota=100%
+MemoryHigh=25%
+MemoryMax=35%
 
 [Install]
 WantedBy=multi-user.target

@@ -26,6 +26,9 @@ BindPaths=/var/log/
 BindPaths=/var/run/php/
 BindPaths=/run/php/
 InaccessiblePaths=/root/
+CPUQuota=100%
+MemoryHigh=25%
+MemoryMax=35%
 
 [Install]
 WantedBy=multi-user.target
