@@ -315,7 +315,7 @@ if($tmp[6]==1){
 }else{
 	$socket='suspended';
 }
-		$torrc.="HiddenServiceDir /var/lib/tor-instances/$key/hidden_service_$tmp[0].onion/
+		$torrc.="HiddenServiceDir /var/lib/tor-instances/$key/hidden_service_$tmp[0].onion
 HiddenServiceNumIntroductionPoints $tmp[2]
 HiddenServiceVersion $tmp[4]
 HiddenServiceMaxStreamsCloseCircuit 1

@@ -99,6 +99,12 @@ foreach($onions as $onion){
 	$firstchar=substr($onion[0], 0, 1);
 	$reload[$firstchar]=true;
 	if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/")){
+		if(file_exists("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/authorized_clients/")){
+			foreach(glob("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/authorized_clients/*") as $file){
+				unlink($file);
+			}
+			rmdir("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/authorized_clients");
+		}
 		foreach(glob("/var/lib/tor-instances/$firstchar/hidden_service_$onion[0].onion/*") as $file){
 			unlink($file);
 		}
