@@ -154,6 +154,8 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 pid = /run/php/php$version-fpm-$instance.pid
 error_log = /var/log/php$version-fpm-$instance.log
 process_control_timeout = 10
+emergency_restart_threshold = 10
+emergency_restart_interval = 10m
 include=/etc/php/$version/fpm/pool.d/$instance/*.conf
 ";
 			file_put_contents("/etc/php/$version/fpm/php-fpm-$instance.conf", $fpm_config);
@@ -165,6 +167,8 @@ include=/etc/php/$version/fpm/pool.d/$instance/*.conf
 pid = /run/php/php$version-fpm.pid
 error_log = /var/log/php$version-fpm.log
 process_control_timeout = 10
+emergency_restart_threshold = 10
+emergency_restart_interval = 10m
 include=/etc/php/$version/fpm/pool.d/*.conf
 ";
 		file_put_contents("/etc/php/$version/fpm/php-fpm.conf", $fpm_config);
