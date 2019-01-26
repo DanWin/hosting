@@ -65,7 +65,7 @@ server {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME html$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-hosting;
 		}
 	}
@@ -80,7 +80,7 @@ server {
 		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-phpmyadmin;
 		}
 	}

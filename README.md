@@ -17,17 +17,25 @@ If you are on Ubuntu, add the following PPA:
 ```
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 ```
-On debian stable this may be worth a look: https://deb.sury.org/
+On debian this may be worth a look: https://deb.sury.org/
 
 To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
 
 To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
 
+Add yarn + nodejs to our repositories:
+```
+apt-key adv --recv 1655A0AB68576280
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list
+echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.list
+```
+
 The following command will install all required packages:
 ```
 apt-get --no-install-recommends install apt-transport-tor aspell clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables locales-all logrotate mariadb-server nano nginx-full postfix postfix-mysql \
 php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
-phpmyadmin php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget zip && apt-get --no-install-recommends install adminer
+php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip && apt-get --no-install-recommends install adminer
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
@@ -99,6 +107,19 @@ Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the 
 mount -o remount /home
 quotacheck -cu /home
 quotaon /home
+```
+For web base database administration, check out the latest phpmyadmin:
+```
+cd /var/www/html/ && git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ && cd phpmyadmin && composer install --no-dev && yarn
+```
+
+Once installed create a mysql user for phpmyadmin and cofigure it in `/var/www/html/phpmyadmin/config.inc.php` and fill `$cfg['blowfish_secret']` with random characters:
+```
+mysql
+CREATE USER 'phpmyadmin'@'%' IDENTIFIED BY 'MY_PASSWORD';
+GRANT ALL PRIVILEGES ON phpmyadmin.* TO 'phpmyadmin'@'%';
+FLUSH PRIVILEGES;
+quit
 ```
 
 For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
