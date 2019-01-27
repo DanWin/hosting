@@ -248,7 +248,7 @@ function send_captcha() {
 
 function check_login(){
 	global $db;
-	if(empty($_SESSION['csrf_token']){
+	if(empty($_SESSION['csrf_token'])){
 		$_SESSION['csrf_token']=sha1(uniqid());
 	}
 	if(empty($_SESSION['hosting_username'])){
