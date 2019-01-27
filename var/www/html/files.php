@@ -101,7 +101,7 @@ if(!empty($_REQUEST['path'])){
 	$dir=str_replace('..', '\.\.', $dir);
 	$dir=preg_replace('~//+~', '/', $dir);
 }else{
-	$dir='/';
+	$dir='/www/';
 }
 if(@!ftp_chdir($ftp, $dir)){
 	$dir=rtrim($dir, '/');
