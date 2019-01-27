@@ -125,28 +125,25 @@ if(@!ftp_chdir($ftp, $dir)){
 }
 
 if(!empty($_POST['mkdir']) && !empty($_POST['name'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
-		ftp_mkdir($ftp, $_POST['name']);
+	ftp_mkdir($ftp, $_POST['name']);
 }
 
 if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
-		$tmpfile='/tmp/'.uniqid();
-		touch($tmpfile);
-		ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
-		unlink($tmpfile);
+	$tmpfile='/tmp/'.uniqid();
+	touch($tmpfile);
+	ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
+	unlink($tmpfile);
 }
 
 if(!empty($_POST['delete']) && !empty($_POST['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	foreach($_POST['files'] as $file){
 		ftp_recursive_delete($ftp, $file);
@@ -154,9 +151,8 @@ if(!empty($_POST['delete']) && !empty($_POST['files'])){
 }
 
 if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	foreach($_POST['files'] as $old=>$new){
 		ftp_rename($ftp, $old, $new);
@@ -164,18 +160,16 @@ if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
 }
 
 if(!empty($_POST['rename']) && !empty($_POST['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	send_rename($dir);
 	exit;
 }
 
 if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $name=>$content){
@@ -186,14 +180,16 @@ if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
 }
 
 if(!empty($_POST['edit']) && !empty($_POST['files'])){
+	if($error=check_csrf_error()){
+		die($error);
+	}
 	send_edit($ftp, $dir);
 	exit;
 }
 
 if(!empty($_POST['unzip']) && !empty($_POST['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	$zip = new ZipArchive();
 	foreach($_POST['files'] as $file){
@@ -230,9 +226,8 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 
 
 if(!empty($_FILES['files'])){
-	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']){
-		echo 'Invalid CSRF token, please try again.';
-		exit;
+	if($error=check_csrf_error()){
+		die($error);
 	}
 	$c=count($_FILES['files']['name']);
 	for($i=0; $i<$c; ++$i){
@@ -308,7 +303,7 @@ $dir=htmlspecialchars($dir);
 </head><body>
 <h1>Index of <?php echo $dir; ?></h1>
 <?php if($dir!=='/'){ ?>
-<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf_token'] ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
+<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
 <?php
 }
 $fileurl='A';
@@ -326,7 +321,7 @@ if($order==='A'){
 }
 ?>
 <form action="files.php" method="post">
-<input type="hidden" name="csrf-token" value="<?= $_SESSION['csrf_token'] ?>">
+<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 <input type="submit" name="mkdir" value="Create directory">
 <input type="submit" name="mkfile" value="Create file">
 <input type="text" name="name"><br><br>
@@ -453,7 +448,7 @@ function send_rename($dir){
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
 	echo '<form action="files.php" method="post">';
-	echo '<input type="hidden" name="csrf-token" value="<'.$_SESSION['csrf_token'].'">';
+	echo '<input type="hidden" name="csrf_token" value="<'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
 	echo '<table>';
 	foreach($_POST['files'] as $file){
@@ -472,7 +467,7 @@ function send_edit($ftp, $dir){
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
 	echo '<form action="files.php" method="post">';
-	echo '<input type="hidden" name="csrf-token" value="<'.$_SESSION['csrf_token'].'">';
+	echo '<input type="hidden" name="csrf_token" value="<'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
 	echo '<table>';
 	$tmpfile='/tmp/'.uniqid();

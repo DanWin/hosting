@@ -7,10 +7,16 @@ try{
 }
 session_start();
 $user=check_login();
-if(isset($_REQUEST['action']) && $_REQUEST['action']==='add_db'){
+if(isset($_POST['action']) && $_POST['action']==='add_db'){
+	if($error=check_csrf_error()){
+		die($error);
+	}
 	add_user_db($db, $user['id']);
 }
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
+	if($error=check_csrf_error()){
+		die($error);
+	}
 	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
 	$stmt->execute([$_REQUEST['onion'], $user['id']]);
 	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
@@ -52,7 +58,7 @@ echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th
 $stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
-	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"onion\" value=\"$onion[onion]\"><tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
+	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"onion\" value=\"$onion[onion]\"><tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
 	if(isset($_REQUEST['show_priv'])){
 		echo "<pre>$onion[private_key]</pre>";
 	}else{
@@ -86,7 +92,7 @@ while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
 }
 echo '</table>';
 if($count_dbs<MAX_NUM_USER_DBS){
-	echo '<p><form action="home.php" method="post"><button type="submit" name="action" value="add_db">Add new database</button></form></p>';
+	echo '<p><form action="home.php" method="post"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><button type="submit" name="action" value="add_db">Add new database</button></form></p>';
 }
 echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';
 echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration.</p>';

@@ -21,6 +21,7 @@ $error=false;
 if($_SERVER['REQUEST_METHOD']==='POST' && isSet($_POST['pass']) && $_POST['pass']===ADMIN_PASSWORD){
 	if(!($error=check_captcha_error())){
 		$_SESSION['logged_in']=true;
+		$_SESSION['csrf_token']=sha1(uniqid());
 	}
 }
 if(empty($_SESSION['logged_in'])){
@@ -54,25 +55,30 @@ if(empty($_SESSION['logged_in'])){
 		echo '<tr><th>Username</th><th>Onion link</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td><td><input type=\"submit\" name=\"action\" value=\"edit\"></td></tr></form>";
+			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td><td><input type=\"submit\" name=\"action\" value=\"edit\"></td></tr></form>";
 		}
 		echo '</table>';
 	}elseif($_REQUEST['action']==='approve'){
 		if(!empty($_POST['onion'])){
-			$stmt=$db->prepare('UPDATE new_account INNER JOIN users ON (users.id=new_account.user_id) SET new_account.approved=1 WHERE users.onion=?;');
-			$stmt->execute([$_POST['onion']]);
-			echo '<p style="color:green;">Successfully approved</p>';
+			if($error=check_csrf_error()){
+				echo '<p style="color:red;">'.$error.'</p>';
+			}else{
+				$stmt=$db->prepare('UPDATE new_account INNER JOIN users ON (users.id=new_account.user_id) SET new_account.approved=1 WHERE users.onion=?;');
+				$stmt->execute([$_POST['onion']]);
+				echo '<p style="color:green;">Successfully approved</p>';
+			}
 		}
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion address</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) WHERE new_account.approved=0 ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td><td><input type=\"submit\" name=\"action\" value=\"approve\"><input type=\"submit\" name=\"action\" value=\"delete\"></td></tr></form>";
+			echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"onion\" value=\"$tmp[1]\"><tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td><td><input type=\"submit\" name=\"action\" value=\"approve\"><input type=\"submit\" name=\"action\" value=\"delete\"></td></tr></form>";
 		}
 		echo '</table>';
 	}elseif($_REQUEST['action']==='delete'){
 		echo '<p>Delete accouts:</p>';
 		echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\">";
+		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		if(isSet($_POST['onion'])){
 			echo htmlspecialchars($_POST['onion']);
@@ -80,7 +86,9 @@ if(empty($_SESSION['logged_in'])){
 		echo '" required autofocus></p>';
 		echo '<input type="submit" name="action" value="delete"></form><br>';
 		if(!empty($_POST['onion'])){
-			if(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
+			if($error=check_csrf_error()){
+				echo '<p style="color:red;">'.$error.'</p>';
+			}elseif(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
 				$stmt=$db->prepare('SELECT user_id FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
 				if($user_id=$stmt->fetch(PDO::FETCH_NUM)){
@@ -97,6 +105,7 @@ if(empty($_SESSION['logged_in'])){
 	}elseif($_REQUEST['action']==='suspend'){
 		echo '<p>Suspend hidden service:</p>';
 		echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\">";
+		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		if(isSet($_POST['onion'])){
 			echo htmlspecialchars($_POST['onion']);
@@ -104,7 +113,9 @@ if(empty($_SESSION['logged_in'])){
 		echo '" required autofocus></p>';
 		echo '<input type="submit" name="action" value="suspend"></form><br>';
 		if(!empty($_POST['onion'])){
-			if(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
+			if($error=check_csrf_error()){
+				echo '<p style="color:red;">'.$error.'</p>';
+			}elseif(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
 				$stmt=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
 				if($stmt->fetch(PDO::FETCH_NUM)){
@@ -123,6 +134,7 @@ if(empty($_SESSION['logged_in'])){
 	}elseif(in_array($_REQUEST['action'], ['edit', 'edit_2'], true)){
 		echo '<p>Edit hidden service:</p>';
 		echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\">";
+		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		if(isSet($_POST['onion'])){
 			echo htmlspecialchars($_POST['onion']);
@@ -130,7 +142,9 @@ if(empty($_SESSION['logged_in'])){
 		echo '" required autofocus></p>';
 		echo '<input type="submit" name="action" value="edit"></form><br>';
 		if(!empty($_POST['onion'])){
-			if(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
+			if($error=check_csrf_error()){
+				echo '<p style="color:red;">'.$error.'</p>';
+			}elseif(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $_POST['onion'], $match)){
 				if($_REQUEST['action']==='edit_2'){
 					$stmt=$db->prepare('SELECT version FROM onions WHERE onion=?;');
 					$stmt->execute([$match[1]]);
@@ -162,6 +176,7 @@ if(empty($_SESSION['logged_in'])){
 				$stmt->execute([$match[1]]);
 				if($onion=$stmt->fetch(PDO::FETCH_NUM)){
 					echo "<form action=\"$_SERVER[SCRIPT_NAME]\" method=\"POST\">";
+					echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 					echo '<table border="1"><tr><th>Onion</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
 					echo '<tr><td><input type="text" name="onion" size="15" value="'.$onion[0].'" required autofocus></td>';
 					echo '<td><label><input type="checkbox" name="enabled" value="1"';

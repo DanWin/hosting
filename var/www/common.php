@@ -248,6 +248,9 @@ function send_captcha() {
 
 function check_login(){
 	global $db;
+	if(empty($_SESSION['csrf_token']){
+		$_SESSION['csrf_token']=sha1(uniqid());
+	}
 	if(empty($_SESSION['hosting_username'])){
 		header('Location: login.php');
 		session_destroy();
@@ -505,4 +508,11 @@ function add_user_db(PDO $db, int $user_id) : ?string {
 	$stmt->execute([$user['mysql_user']]);
 	$db->exec('FLUSH PRIVILEGES;');
 	return $mysql_db;
+}
+
+function check_csrf_error(){
+	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
+		return 'Invalid CSRF token, please try again.';
+	}
+	return false;
 }

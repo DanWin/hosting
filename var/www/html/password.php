@@ -12,6 +12,9 @@ if(!isset($_REQUEST['type'])){
 }
 $msg='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
+	if($error=check_csrf_error()){
+		$msg.='<p style="color:red;">'.$error.'</p>';
+	}
 	if(!isset($_POST['pass']) || !password_verify($_POST['pass'], $user['password'])){
 		$msg.='<p style="color:red;">Wrong password.</p>';
 	}elseif(!isset($_POST['confirm']) || !isset($_POST['newpass']) || $_POST['newpass']!==$_POST['confirm']){
@@ -45,7 +48,7 @@ echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '</head><body>';
 echo $msg;
-echo '<form method="POST" action="password.php"><table>';
+echo '<form method="POST" action="password.php"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><table>';
 echo '<tr><td>Reset type:</td><td><select name="type">';
 echo '<option value="acc"';
 if($_REQUEST['type']==='acc'){
