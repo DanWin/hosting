@@ -53,6 +53,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 	if($ok){
 		$_SESSION['hosting_username']=$username;
+		$_SESSION['csrf_token']=sha1(uniqid());
 		session_write_close();
 		header('Location: home.php');
 		exit;
