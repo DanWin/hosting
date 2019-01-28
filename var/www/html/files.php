@@ -303,7 +303,7 @@ $dir=htmlspecialchars($dir);
 </head><body>
 <h1>Index of <?php echo $dir; ?></h1>
 <?php if($dir!=='/'){ ?>
-<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
+<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
 <?php
 }
 $fileurl='A';
@@ -321,7 +321,7 @@ if($order==='A'){
 }
 ?>
 <form action="files.php" method="post">
-<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+<input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <input type="submit" name="mkdir" value="Create directory">
 <input type="submit" name="mkfile" value="Create file">
 <input type="text" name="name"><br><br>
@@ -448,7 +448,7 @@ function send_rename($dir){
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
 	echo '<form action="files.php" method="post">';
-	echo '<input type="hidden" name="csrf_token" value="<'.$_SESSION['csrf_token'].'">';
+	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
 	echo '<table>';
 	foreach($_POST['files'] as $file){
@@ -467,7 +467,7 @@ function send_edit($ftp, $dir){
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
 	echo '<form action="files.php" method="post">';
-	echo '<input type="hidden" name="csrf_token" value="<'.$_SESSION['csrf_token'].'">';
+	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
 	echo '<table>';
 	$tmpfile='/tmp/'.uniqid();
