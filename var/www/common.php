@@ -65,6 +65,7 @@ server {
 		try_files $uri $uri/ =404;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-hosting;
 		}
@@ -72,6 +73,7 @@ server {
 	location /squirrelmail {
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT $document_root;
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.3-squirrelmail;
 		}
@@ -80,6 +82,7 @@ server {
 		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-phpmyadmin;
 		}
@@ -88,6 +91,7 @@ server {
 		root /usr/share/adminer;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT $document_root;
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-adminer;
 		}
@@ -398,6 +402,8 @@ function rewrite_nginx_config(PDO $db){
 			$php_location="
 		location ~ [^/]\.php(/|\$) {
 			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /www;
+			fastcgi_param SCRIPT_FILENAME /www\$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/$tmp[system_account];
 		}";
 		}else{
