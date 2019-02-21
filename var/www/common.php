@@ -516,6 +516,20 @@ function add_user_db(PDO $db, int $user_id) : ?string {
 	return $mysql_db;
 }
 
+function del_user_db(PDO $db, int $user_id, string $mysql_db) {
+	$stmt = $db->prepare('SELECT mysql_user FROM users WHERE id = ?;');
+	$stmt->execute([$user_id]);
+	$user = $stmt->fetch(PDO::FETCH_ASSOC);
+	$stmt = $db->prepare('SELECT null FROM mysql_databases WHERE user_id = ? AND mysql_database = ?;');
+	$stmt->execute([$user_id, $mysql_db]);
+	if($stmt->fetch()){
+		$db->exec('REVOKE ALL PRIVILEGES ON `'.preg_replace('/[^a-z0-9]/i', '', $mysql_db)."`.* FROM '".preg_replace('/[^a-z0-9]/i', '', $user['mysql_user'])."'@'%';");
+		$db->exec('DROP DATABASE IF EXISTS `'.preg_replace('/[^a-z0-9]/i', '', $mysql_db).'`;');
+		$stmt = $db->prepare('DELETE FROM mysql_databases WHERE user_id = ? AND mysql_database = ?;');
+		$stmt->execute([$user_id, $mysql_db]);
+	}
+}
+
 function check_csrf_error(){
 	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
 		return 'Invalid CSRF token, please try again.';

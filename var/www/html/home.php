@@ -13,6 +13,31 @@ if(isset($_POST['action']) && $_POST['action']==='add_db'){
 	}
 	add_user_db($db, $user['id']);
 }
+if(isset($_POST['action']) && $_POST['action']==='del_db' && !empty($_POST['db'])){
+	if($error=check_csrf_error()){
+		die($error);
+	} ?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Delete database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head><body>
+<p>This will delete your database <?php echo htmlspecialchars($_POST['db']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
+<form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+<input type="hidden" name="db" value="<?php echo htmlspecialchars($_POST['db']); ?>">
+<button type="submit" name="action" value="del_db_2">Yes, delete</button>
+</form>
+<p><a href="home.php">No, don't delete.</a></p>
+</body></html><?php
+exit;
+}
+if(isset($_POST['action']) && $_POST['action']==='del_db_2' && !empty($_POST['db'])){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	del_user_db($db, $user['id'], $_POST['db']);
+}
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
 	if($error=check_csrf_error()){
 		die($error);
@@ -82,13 +107,17 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 echo '</table>';
 echo '<h3>MySQL Database</h3>';
 echo '<table border="1">';
-echo '<tr><th>Database</th><th>Host</th><th>User</th></tr>';
+echo '<tr><th>Database</th><th>Host</th><th>User</th><th>Action</th></tr>';
 $stmt=$db->prepare('SELECT mysql_database FROM mysql_databases WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
 $count_dbs = 0;
 while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
 	++$count_dbs;
-	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td></tr>";
+	echo '<form action="home.php" method="post">';
+	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
+	echo '<input type="hidden" name="db" value="'.$mysql['mysql_database'].'">';
+	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td><td><button type=\"submit\" name=\"action\" value=\"del_db\">Delete</button></td></tr>";
+	echo '</form>';
 }
 echo '</table>';
 if($count_dbs<MAX_NUM_USER_DBS){
