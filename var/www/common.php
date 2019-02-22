@@ -106,6 +106,7 @@ server {
 }
 ';
 const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
+const MAX_NUM_USER_ONIONS = 3; //maximum number of onion domains a user may have
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -523,10 +524,20 @@ function del_user_db(PDO $db, int $user_id, string $mysql_db) {
 	$stmt = $db->prepare('SELECT null FROM mysql_databases WHERE user_id = ? AND mysql_database = ?;');
 	$stmt->execute([$user_id, $mysql_db]);
 	if($stmt->fetch()){
-		$db->exec('REVOKE ALL PRIVILEGES ON `'.preg_replace('/[^a-z0-9]/i', '', $mysql_db)."`.* FROM '".preg_replace('/[^a-z0-9]/i', '', $user['mysql_user'])."'@'%';");
+		$stmt = $db->prepare('REVOKE ALL PRIVILEGES ON `'.preg_replace('/[^a-z0-9]/i', '', $mysql_db)."`.* FROM ?@'%';");
+		$stmt->execute([$user['mysql_user']]);
 		$db->exec('DROP DATABASE IF EXISTS `'.preg_replace('/[^a-z0-9]/i', '', $mysql_db).'`;');
 		$stmt = $db->prepare('DELETE FROM mysql_databases WHERE user_id = ? AND mysql_database = ?;');
 		$stmt->execute([$user_id, $mysql_db]);
+	}
+}
+
+function del_user_onion(PDO $db, int $user_id, string $onion) {
+	$stmt = $db->prepare('SELECT null FROM onions WHERE user_id = ? AND onion = ? AND enabled IN (0, 1);');
+	$stmt->execute([$user_id, $onion]);
+	if($stmt->fetch()){
+		$stmt = $db->prepare("UPDATE onions SET enabled='-1' WHERE user_id = ? AND onion = ?;");
+		$stmt->execute([$user_id, $onion]);
 	}
 }
 

@@ -38,6 +38,78 @@ if(isset($_POST['action']) && $_POST['action']==='del_db_2' && !empty($_POST['db
 	}
 	del_user_db($db, $user['id'], $_POST['db']);
 }
+if(isset($_POST['action']) && $_POST['action']==='del_onion' && !empty($_POST['onion'])){
+	if($error=check_csrf_error()){
+		die($error);
+	} ?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Delete onion domain</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head><body>
+<p>This will delete your onion domain <?php echo htmlspecialchars($_POST['onion']); ?>.onion and all data asociated with it. It can't be un-done. Are you sure?</p>
+<form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+<input type="hidden" name="onion" value="<?php echo htmlspecialchars($_POST['onion']); ?>">
+<button type="submit" name="action" value="del_onion_2">Yes, delete</button>
+</form>
+<p><a href="home.php">No, don't delete.</a></p>
+</body></html><?php
+exit;
+}
+if(isset($_POST['action']) && $_POST['action']==='add_onion'){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	$ok = true;
+	if(isset($_REQUEST['onion_type']) && $_REQUEST['onion_type']==='custom' && isset($_REQUEST['private_key']) && !empty(trim($_REQUEST['private_key']))){
+		$priv_key = trim($_REQUEST['private_key']);
+		$data = private_key_to_onion($priv_key);
+		$onion = $data['onion'];
+		$onion_version = $data['version'];
+		if(!$data['ok']){
+			$msg = "<p style=\"color:red;\">$data[message]</p>";
+			$ok = false;
+		} else {
+			$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
+			$check->execute([$onion]);
+			if($check->fetch(PDO::FETCH_NUM)){
+				$msg = '<p style="color:red;">Error onion already exists.</p>';
+				$ok = false;
+			}
+		}
+	}else{
+		$onion_version = 3;
+		if(isset($_REQUEST['onion_type']) && in_array($_REQUEST['onion_type'], [2, 3])){
+			$onion_version = $_REQUEST['onion_type'];
+		}
+		$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
+		do{
+			$data = generate_new_onion($onion_version);
+			$priv_key = $data['priv_key'];
+			$onion = $data['onion'];
+			$onion_version = $data['version'];
+			$check->execute([$onion]);
+		}while($check->fetch(PDO::FETCH_NUM));
+	}
+	$priv_key=trim(str_replace("\r", '', $priv_key));
+	$stmt = $db->prepare('SELECT COUNT(*) FROM onions WHERE user_id = ?;');
+	$stmt->execute([$user['id']]);
+	$count = $stmt->fetch(PDO::FETCH_NUM);
+	if($count[0]>=MAX_NUM_USER_ONIONS) {
+		$ok = false;
+	}
+	if($ok){
+		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled) VALUES (?, ?, ?, ?, 2);');
+		$stmt->execute([$user['id'], $onion, $priv_key, $onion_version]);
+	}
+}
+if(isset($_POST['action']) && $_POST['action']==='del_onion_2' && !empty($_POST['onion'])){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	del_user_onion($db, $user['id'], $_POST['onion']);
+}
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
 	if($error=check_csrf_error()){
 		die($error);
@@ -74,15 +146,21 @@ echo '<title>Daniel\'s Hosting - Dashboard</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+echo '<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>';
 echo '</head><body>';
 echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a target=\"_blank\" href=\"files.php\">FileManager</a> | <a href=\"delete.php\">Delete account</a></p>";
+if(!empty($msg)){
+	echo $msg;
+}
 echo "<p>Enter system account password to check your $user[system_account]@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[system_account]\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
 echo '<h3>Domains</h3>';
 echo '<table border="1">';
-echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
+echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Action</th></tr>';
 $stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
+$count_onions = 0;
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
+	++$count_onions;
 	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"onion\" value=\"$onion[onion]\"><tr><td><a href=\"http://$onion[onion].onion\" target=\"_blank\">$onion[onion].onion</a></td><td>";
 	if(isset($_REQUEST['show_priv'])){
 		echo "<pre>$onion[private_key]</pre>";
@@ -98,11 +176,29 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '<td><input type="number" name="num_intros" min="3" max="20" value="'.$onion['num_intros'].'"></td>';
 	echo '<td><input type="number" name="max_streams" min="0" max="65535" value="'.$onion['max_streams'].'"></td>';
 	if(in_array($onion['enabled'], [0, 1])){
-		echo '<td><button type="submit" name="action" value="edit">Save</button></td>';
+		echo '<td><button type="submit" name="action" value="edit">Save</button>';
+		echo '<button type="submit" name="action" value="del_onion">Delete</button></td>';
 	}else{
 		echo '<td>Unavailable</td>';
 	}
 	echo '</tr></form>';
+}
+if($count_onions<MAX_NUM_USER_ONIONS){
+	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+	echo '<tr><td colspan="6">Add additional hidden service:<br>';
+	echo '<label><input type="radio" name="onion_type" value="3"';
+	echo (!isset($_POST['onion_type']) || isset($_POST['onion_type']) && $_POST['onion_type']==3) ? ' checked' : '';
+	echo '>Random v3 Address</label>';
+	echo '<label><input type="radio" name="onion_type" value="2"';
+	echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : '';
+	echo '>Random v2 Address</label>';
+	echo '<label><input id="custom_onion" type="radio" name="onion_type" value="custom"';
+	echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : '';
+	echo '>Custom private key';
+	echo '<textarea id="private_key" name="private_key" rows="5" cols="28">';
+	echo isset($_REQUEST['private_key']) ? htmlspecialchars($_REQUEST['private_key']) : '';
+	echo '</textarea>';
+	echo '</label></td><td><button type="submit" name="action" value="add_onion">Add onion</button></td></tr></form>';
 }
 echo '</table>';
 echo '<h3>MySQL Database</h3>';
