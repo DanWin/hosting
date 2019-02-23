@@ -110,7 +110,46 @@ if(isset($_POST['action']) && $_POST['action']==='del_onion_2' && !empty($_POST[
 	}
 	del_user_onion($db, $user['id'], $_POST['onion']);
 }
-if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit'){
+if(isset($_POST['action']) && $_POST['action']==='add_domain' && !empty($_POST['domain'])){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	$error = add_user_domain($db, $user['id'], $_POST['domain']);
+	if(!empty($error)){
+		$msg = "<p style=\"color:red;\">$error</p>";
+	}else{
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
+		$stmt->execute([substr($user['system_account'], 0, 1)]);
+	}
+}
+if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['domain'])){
+	if($error=check_csrf_error()){
+		die($error);
+	} ?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Delete domain</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head><body>
+<p>This will delete your domain <?php echo htmlspecialchars($_POST['domain']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
+<form method="post" action="home2.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+<input type="hidden" name="domain" value="<?php echo htmlspecialchars($_POST['domain']); ?>">
+<button type="submit" name="action" value="del_domain_2">Yes, delete</button>
+</form>
+<p><a href="home.php">No, don't delete.</a></p>
+</body></html><?php
+exit;
+}
+if(isset($_POST['action']) && $_POST['action']==='del_domain_2' && !empty($_POST['domain'])){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	del_user_domain($db, $user['id'], $_POST['domain']);
+	$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
+	$stmt->execute([substr($user['system_account'], 0, 1)]);
+}
+if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit_onion'){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -139,6 +178,20 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 		$stmt->execute([substr($_REQUEST['onion'], 0, 1)]);
 	}
 }
+if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='edit_domain'){
+	if($error=check_csrf_error()){
+		die($error);
+	}
+	$stmt=$db->prepare('SELECT null FROM domains WHERE domain = ? AND user_id = ? AND enabled IN (0, 1);');
+	$stmt->execute([$_POST['domain'], $user['id']]);
+	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
+		$stmt=$db->prepare('UPDATE domains SET enabled = ? WHERE domain = ?;');
+		$enabled = isset($_POST['enabled']) ? 1 : 0;
+		$stmt->execute([$enabled, $_POST['domain']]);
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
+		$stmt->execute([substr($user['system_account'], 0, 1)]);
+	}
+}
 
 header('Content-Type: text/html; charset=UTF-8');
 echo '<!DOCTYPE html><html><head>';
@@ -153,7 +206,7 @@ if(!empty($msg)){
 	echo $msg;
 }
 echo "<p>Enter system account password to check your $user[system_account]@" . ADDRESS . " mail:</td><td><form action=\"squirrelmail/src/redirect.php\" method=\"post\" target=\"_blank\"><input type=\"hidden\" name=\"login_username\" value=\"$user[system_account]\"><input type=\"password\" name=\"secretkey\"><input type=\"submit\" value=\"Login to webmail\"></form></p>";
-echo '<h3>Domains</h3>';
+echo '<h3>Onion domains</h3>';
 echo '<table border="1">';
 echo '<tr><th>Onion</th><th>Private key</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Action</th></tr>';
 $stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
@@ -176,7 +229,7 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '<td><input type="number" name="num_intros" min="3" max="20" value="'.$onion['num_intros'].'"></td>';
 	echo '<td><input type="number" name="max_streams" min="0" max="65535" value="'.$onion['max_streams'].'"></td>';
 	if(in_array($onion['enabled'], [0, 1])){
-		echo '<td><button type="submit" name="action" value="edit">Save</button>';
+		echo '<td><button type="submit" name="action" value="edit_onion">Save</button>';
 		echo '<button type="submit" name="action" value="del_onion">Delete</button></td>';
 	}else{
 		echo '<td>Unavailable</td>';
@@ -201,6 +254,36 @@ if($count_onions<MAX_NUM_USER_ONIONS){
 	echo '</label></td><td><button type="submit" name="action" value="add_onion">Add onion</button></td></tr></form>';
 }
 echo '</table>';
+echo '<h3>Clearnet domains</h3>';
+echo '<table border="1">';
+echo '<tr><th>Domain</th><th>Enabled</th><th>Action</th></tr>';
+$stmt=$db->prepare('SELECT domain, enabled FROM domains WHERE user_id = ?;');
+$stmt->execute([$user['id']]);
+$count_domains = 0;
+while($domain=$stmt->fetch(PDO::FETCH_ASSOC)){
+	++$count_domains;
+	echo "<form action=\"home2.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"domain\" value=\"$domain[domain]\"><tr><td><a href=\"https://$domain[domain]\" target=\"_blank\">$domain[domain]</a></td>";
+	echo '<td><label><input type="checkbox" name="enabled" value="1"';
+	echo $domain['enabled'] ? ' checked' : '';
+	echo '>Enabled</label></td>';
+	if(in_array($domain['enabled'], [0, 1])){
+		echo '<td><button type="submit" name="action" value="edit_domain">Save</button>';
+		echo '<button type="submit" name="action" value="del_domain">Delete</button></td>';
+	}else{
+		echo '<td>Unavailable</td>';
+	}
+	echo '</tr></form>';
+}
+if($count_domains<MAX_NUM_USER_DOMAINS){
+	echo "<form action=\"home2.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+	echo '<tr><td colspan="2">Add additional domain:<br>';
+	echo '<input type="text" name="domain" value="';
+	echo isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+	echo '">';
+	echo '</td><td><button type="submit" name="action" value="add_domain">Add domain</button></td></tr></form>';
+}
+echo '</table>';
+echo '<p>To enable your clearnet domain, edit your DNS settings and enter 116.202.17.147 as your A record and 2a01:4f8:c010:d56::1 as your AAAA record. Once you have modified your DNS settings, <a href="https://danwin1210.me/contact.php" target="_blank">contact me</a> to configure the SSL certificate. You may also use any subdomain of danwin1210.me, like yoursite.danwin1210.me</p>';
 echo '<h3>MySQL Database</h3>';
 echo '<table border="1">';
 echo '<tr><th>Database</th><th>Host</th><th>User</th><th>Action</th></tr>';

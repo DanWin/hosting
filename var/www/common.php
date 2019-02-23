@@ -5,7 +5,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=12; //database layout version
+const DBVERSION=13; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
@@ -107,6 +107,7 @@ server {
 ';
 const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
 const MAX_NUM_USER_ONIONS = 3; //maximum number of onion domains a user may have
+const MAX_NUM_USER_DOMAINS = 3; //maximum number of clearnet domains a user may have
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -397,6 +398,7 @@ function ed25519_seckey_expand(string $seed) : string {
 
 function rewrite_nginx_config(PDO $db){
 	$nginx='';
+	// onions
 	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		if($tmp['php']>0){
@@ -412,10 +414,41 @@ function rewrite_nginx_config(PDO $db){
 		}
 		$autoindex = $tmp['autoindex'] ? 'on' : 'off';
 		$nginx.="server {
-	listen [::]:80;
 	listen unix:/var/run/nginx/$tmp[system_account];
 	root /home/$tmp[system_account]/www;
 	server_name $tmp[onion].onion *.$tmp[onion].onion;
+	access_log /var/log/nginx/access_$tmp[system_account].log custom buffer=4k flush=1m;
+	access_log /home/$tmp[system_account]/logs/access.log custom buffer=4k flush=1m;
+	error_log /var/log/nginx/error_$tmp[system_account].log notice;
+	error_log /home/$tmp[system_account]/logs/error.log notice;
+	disable_symlinks on from=/home/$tmp[system_account];
+	autoindex $autoindex;
+	location / {
+		try_files \$uri \$uri/ =404;$php_location
+	}
+}
+";
+
+	}
+	// clearnet domains
+	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, domains.domain FROM users INNER JOIN domains ON (domains.user_id=users.id) WHERE domains.enabled = 1 AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete != 1;");
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		if($tmp['php']>0){
+			$php_location="
+		location ~ [^/]\.php(/|\$) {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /www;
+			fastcgi_param SCRIPT_FILENAME /www\$fastcgi_script_name;
+			fastcgi_pass unix:/run/php/$tmp[system_account];
+		}";
+		}else{
+			$php_location='';
+		}
+		$autoindex = $tmp['autoindex'] ? 'on' : 'off';
+		$nginx.="server {
+	listen [::]:80;
+	root /home/$tmp[system_account]/www;
+	server_name $tmp[domain];
 	access_log /var/log/nginx/access_$tmp[system_account].log custom buffer=4k flush=1m;
 	access_log /home/$tmp[system_account]/logs/access.log custom buffer=4k flush=1m;
 	error_log /var/log/nginx/error_$tmp[system_account].log notice;
@@ -538,6 +571,39 @@ function del_user_onion(PDO $db, int $user_id, string $onion) {
 	if($stmt->fetch()){
 		$stmt = $db->prepare("UPDATE onions SET enabled='-1' WHERE user_id = ? AND onion = ?;");
 		$stmt->execute([$user_id, $onion]);
+	}
+}
+
+function add_user_domain(PDO $db, int $user_id, string $domain) : string {
+	$domain = strtolower($domain);
+	if(strlen($domain) > 255){
+		return 'Domain can\'t be longer than 255 characters';
+	}
+	$parts = explode('.', $domain);
+	if(count($parts) < 2){
+		return 'Invalid domain';
+	}
+	foreach($parts as $part){
+		if(!preg_match('/^([0-9a-z][0-9a-z\-]*[0-9a-z]|[0-9a-z])$/', $part)){
+			return 'Invalid domain';
+		}
+	}
+	$stmt = $db->prepare('SELECT null FROM domains WHERE domain = ?;');
+	$stmt->execute([$domain]);
+	if($stmt->fetch()){
+		return 'This domain already exists!';
+	}
+	$stmt = $db->prepare("INSERT INTO domains (user_id, domain, enabled) VALUES (?, ?, 1);");
+	$stmt->execute([$user_id, $domain]);
+	return '';
+}
+
+function del_user_domain(PDO $db, int $user_id, string $domain) {
+	$stmt = $db->prepare('SELECT null FROM domains WHERE user_id = ? AND domain = ? AND enabled IN (0, 1);');
+	$stmt->execute([$user_id, $domain]);
+	if($stmt->fetch()){
+		$stmt = $db->prepare("DELETE FROM domains WHERE user_id = ? AND domain = ?;");
+		$stmt->execute([$user_id, $domain]);
 	}
 }
 
