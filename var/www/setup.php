@@ -140,17 +140,18 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
-	foreach(PHP_VERSIONS as $version){
-		if(!file_exists("/etc/php/$version/fpm/conf.d/")){
-			mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
-		}
-		file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.ini", PHP_CONFIG);
-		if(!file_exists("/etc/php/$version/cli/conf.d/")){
-			mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
-		}
-		file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.ini", PHP_CONFIG);
-		foreach(SERVICE_INSTANCES as $instance){
-			$fpm_config = "[global]
+}
+foreach(PHP_VERSIONS as $version){
+	if(!file_exists("/etc/php/$version/fpm/conf.d/")){
+		mkdir("/etc/php/$version/fpm/conf.d/", 0755, true);
+	}
+	file_put_contents("/etc/php/$version/fpm/conf.d/99-hosting.ini", PHP_CONFIG);
+	if(!file_exists("/etc/php/$version/cli/conf.d/")){
+		mkdir("/etc/php/$version/cli/conf.d/", 0755, true);
+	}
+	file_put_contents("/etc/php/$version/cli/conf.d/99-hosting.ini", PHP_CONFIG);
+	foreach(SERVICE_INSTANCES as $instance){
+		$fpm_config = "[global]
 pid = /run/php/php$version-fpm-$instance.pid
 error_log = /var/log/php$version-fpm-$instance.log
 process_control_timeout = 10
@@ -158,12 +159,12 @@ emergency_restart_threshold = 10
 emergency_restart_interval = 10m
 include=/etc/php/$version/fpm/pool.d/$instance/*.conf
 ";
-			file_put_contents("/etc/php/$version/fpm/php-fpm-$instance.conf", $fpm_config);
-			if(!file_exists("/etc/php/$version/fpm/pool.d/$instance/")){
-				mkdir("/etc/php/$version/fpm/pool.d/$instance/", 0755, true);
-			}
+		file_put_contents("/etc/php/$version/fpm/php-fpm-$instance.conf", $fpm_config);
+		if(!file_exists("/etc/php/$version/fpm/pool.d/$instance/")){
+			mkdir("/etc/php/$version/fpm/pool.d/$instance/", 0755, true);
 		}
-		$fpm_config = "[global]
+	}
+	$fpm_config = "[global]
 pid = /run/php/php$version-fpm.pid
 error_log = /var/log/php$version-fpm.log
 process_control_timeout = 10
@@ -171,8 +172,8 @@ emergency_restart_threshold = 10
 emergency_restart_interval = 10m
 include=/etc/php/$version/fpm/pool.d/*.conf
 ";
-		file_put_contents("/etc/php/$version/fpm/php-fpm.conf", $fpm_config);
-		$pool_config = "[hosting]
+	file_put_contents("/etc/php/$version/fpm/php-fpm.conf", $fpm_config);
+	$pool_config = "[hosting]
 user = www-data
 group = www-data
 listen = /run/php/$version-hosting
@@ -232,31 +233,30 @@ pm.max_spare_servers = 3
 php_admin_value[mysqli.allow_persistent] = On
 php_admin_value[open_basedir] = /usr/share/adminer:/tmp
 ";
-		if(!file_exists("/etc/php/$version/fpm/pool.d/")){
-			mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
-		}
-		file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
-		exec("service php$version-fpm@default reload");
+	if(!file_exists("/etc/php/$version/fpm/pool.d/")){
+		mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
 	}
-	echo "Updating chroots, this might take a while…\n";
-	exec('/var/www/setup_chroot.sh /var/www');
-	$stmt=$db->query('SELECT system_account FROM users;');
-	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
-	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
-		echo "Updating chroot for user $tmp[system_account]…\n";
-		exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
-		exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
-		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
-	}
-	file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
-	if(!file_exists("/etc/nginx/streams-enabled/")){
-		mkdir("/etc/nginx/streams-enabled/", 0755, true);
-	}
-	file_put_contents('/etc/nginx/streams-enabled/default', "server {
+	file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
+	exec("service php$version-fpm@default reload");
+}
+echo "Updating chroots, this might take a while…\n";
+exec('/var/www/setup_chroot.sh /var/www');
+$stmt=$db->query('SELECT system_account FROM users;');
+$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
+while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+	echo "Updating chroot for user $tmp[system_account]…\n";
+	exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
+	exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
+	exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
+}
+file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
+if(!file_exists("/etc/nginx/streams-enabled/")){
+	mkdir("/etc/nginx/streams-enabled/", 0755, true);
+}
+file_put_contents('/etc/nginx/streams-enabled/default', "server {
 	listen unix:/var/www/var/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
-	exec("service nginx reload");
-	$db->exec('UPDATE service_instances SET reload=1;');
-	echo "Done - Database and files have been updated to the latest version :)\n";
-}
+exec("service nginx reload");
+$db->exec('UPDATE service_instances SET reload=1;');
+echo "Done - Database and files have been updated to the latest version :)\n";
