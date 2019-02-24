@@ -133,7 +133,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head><body>
 <p>This will delete your domain <?php echo htmlspecialchars($_POST['domain']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
-<form method="post" action="home2.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+<form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <input type="hidden" name="domain" value="<?php echo htmlspecialchars($_POST['domain']); ?>">
 <button type="submit" name="action" value="del_domain_2">Yes, delete</button>
 </form>
@@ -262,7 +262,7 @@ $stmt->execute([$user['id']]);
 $count_domains = 0;
 while($domain=$stmt->fetch(PDO::FETCH_ASSOC)){
 	++$count_domains;
-	echo "<form action=\"home2.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"domain\" value=\"$domain[domain]\"><tr><td><a href=\"https://$domain[domain]\" target=\"_blank\">$domain[domain]</a></td>";
+	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"domain\" value=\"$domain[domain]\"><tr><td><a href=\"https://$domain[domain]\" target=\"_blank\">$domain[domain]</a></td>";
 	echo '<td><label><input type="checkbox" name="enabled" value="1"';
 	echo $domain['enabled'] ? ' checked' : '';
 	echo '>Enabled</label></td>';
@@ -275,7 +275,7 @@ while($domain=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '</tr></form>';
 }
 if($count_domains<MAX_NUM_USER_DOMAINS){
-	echo "<form action=\"home2.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 	echo '<tr><td colspan="2">Add additional domain:<br>';
 	echo '<input type="text" name="domain" value="';
 	echo isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
