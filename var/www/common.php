@@ -79,7 +79,6 @@ server {
 		}
 	}
 	location /phpmyadmin {
-		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
