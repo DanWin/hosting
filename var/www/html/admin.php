@@ -63,7 +63,7 @@ if(empty($_SESSION['logged_in'])){
 			if($error=check_csrf_error()){
 				echo '<p style="color:red;">'.$error.'</p>';
 			}else{
-				$stmt=$db->prepare('UPDATE new_account INNER JOIN users ON (users.id=new_account.user_id) SET new_account.approved=1 WHERE users.onion=?;');
+				$stmt=$db->prepare('UPDATE new_account INNER JOIN onions ON (onions.user_id=new_account.user_id) SET new_account.approved=1 WHERE onions.onion=?;');
 				$stmt->execute([$_POST['onion']]);
 				echo '<p style="color:green;">Successfully approved</p>';
 			}
