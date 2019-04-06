@@ -254,36 +254,38 @@ if($count_onions<MAX_NUM_USER_ONIONS){
 	echo '</label></td><td><button type="submit" name="action" value="add_onion">Add onion</button></td></tr></form>';
 }
 echo '</table>';
-echo '<h3>Clearnet domains</h3>';
-echo '<table border="1">';
-echo '<tr><th>Domain</th><th>Enabled</th><th>Action</th></tr>';
-$stmt=$db->prepare('SELECT domain, enabled FROM domains WHERE user_id = ?;');
-$stmt->execute([$user['id']]);
-$count_domains = 0;
-while($domain=$stmt->fetch(PDO::FETCH_ASSOC)){
-	++$count_domains;
-	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"domain\" value=\"$domain[domain]\"><tr><td><a href=\"https://$domain[domain]\" target=\"_blank\">$domain[domain]</a></td>";
-	echo '<td><label><input type="checkbox" name="enabled" value="1"';
-	echo $domain['enabled'] ? ' checked' : '';
-	echo '>Enabled</label></td>';
-	if(in_array($domain['enabled'], [0, 1])){
-		echo '<td><button type="submit" name="action" value="edit_domain">Save</button>';
-		echo '<button type="submit" name="action" value="del_domain">Delete</button></td>';
-	}else{
-		echo '<td>Unavailable</td>';
+if(MAX_NUM_USER_DOMAINS>0){
+	echo '<h3>Clearnet domains</h3>';
+	echo '<table border="1">';
+	echo '<tr><th>Domain</th><th>Enabled</th><th>Action</th></tr>';
+	$stmt=$db->prepare('SELECT domain, enabled FROM domains WHERE user_id = ?;');
+	$stmt->execute([$user['id']]);
+	$count_domains = 0;
+	while($domain=$stmt->fetch(PDO::FETCH_ASSOC)){
+		++$count_domains;
+		echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\"><input type=\"hidden\" name=\"domain\" value=\"$domain[domain]\"><tr><td><a href=\"https://$domain[domain]\" target=\"_blank\">$domain[domain]</a></td>";
+		echo '<td><label><input type="checkbox" name="enabled" value="1"';
+		echo $domain['enabled'] ? ' checked' : '';
+		echo '>Enabled</label></td>';
+		if(in_array($domain['enabled'], [0, 1])){
+			echo '<td><button type="submit" name="action" value="edit_domain">Save</button>';
+			echo '<button type="submit" name="action" value="del_domain">Delete</button></td>';
+		}else{
+			echo '<td>Unavailable</td>';
+		}
+		echo '</tr></form>';
 	}
-	echo '</tr></form>';
+	if($count_domains<MAX_NUM_USER_DOMAINS){
+		echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+		echo '<tr><td colspan="2">Add additional domain:<br>';
+		echo '<input type="text" name="domain" value="';
+		echo isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+		echo '">';
+		echo '</td><td><button type="submit" name="action" value="add_domain">Add domain</button></td></tr></form>';
+	}
+	echo '</table>';
+	echo '<p>To enable your clearnet domain, edit your DNS settings and enter 116.202.17.147 as your A record and 2a01:4f8:c010:d56::1 as your AAAA record. Once you have modified your DNS settings, <a href="https://danwin1210.me/contact.php" target="_blank">contact me</a> to configure the SSL certificate. You may also use any subdomain of danwin1210.me, like yoursite.danwin1210.me</p>';
 }
-if($count_domains<MAX_NUM_USER_DOMAINS){
-	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
-	echo '<tr><td colspan="2">Add additional domain:<br>';
-	echo '<input type="text" name="domain" value="';
-	echo isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
-	echo '">';
-	echo '</td><td><button type="submit" name="action" value="add_domain">Add domain</button></td></tr></form>';
-}
-echo '</table>';
-echo '<p>To enable your clearnet domain, edit your DNS settings and enter 116.202.17.147 as your A record and 2a01:4f8:c010:d56::1 as your AAAA record. Once you have modified your DNS settings, <a href="https://danwin1210.me/contact.php" target="_blank">contact me</a> to configure the SSL certificate. You may also use any subdomain of danwin1210.me, like yoursite.danwin1210.me</p>';
 echo '<h3>MySQL Database</h3>';
 echo '<table border="1">';
 echo '<tr><th>Database</th><th>Host</th><th>User</th><th>Action</th></tr>';
