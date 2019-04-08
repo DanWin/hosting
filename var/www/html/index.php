@@ -19,7 +19,6 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 </head><body>
 <h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
-<p><b>The waiting has an end - Happy new Year and Hosting!</b></p>
 <p>This is a completely fresh installation with many changes done to the internals of how the hosting works. Not everything is working 100% yet, please be patient. To those coming here for the first time since 15th November and are wondering what happened to their account, see <a href="https://www.zdnet.com/article/popular-dark-web-hosting-provider-got-hacked-6500-sites-down/" target="_blank">here</a>.</p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
