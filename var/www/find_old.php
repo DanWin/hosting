@@ -31,3 +31,4 @@ foreach($all as $tmp){
 	//no data found, safe to delete
 	$del->execute([substr($tmp[1], 0, 16)]);
 }
+exec("find /var/www/tmp -path '/var/www/tmp/*' -cmin +1440 -delete");
