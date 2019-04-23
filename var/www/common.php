@@ -10,7 +10,7 @@ const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
 'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
-'hosting.danwin1210.me'=>['sftp'=>222, 'ftp'=>21, 'pop3'=>'1995', 'imap'=>'1993', 'smtp'=>'1465']
+'hosting.danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'1995', 'imap'=>'1993', 'smtp'=>'1465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
@@ -79,6 +79,7 @@ server {
 		}
 	}
 	location /phpmyadmin {
+		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
@@ -576,7 +577,10 @@ function del_user_onion(PDO $db, int $user_id, string $onion) {
 function add_user_domain(PDO $db, int $user_id, string $domain) : string {
 	$domain = strtolower($domain);
 	if(strlen($domain) > 255){
-		return 'Domain can\'t be longer than 255 characters';
+		return "Domain can't be longer than 255 characters.";
+	}
+	if(preg_match('/.onion$/', $domain)){
+		return "Domain can't end in .onion which is reserved for tor hidden services.";
 	}
 	$parts = explode('.', $domain);
 	if(count($parts) < 2){
