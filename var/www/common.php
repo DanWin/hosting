@@ -10,7 +10,7 @@ const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const SERVERS=[ //servers and ports we are running on
 'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
-'hosting.danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'1995', 'imap'=>'1993', 'smtp'=>'1465']
+'hosting.danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
@@ -347,9 +347,39 @@ function private_key_to_onion(string $priv_key) : array {
 	$version = 0;
 	if(($pkey = openssl_pkey_get_private($priv_key)) !== false){
 		$version = 2;
-		$details=openssl_pkey_get_details($pkey);
-		if($details['bits'] !== 1024){
+		$details = openssl_pkey_get_details($pkey);
+		if($details['type'] === OPENSSL_KEYTYPE_RSA){
+			$p = gmp_init(bin2hex($details['rsa']['p']), 16);
+			$q = gmp_init(bin2hex($details['rsa']['q']), 16);
+			$n = gmp_init(bin2hex($details['rsa']['n']), 16);
+			$d = gmp_init(bin2hex($details['rsa']['d']), 16);
+			$dmp1 = gmp_init(bin2hex($details['rsa']['dmp1']), 16);
+			$dmq1 = gmp_init(bin2hex($details['rsa']['dmq1']), 16);
+			$iqmp = gmp_init(bin2hex($details['rsa']['iqmp']), 16);
+		}
+		if($details['type'] !== OPENSSL_KEYTYPE_RSA){
+			$message = 'Error: private key is not an RSA key.';
+			$ok = false;
+		}elseif($details['bits'] !== 1024){
 			$message = 'Error: private key not of bitsize 1024.';
+			$ok = false;
+		}elseif(gmp_prob_prime($p) === 0){
+			$message = 'Error: p is not a prime';
+			$ok = false;
+		}elseif(gmp_prob_prime($q) === 0){
+			$message = 'Error: q is not a prime';
+			$ok = false;
+		}elseif(gmp_cmp($n, gmp_mul($p, $q) ) !== 0){
+			$message = 'Error: n does not equal p q';
+			$ok = false;
+		}elseif(gmp_cmp($dmp1, gmp_mod($d, gmp_sub($p, 1) ) ) !==0 ){
+			$message = 'Error: dmp1 invalid';
+			$ok = false;
+		}elseif(gmp_cmp($dmq1, gmp_mod($d, gmp_sub($q, 1) ) ) !== 0){
+			$message = 'Error: dmq1 invalid';
+			$ok = false;
+		}elseif(gmp_cmp($iqmp, gmp_invert($q, $p) ) !==0 ){
+			$sessage = 'Error: iqmp not inverse of q';
 			$ok = false;
 		}else{
 			$onion = get_onion_v2($pkey);
