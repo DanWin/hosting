@@ -52,7 +52,7 @@ const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=2048;
 	add_header Content-Type text/html;
 	location / {
-		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
+		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
 	}
 }
 server {
