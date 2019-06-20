@@ -28,6 +28,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 </head><body>
 <p>This will delete your account and all data asociated with it. It can't be un-done. Are you sure?</p>
 <?php echo $msg; ?>

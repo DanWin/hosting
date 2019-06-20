@@ -22,6 +22,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_db' && !empty($_POST['db']
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 </head><body>
 <p>This will delete your database <?php echo htmlspecialchars($_POST['db']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
@@ -47,6 +48,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_onion' && !empty($_POST['o
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 </head><body>
 <p>This will delete your onion domain <?php echo htmlspecialchars($_POST['onion']); ?>.onion and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
@@ -100,8 +102,7 @@ if(isset($_POST['action']) && $_POST['action']==='add_onion'){
 		$ok = false;
 	}
 	if($ok){
-		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled) VALUES (?, ?, ?, ?, 2);');
-		$stmt->execute([$user['id'], $onion, $priv_key, $onion_version]);
+		add_user_onion($db, $user['id'], $onion, $priv_key, $onion_version);
 	}
 }
 if(isset($_POST['action']) && $_POST['action']==='del_onion_2' && !empty($_POST['onion'])){
@@ -118,8 +119,7 @@ if(isset($_POST['action']) && $_POST['action']==='add_domain' && !empty($_POST['
 	if(!empty($error)){
 		$msg = "<p style=\"color:red;\">$error</p>";
 	}else{
-		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
-		$stmt->execute([substr($user['system_account'], 0, 1)]);
+		enqueue_instance_reload($db);
 	}
 }
 if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['domain'])){
@@ -131,6 +131,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 </head><body>
 <p>This will delete your domain <?php echo htmlspecialchars($_POST['domain']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
@@ -146,8 +147,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_domain_2' && !empty($_POST
 		die($error);
 	}
 	del_user_domain($db, $user['id'], $_POST['domain']);
-	$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
-	$stmt->execute([substr($user['system_account'], 0, 1)]);
+	enqueue_instance_reload($db);
 }
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit_onion'){
 	if($error=check_csrf_error()){
@@ -174,8 +174,7 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 			$max_streams = 65535;
 		}
 		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
-		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
-		$stmt->execute([substr($_REQUEST['onion'], 0, 1)]);
+		enqueue_instance_reload($db, substr($_REQUEST['onion'], 0, 1));
 	}
 }
 if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='edit_domain'){
@@ -188,8 +187,7 @@ if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='
 		$stmt=$db->prepare('UPDATE domains SET enabled = ? WHERE domain = ?;');
 		$enabled = isset($_POST['enabled']) ? 1 : 0;
 		$stmt->execute([$enabled, $_POST['domain']]);
-		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?');
-		$stmt->execute([substr($user['system_account'], 0, 1)]);
+		enqueue_instance_reload($db);
 	}
 }
 
@@ -199,6 +197,7 @@ echo '<title>Daniel\'s Hosting - Dashboard</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
 echo '<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>';
 echo '</head><body>';
 echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a target=\"_blank\" href=\"files.php\">FileManager</a> | <a href=\"delete.php\">Delete account</a></p>";

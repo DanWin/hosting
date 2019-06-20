@@ -17,6 +17,7 @@ if(!empty($_SESSION['hosting_username'])){
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
 </head><body>
 <h1>Hosting - Register</h1>
@@ -106,11 +107,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$ok=false;
 	}elseif($ok){
 		$mysql_user = add_mysql_user($db, $_POST['pass']);
-		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user) VALUES (?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user]);
+		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user, instance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);');
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, SERVICE_INSTANCES[array_rand(SERVICE_INSTANCES)]]);
 		$user_id = $db->lastInsertId();
-		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version) VALUES (?, ?, ?, ?);');
-		$stmt->execute([$user_id, $onion, $priv_key, $onion_version]);
+		add_user_onion($db, $user_id, $onion, $priv_key, $onion_version);
 		add_user_db($db, $user_id);
 		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
 		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);

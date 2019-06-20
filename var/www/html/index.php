@@ -1,21 +1,13 @@
 <?php
 include('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
-if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVER['HTTP_HOST'])){
-	if(preg_match('/\.me$/', $_SERVER['HTTP_HOST'])){
-		$host='https://danwin1210.me';
-	}else{
-		$host='http://danwin1210.i2p';
-	}
-}else{
-	$host='http://tt3j2x4k5ycaa5zt.onion';
-}
 ?>
 <!DOCTYPE html><html><head>
 <title>Daniel's Hosting</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 </head><body>
 <h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
@@ -36,9 +28,9 @@ if(isset($_SERVER['HTTP_HOST']) && preg_match('/danwin1210\.(i2p|me)$/', $_SERVE
 <li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet) - not yet working but will return in future, use <a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
-<li>Your own .onion domain</li>
-<li>On request your own clearnet domain or a free subdomain of danwin1210.me. I can setup an I2P domain as well.</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="<?php echo "$host/contact.php"; ?>">contact me</a> and I'll see what I can do.</li>
+<li>Your own .onion domains</li>
+<li>Clearnet domains or a free subdomain of danwin1210.me</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="<?php echo "https://danwin1210.me/contact.php"; ?>">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
 <li>More to come…</li>
 </ul>

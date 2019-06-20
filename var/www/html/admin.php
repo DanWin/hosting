@@ -15,6 +15,7 @@ echo '<title>Daniel\'s Hosting - Admin panel</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+echo '<link rel="canonical" href="'.CANONICAL_URL. $_SERVER['SCRIPT_NAME'] .'">';
 echo '</head><body>';
 echo '<h1>Hosting - Admin panel</h1>';
 $error=false;
@@ -25,7 +26,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['pass']) && $_POST['pass'
 	}
 }
 if(empty($_SESSION['logged_in'])){
-	echo '<form action="' . basename(__FILE__) . '" method="POST"><table>';
+	echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST"><table>';
 	echo "<tr><td>Password </td><td><input type=\"password\" name=\"pass\" size=\"30\" required autofocus></td></tr>";
 	send_captcha();
 	echo "<tr><td colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"login\"></td></tr>";
@@ -41,17 +42,17 @@ if(empty($_SESSION['logged_in'])){
 	if(REQUIRE_APPROVAL){
 		$stmt=$db->query('SELECT COUNT(*) FROM new_account WHERE approved=0;');
 		$cnt=$stmt->fetch(PDO::FETCH_NUM)[0];
-		echo '<a href="' . basename(__FILE__) . "?action=approve\">Approve pending sites ($cnt)</a> | ";
+		echo '<a href="' . $_SERVER['SCRIPT_NAME'] . "?action=approve\">Approve pending sites ($cnt)</a> | ";
 	}
-	echo '<a href="' . basename(__FILE__) . '?action=list">List of accounts</a> | <a href="' . basename(__FILE__) . '?action=delete">Delete accounts</a> | <a href="' . basename(__FILE__) . '?action=suspend">Suspend hidden services</a> | <a href="' . basename(__FILE__) . '?action=edit">Edit hidden services</a> | <a href="' . basename(__FILE__) . '?action=logout">Logout</a></p>';
+	echo '<a href="' . $_SERVER['SCRIPT_NAME'] . '?action=list">List of accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=delete">Delete accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=suspend">Suspend hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=edit">Edit hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=logout">Logout</a></p>';
 	if(empty($_REQUEST['action']) || $_REQUEST['action']==='login'){
 		echo '<p>Welcome to the admin panel!</p>';
 	}elseif($_REQUEST['action'] === 'logout'){
 		session_destroy();
-		header('Location: ' . basename(__FILE__));
+		header('Location: ' . $_SERVER['SCRIPT_NAME']);
 		exit;
 	}elseif($_REQUEST['action'] === 'list'){
-		echo '<form action="' . basename(__FILE__) . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion link</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
@@ -84,7 +85,7 @@ if(empty($_SESSION['logged_in'])){
 				echo '<p style="color:green;">Successfully approved</p>';
 			}
 		}
-		echo '<form action="' . basename(__FILE__) . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion address</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) WHERE new_account.approved=0 ORDER BY users.username;');
@@ -100,7 +101,7 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 7);
 		}
 		echo '<p>Delete accouts:</p>';
-		echo '<form action="' . basename(__FILE__) . '" method="POST">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
 		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
@@ -131,7 +132,7 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 8);
 		}
 		echo '<p>Suspend hidden service:</p>';
-		echo '<form action="' . basename(__FILE__) . '" method="POST">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
 		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
@@ -147,8 +148,7 @@ if(empty($_SESSION['logged_in'])){
 					$stmt=$db->prepare('UPDATE onions SET enabled=-2 WHERE onion=?;');
 					$stmt->execute([$match[1]]);
 					echo "<p style=\"color:green;\">Successfully queued for suspension!</p>";
-					$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id=?');
-					$stmt->execute([substr($match[1], 0, 1)]);
+					enqueue_instance_reload($db, substr($match[1], 0, 1));
 				}else{
 					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";
 				}
@@ -164,7 +164,7 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 5);
 		}
 		echo '<p>Edit hidden service:</p>';
-		echo '<form action="' . basename(__FILE__) . '" method="POST">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
 		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
@@ -196,15 +196,14 @@ if(empty($_SESSION['logged_in'])){
 							$max_streams = 65535;
 						}
 						$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $match[1]]);
-						$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id=?');
-						$stmt->execute([substr($match[1], 0, 1)]);
+						enqueue_instance_reload($db, substr($match[1], 0, 1));
 						echo "<p style=\"color:green;\">Changes successfully saved!</p>";
 					}
 				}
 				$stmt=$db->prepare('SELECT onion, enabled, enable_smtp, num_intros, max_streams, version FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
 				if($onion=$stmt->fetch(PDO::FETCH_NUM)){
-					echo '<form action="' . basename(__FILE__) . '" method="POST">';
+					echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
 					echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 					echo '<table border="1"><tr><th>Onion</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
 					echo '<tr><td><input type="text" name="onion" size="15" value="'.$onion[0].'" required autofocus></td>';

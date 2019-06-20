@@ -5,9 +5,10 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=13; //database layout version
+const DBVERSION=14; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
+const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
 const SERVERS=[ //servers and ports we are running on
 'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
 'hosting.danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
@@ -21,7 +22,7 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
-const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 100 accounts. Adding new instances is always possible at a later time, just removing one takes some manual cleanup for now - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
 const PHP_VERSIONS=[4 => '7.3']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.3'; //default php version
@@ -316,8 +317,8 @@ NumEntryGuards 6
 NumDirectoryGuards 6
 NumPrimaryGuards 6
 ";
-	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.onion LIKE ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
-	$stmt->execute(["$key%"]);
+	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
+	$stmt->execute([$key]);
 	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 if($tmp[6]==1){
 	$socket=$tmp[1];
@@ -507,9 +508,9 @@ function rewrite_nginx_config(PDO $db){
 }
 
 function rewrite_php_config(PDO $db, string $key){
-	$stmt=$db->prepare("SELECT system_account FROM users WHERE system_account LIKE ? AND php=? AND todelete!=1 AND id NOT IN (SELECT user_id FROM new_account);");
+	$stmt=$db->prepare("SELECT system_account FROM users WHERE instance = ? AND php=? AND todelete!=1 AND id NOT IN (SELECT user_id FROM new_account);");
 	foreach(array_replace(PHP_VERSIONS, DISABLED_PHP_VERSIONS) as $php_key => $version){
-		$stmt->execute(["$key%", $php_key]);
+		$stmt->execute([$key, $php_key]);
 			$php = "[www]
 user = www-data
 group = www-data
@@ -595,6 +596,11 @@ function del_user_db(PDO $db, int $user_id, string $mysql_db) {
 	}
 }
 
+function add_user_onion(PDO $db, int $user_id, string $onion, string $priv_key, int $onion_version) {
+		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, instance) VALUES (?, ?, ?, ?, 2, ?);');
+		$stmt->execute([$user_id, $onion, $priv_key, $onion_version, SERVICE_INSTANCES[array_rand(SERVICE_INSTANCES)]]);
+}
+
 function del_user_onion(PDO $db, int $user_id, string $onion) {
 	$stmt = $db->prepare('SELECT null FROM onions WHERE user_id = ? AND onion = ? AND enabled IN (0, 1);');
 	$stmt->execute([$user_id, $onion]);
@@ -645,4 +651,13 @@ function check_csrf_error(){
 		return 'Invalid CSRF token, please try again.';
 	}
 	return false;
+}
+
+function enqueue_instance_reload($db, $instance = null){
+	if($instance === null){
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 LIMIT 1;');
+	}else{
+		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?;');
+		$stmt->execute([$instance]);
+	}
 }

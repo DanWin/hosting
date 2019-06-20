@@ -46,6 +46,7 @@ echo '<title>Daniel\'s Hosting - Change password</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
 echo '</head><body>';
 echo $msg;
 echo '<form method="POST" action="password.php"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><table>';

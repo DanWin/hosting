@@ -11,6 +11,7 @@ echo '<title>Daniel\'s Hosting - List of hosted sites</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
 echo '</head><body>';
 echo '<h1>Hosting - List of hosted sites</h1>';
 echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | <a href="login.php">Login</a> | List of hosted sites | <a href="faq.php">FAQ</a></p>';

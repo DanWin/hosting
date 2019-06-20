@@ -286,6 +286,7 @@ $dir=htmlspecialchars($dir);
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <title>Daniel's Hosting - FileManager - Index of <?php echo $dir; ?></title>
 <style type="text/css">.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){text-align:right;} .list tr{height:28px;}
 .back{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM2ZmZpmZmSH5BAUAAAQALAAAAAAUABYAAANLSLrc/oKE8CoZM1O7os7c9WmcN04WdoKQdBIANypAHG5YbS/7kus1RlDxA+p4xqSRpmwCKE7nINqMwKi6wEAY1VaS3tBV/OiRz4sEADs=);}
@@ -388,6 +389,7 @@ function send_not_found(){
 	echo '<title>404 Not Found</title>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
+	echo '<link rel="canonical" href="'.CANONICAL_URL . $_SERVER['SCRIPT_NAME'].'">';
 	echo '</head><body>';
 	echo '<p>The requested file '.htmlspecialchars($_REQUEST['path']).' was not found on your account.</p>';
 	echo '<p><a href="files.php">Go back to home directory</a>.</p>';
