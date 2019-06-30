@@ -11,11 +11,10 @@ header('Content-Type: text/html; charset=UTF-8');
 </head><body>
 <h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
-<p>This is a completely fresh installation with many changes done to the internals of how the hosting works. Not everything is working 100% yet, please be patient. To those coming here for the first time since 15th November and are wondering what happened to their account, see <a href="https://www.zdnet.com/article/popular-dark-web-hosting-provider-got-hacked-6500-sites-down/" target="_blank">here</a>.</p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
 <ul>
-<li>Completely free anonymous webhosting</li>
+<li>Completely free anonymous Tor and clearnet webhosting</li>
 <li>Choose between PHP <?php echo implode(', ', PHP_VERSIONS); ?> or no PHP support</li>
 <li>Nginx Webserver</li>
 <li>SQLite support</li>
@@ -24,13 +23,13 @@ header('Content-Type: text/html; charset=UTF-8');
 <li>Web-based file manager</li>
 <li>FTP access</li>
 <li>SFTP access</li>
-<li>No disk quota, but please be fair about your disk usage - a quota will come soon</li>
+<li>10GB disk quota and a maximum of 100.000 files. If you need more, just <a href="https://danwin1210.me/contact.php">contact me</a></li>
 <li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet) - not yet working but will return in future, use <a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion domains</li>
 <li>Clearnet domains or a free subdomain of danwin1210.me</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="<?php echo "https://danwin1210.me/contact.php"; ?>">contact me</a> and I'll see what I can do.</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
 <li>More to come…</li>
 </ul>

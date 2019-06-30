@@ -29,10 +29,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec('CREATE TABLE mysql_databases (user_id int(11) NOT NULL, mysql_database varchar(64) COLLATE latin1_bin NOT NULL, KEY user_id (user_id), CONSTRAINT mysql_database_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec("CREATE TABLE onions (user_id int(11) NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', max_streams tinyint(3) unsigned NOT NULL DEFAULT '20', instance char(1) NOT NULL DEFAULT '2', KEY user_id (user_id), KEY enabled (enabled), KEY instance(instance), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE, CONSTRAINT instance_ibfk_1 FOREIGN KEY (instance) REFERENCES service_instances (id) ON DELETE RESTRICT ON UPDATE RESTRICT) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec("CREATE TABLE domains (user_id int(11) NULL, domain varchar(255) COLLATE latin1_bin NOT NULL PRIMARY KEY, enabled tinyint(1) NOT NULL DEFAULT '1', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT domains_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
-	$stmt=$db->prepare('INSERT INTO service_instances (id) VALUES (?);');
-	foreach(SERVICE_INSTANCES as $key){
-		$stmt->execute([$key]);
-	}
+	$db->exec('CREATE TABLE disk_quota (user_id int(11) NOT NULL, quota_size int(10) unsigned NOT NULL, quota_files int(10) unsigned NOT NULL, updated tinyint(1) NOT NULL DEFAULT 1, KEY user_id (user_id), KEY updated (updated), CONSTRAINT disk_quota_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
@@ -148,6 +145,11 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec("ALTER TABLE users ADD instance char(1) NOT NULL DEFAULT '2', ADD KEY instance(instance), ADD CONSTRAINT instance_ibfk_2 FOREIGN KEY (instance) REFERENCES service_instances (id) ON DELETE RESTRICT ON UPDATE RESTRICT;");
 		$db->exec('UPDATE users SET instance = SUBSTR(system_account, 1, 1);');
 	}
+	if($version<15){
+		$db->exec('CREATE TABLE disk_quota (user_id int(11) NOT NULL, quota_size int(10) unsigned NOT NULL, quota_files int(10) unsigned NOT NULL, updated tinyint(1) NOT NULL DEFAULT 1, KEY user_id (user_id), KEY updated (updated), CONSTRAINT disk_quota_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+		$stmt = $db->prepare('INSERT INTO disk_quota (user_id, quota_size, quota_files) SELECT id, ?, ? FROM users;');
+		$stmt->execute([DEFAULT_QUOTA_SIZE, DEFAULT_QUOTA_FILES]);
+	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
 }
@@ -251,13 +253,15 @@ php_admin_value[open_basedir] = /usr/share/adminer:/tmp
 }
 echo "Updating chroots, this might take a while…\n";
 exec('/var/www/setup_chroot.sh /var/www');
-$stmt=$db->query('SELECT system_account FROM users;');
-$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
-while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
-	echo "Updating chroot for user $tmp[system_account]…\n";
-	exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
-	exec('/var/www/setup_chroot.sh  ' . escapeshellarg('/home/'.$tmp['system_account']));
-	exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
+if(!SKIP_USER_CHROOT_UPDATE){
+	$stmt=$db->query('SELECT system_account FROM users;');
+	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		echo "Updating chroot for user $tmp[system_account]…\n";
+		exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
+		exec('/var/www/setup_chroot.sh ' . escapeshellarg('/home/'.$tmp['system_account']));
+		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
+	}
 }
 file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
 if(!file_exists("/etc/nginx/streams-enabled/")){
@@ -268,5 +272,9 @@ file_put_contents('/etc/nginx/streams-enabled/default', "server {
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
 exec("service nginx reload");
+$stmt=$db->prepare('INSERT IGNORE INTO service_instances (id) VALUES (?);');
+foreach(SERVICE_INSTANCES as $key){
+	$stmt->execute([$key]);
+}
 $db->exec('UPDATE service_instances SET reload=1;');
 echo "Done - Database and files have been updated to the latest version :)\n";

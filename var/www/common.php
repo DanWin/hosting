@@ -5,7 +5,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=14; //database layout version
+const DBVERSION=15; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
@@ -18,11 +18,12 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 'd41d8cd98f00b204e9800998ecf8427e', //empty file
 '7ae7e9bac6be76f00e0d95347111f037', //default file
 '703fac6634bf637f942db8906092d0ab', //new default file
+'e109a5a44969c2a109aee0ea3565529e', //TOR HTML Site
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
-const SERVICE_INSTANCES=['2', '3', '4', '5', '6', '7', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 100 accounts. Adding new instances is always possible at a later time, just removing one takes some manual cleanup for now - run setup.php after change
+const SERVICE_INSTANCES=['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 100 accounts. Adding new instances is always possible at a later time, just removing one takes some manual cleanup for now - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
 const PHP_VERSIONS=[4 => '7.3']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.3'; //default php version
@@ -109,6 +110,9 @@ server {
 const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
 const MAX_NUM_USER_ONIONS = 3; //maximum number of onion domains a user may have
 const MAX_NUM_USER_DOMAINS = 3; //maximum number of clearnet domains a user may have
+const SKIP_USER_CHROOT_UPDATE = true; //skips updating user chroots when running setup.php
+const DEFAULT_QUOTA_SIZE = 10 * 1024 * 1024; //per user disk quota in kb - Defaults to 10 GB
+const DEFAULT_QUOTA_FILES = 100000; //per user file quota - by default allow no more than 100000 files
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -313,9 +317,9 @@ $torrc="ClientUseIPv6 1
 ClientUseIPv4 1
 SOCKSPort 0
 MaxClientCircuitsPending 1024
-NumEntryGuards 6
-NumDirectoryGuards 6
-NumPrimaryGuards 6
+NumEntryGuards 9
+NumDirectoryGuards 9
+NumPrimaryGuards 9
 ";
 	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
 	$stmt->execute([$key]);
@@ -529,7 +533,7 @@ listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
 pm = ondemand
-pm.max_children = 50
+pm.max_children = 75
 pm.process_idle_timeout = 10s;
 chroot = /home/$tmp[system_account]
 php_admin_value[memory_limit] = 256M

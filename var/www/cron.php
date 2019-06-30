@@ -161,3 +161,12 @@ while($account=$stmt->fetch(PDO::FETCH_NUM)){
 	exec('usermod -p '. escapeshellarg($account[1]) . ' ' . escapeshellarg($account[0]));
 	$del->execute([$account[2]]);
 }
+
+//update quotas
+$stmt=$db->query('SELECT users.system_account, disk_quota.quota_files, disk_quota.quota_size, users.id FROM disk_quota INNER JOIN users ON (users.id=disk_quota.user_id) WHERE disk_quota.updated = 1 AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
+$updated=$db->prepare("UPDATE disk_quota SET updated = 0 WHERE user_id=?;");
+while($account=$stmt->fetch(PDO::FETCH_NUM)){
+	exec('quotatool -u '. escapeshellarg($account[0]) . ' -i -q ' . escapeshellarg($account[1]) . ' -l ' . escapeshellarg($account[1]) . ' /home');
+	exec('quotatool -u '. escapeshellarg($account[0]) . ' -b -q ' . escapeshellarg($account[2]) . ' -l ' . escapeshellarg($account[2]) . ' /home');
+	$updated->execute([$account[3]]);
+}
