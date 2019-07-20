@@ -55,10 +55,10 @@ if(empty($_SESSION['logged_in'])){
 		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion link</th><th>Action</th></tr>';
-		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
+		$stmt=$db->query('SELECT users.username, onions.onion, onions.enabled FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
 		$sccounts = [];
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-			$accounts[$tmp[0]] []= $tmp[1];
+			$accounts[$tmp[0]] []= [$tmp[1], $tmp[2]];
 		}
 		foreach($accounts as $account => $onions){
 			echo "<tr><td>$account</td><td>";
@@ -69,9 +69,13 @@ if(empty($_SESSION['logged_in'])){
 				}else{
 					echo '<br>';
 				}
-				echo "<a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a>";
+				if($onion[1]=='1'){
+					echo "<a href=\"http://$onion[0].onion\" target=\"_blank\">$onion[0].onion</a>";
+				}else{
+					echo "$onion[0].onion";
+				}
 			}
-			echo "</td><td><button type=\"submit\" name=\"action\" value=\"edit_$onions[0]\">Edit</button><button type=\"submit\" name=\"action\" value=\"delete_$onions[0]\">Delete</button><button type=\"submit\" name=\"action\" value=\"suspend_$onions[0]\">Suspend</button></td></tr>";
+			echo "</td><td><button type=\"submit\" name=\"action\" value=\"edit_{$onions[0][0]}\">Edit</button><button type=\"submit\" name=\"action\" value=\"delete_{$onions[0][0]}\">Delete</button><button type=\"submit\" name=\"action\" value=\"suspend_{$onions[0][0]}\">Suspend</button></td></tr>";
 		}
 		echo '</table></form>';
 	}elseif(substr($_REQUEST['action'], 0, 7) === 'approve'){

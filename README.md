@@ -117,6 +117,7 @@ Once installed create a mysql user for phpmyadmin and cofigure it in `/var/www/h
 ```
 mysql
 CREATE USER 'phpmyadmin'@'%' IDENTIFIED BY 'MY_PASSWORD';
+CREATE DATABASE phpmyadmin;
 GRANT ALL PRIVILEGES ON phpmyadmin.* TO 'phpmyadmin'@'%';
 FLUSH PRIVILEGES;
 quit

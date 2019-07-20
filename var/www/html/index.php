@@ -45,6 +45,6 @@ header('Content-Type: text/html; charset=UTF-8');
 <li>No proxy scripts! (You are already using TOR and this will just burden the network)</li>
 <li>No IP logger or similar de-anonymizer sites!</li>
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
-<li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
+<li>Should you not honor these rules, I will (have to) work together with Law Enforcement!</li>
 </ul>
 </body></html>
