@@ -23,7 +23,7 @@ ip6tables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 #allow tor traffic
-for tor in debian-tor _tor-2 _tor-3 _tor-4 _tor-5 _tor-6 _tor-7 _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s _tor-t _tor-u _tor-v _tor-w _tor-x _tor-y _tor-z; do(
+for tor in debian-tor _tor-1 _tor-2 _tor-3 _tor-4 _tor-5 _tor-6 _tor-7 _tor-8 _tor-9 _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s _tor-t _tor-u _tor-v _tor-w _tor-x _tor-y _tor-z; do(
 iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
