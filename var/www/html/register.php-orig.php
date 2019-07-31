@@ -18,7 +18,6 @@ if(!empty($_SESSION['hosting_username'])){
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<link rel="stylesheet" href="w3.css">
 <style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
 </head>
 <style>
@@ -41,16 +40,9 @@ p {
     <div class="w3-container w3-margin-right">
 <div class="w3-container w3-teal">
 <h1>Hosting - Register</h1>
-</div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
-<br><?php
+<div>
+<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
+<?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
 	$onion='';
@@ -136,7 +128,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}elseif($ok){
 		$mysql_user = add_mysql_user($db, $_POST['pass']);
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user, instance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, get_new_tor_instance($db)]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, SERVICE_INSTANCES[array_rand(SERVICE_INSTANCES)]]);
 		$user_id = $db->lastInsertId();
 		$stmt = $db->prepare('INSERT INTO disk_quota (user_id, quota_size, quota_files) VALUES (?, ?, ?);');
 		$stmt->execute([$user_id, DEFAULT_QUOTA_SIZE, DEFAULT_QUOTA_FILES]);
