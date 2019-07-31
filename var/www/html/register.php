@@ -19,8 +19,28 @@ if(!empty($_SESSION['hosting_username'])){
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
-</head><body>
+</head>
+<style>
+body {
+  background-color: lightblue;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+p {
+  font-family: verdana;
+  font-size: 20px;
+}
+</style>
+<body>
+  <div class="w3-container w3-margin-left">
+    <div class="w3-container w3-margin-right">
+<div class="w3-container w3-teal">
 <h1>Hosting - Register</h1>
+<div>
 <p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <?php
 if($_SERVER['REQUEST_METHOD']==='POST'){

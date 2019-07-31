@@ -8,39 +8,9 @@ header('Content-Type: text/html; charset=UTF-8');
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<link rel="stylesheet" href="w3.css">
-</head>
-<style>
-body {
-  background-color: lightblue;
-}
-
-h1 {
-  color: white;
-  text-align: center;
-}
-
-p {
-  font-family: verdana;
-  font-size: 20px;
-}
-</style>
-<body>
-  <div class="w3-container w3-margin-left">
-    <div class="w3-container w3-margin-right">
-<div class="w3-container w3-teal">
-<body>
+</head><body>
 <h1>Hosting - Info</h1>
-</div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
-<br>
+<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | FAQ</p>
 <table border="1">
 <tr><th>Question</th><th>Answer</th></tr>
 <tr><td>Your rules are so strict. Can't you make an exception for my site?</td><td>No, I will not make exceptions for any site and neither am I corruptible by offering me money. Once I start making an exception for your site, I would have to for every other site as well which is the same as if the rules didn't exist.</td></tr>
