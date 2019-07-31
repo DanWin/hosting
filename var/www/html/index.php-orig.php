@@ -8,37 +8,9 @@ header('Content-Type: text/html; charset=UTF-8');
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<link rel="stylesheet" href="w3.css">
-</head>
-<style>
-body {
-  background-color: lightblue;
-}
-
-h1 {
-  color: white;
-  text-align: center;
-}
-
-p {
-  font-family: verdana;
-  font-size: 20px;
-}
-</style>
-<body>
-  <div class="w3-container w3-margin-left">
-    <div class="w3-container w3-margin-right">
-<div class="w3-container w3-teal">
-  <h1>Hosting - Info</h1>
-</div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
+</head><body>
+<h1>Hosting - Info</h1>
+<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <p>Here you can get yourself a hosting account on my server.</p>
 <p>What you will get:</p>
 <ul>
@@ -75,5 +47,4 @@ p {
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
 <li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
 </ul>
-</body>
-</html>
+</body></html>
