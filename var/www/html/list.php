@@ -17,7 +17,7 @@ echo '</head>';
 echo '<style>';
 echo 'body { background-color: lightblue;}';
 echo 'h1 {color: white;text-align: center;}';
-echo 'p {font-family: verdana;font-size: 20px;}';
+echo 'p {font-family: verdana;font-size: 3vw;}';
 echo '</style>';
 echo '<body>';
 echo '<div class="w3-container w3-margin-left">';
