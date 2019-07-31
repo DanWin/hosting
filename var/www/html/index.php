@@ -22,7 +22,7 @@ h1 {
 
 p {
   font-family: verdana;
-  font-size: 3vw;
+  font-size: 2vw;
 }
 </style>
 <body>
@@ -75,5 +75,6 @@ p {
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
 <li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
 </ul>
+    Support E-mail: support@yzombq2l4b6mnyw2icm23faq34nv2fjjfpm44v6thg43gsiefc3qfwid.onion 
 </body>
 </html>

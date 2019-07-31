@@ -33,7 +33,7 @@ h1 {
 
 p {
   font-family: verdana;
-  font-size: 3vw;
+  font-size: 2vw;
 }
 </style>
 <body>

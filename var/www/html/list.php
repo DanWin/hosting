@@ -17,7 +17,8 @@ echo '</head>';
 echo '<style>';
 echo 'body { background-color: lightblue;}';
 echo 'h1 {color: white;text-align: center;}';
-echo 'p {font-family: verdana;font-size: 3vw;}';
+echo 'p {font-family: verdana;font-size: 2vw;}';
+echo 'btn {font-family: verdana;font-size: 1.5vw;}';
 echo '</style>';
 echo '<body>';
 echo '<div class="w3-container w3-margin-left">';
@@ -31,11 +32,9 @@ $count=$stmt->fetch(PDO::FETCH_NUM);
 $stmt=$db->query('SELECT COUNT(*) FROM users WHERE public=0;');
 $hidden=$stmt->fetch(PDO::FETCH_NUM);
 echo "<p>Here is a list of $count[0] public hosted sites ($hidden[0] sites hidden):</p>";
-echo '<table border="1">';
-echo '<tr><td>Onion link</td></tr>';
+echo '<li><h1>Onion links</h1></li>';
 $stmt=$db->query('SELECT onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE users.public=1 ORDER BY onions.onion;');
 while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-	echo "<tr><td><a href=\"http://$tmp[0].onion\" target=\"_blank\">$tmp[0].onion</a></td></tr>";
+echo "<btn><a href=\"http://$tmp[0].onion\" target=\"_blank\" class=w3-btn >$tmp[0].onion</a></btn>";
 }
-echo '</table>';
 echo '</body></html>';
