@@ -28,20 +28,25 @@ p {
 <body>
   <div class="w3-container w3-margin-left">
     <div class="w3-container w3-margin-right">
-<div class="w3-container w3-teal">
+<div class="w3-container w3-deep-purple">
   <h1>Hosting - Info</h1>
 </div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
+<div class="w3-bar w3-blue">
+  <a href="index.php" class="w3-bar-item w3-button w3-mobile">Home</a>
+  <a href="register.php" class="w3-bar-item w3-button w3-mobile">Register</a>
+  <a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a>
+  <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
+  <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
+</div>
+    Template Dev site, you can register your account and setup your site and email. But the main server is coming later.
+    All accounts will later be migrated to the main server. Support E-mail: support@yzombq2l4b6mnyw2icm23faq34nv2fjjfpm44v6thg43gsiefc3qfwid.onion
+    <br>Regards, Lin's hosting service
 <p>Here you can get yourself a hosting account on my server.</p>
-<p>What you will get:</p>
-<ul>
+<div class="w3-card-4">
+<header class="w3-container w3-teal w3-hover-shadow">
+  <h1>What you will get:</h1>
+</header>
+<div class="w3-container">
 <li>Completely free anonymous Tor and clearnet webhosting</li>
 <li>Choose between PHP <?php echo implode(', ', PHP_VERSIONS); ?> or no PHP support</li>
 <li>Nginx Webserver</li>
@@ -60,9 +65,17 @@ p {
 <li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
 <li>More to come…</li>
-</ul>
-<h2>Rules</h2>
-<ul>
+</div>
+<footer class="w3-container w3-teal">
+  <h5></h5>
+</footer>
+</div>
+    <br>
+<div class="w3-card-4">
+<header class="w3-container w3-teal w3-hover-shadow">
+  <h1>Rules</h1>
+</header>
+<div class="w3-container">
 <li>No child pornography!</li>
 <li>No terroristic propaganda!</li>
 <li>No illegal content according to German law!</li>
@@ -74,7 +87,10 @@ p {
 <li>No IP logger or similar de-anonymizer sites!</li>
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
 <li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
-</ul>
-    Support E-mail: support@yzombq2l4b6mnyw2icm23faq34nv2fjjfpm44v6thg43gsiefc3qfwid.onion 
+</div>
+<footer class="w3-container w3-teal">
+  <h5></h5>
+</footer>
+</div> 
 </body>
 </html>

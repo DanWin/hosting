@@ -39,17 +39,16 @@ p {
 <body>
   <div class="w3-container w3-margin-left">
     <div class="w3-container w3-margin-right">
-<div class="w3-container w3-teal">
+<div class="w3-container w3-deep-purple">
 <h1>Hosting - Register</h1>
 </div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
+<div class="w3-bar w3-blue">
+  <a href="index.php" class="w3-bar-item w3-button w3-mobile">Home</a>
+  <a href="register.php" class="w3-bar-item w3-button w3-mobile">Register</a>
+  <a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a>
+  <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
+  <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
+</div>
 <br><?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;

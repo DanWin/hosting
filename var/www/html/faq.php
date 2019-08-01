@@ -28,19 +28,17 @@ p {
 <body>
   <div class="w3-container w3-margin-left">
     <div class="w3-container w3-margin-right">
-<div class="w3-container w3-teal">
+<div class="w3-container w3-deep-purple">
 <body>
 <h1>Hosting - Info</h1>
 </div>
-<div class="w3-row">
-<p>
-  <a href="index.php" class="w3-third w3-button w3-teal">Home</a>
-  <a href="register.php" class="w3-third w3-button w3-teal">Register</a>
-  <a href="login.php" class="w3-third w3-button w3-teal">Login</a>
-  <a href="list.php" class="w3-third w3-button w3-teal">List of hosted sites</a>
-  <a href="faq.php" class="w3-third w3-button w3-teal">FAQ</a>
-</p></div>
-<br>
+<div class="w3-bar w3-blue">
+  <a href="index.php" class="w3-bar-item w3-button w3-mobile">Home</a>
+  <a href="register.php" class="w3-bar-item w3-button w3-mobile">Register</a>
+  <a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a>
+  <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
+  <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
+</div><br>
 <table border="1">
 <tr><th>Question</th><th>Answer</th></tr>
 <tr><td>Your rules are so strict. Can't you make an exception for my site?</td><td>No, I will not make exceptions for any site and neither am I corruptible by offering me money. Once I start making an exception for your site, I would have to for every other site as well which is the same as if the rules didn't exist.</td></tr>
