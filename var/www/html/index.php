@@ -24,6 +24,7 @@ p {
   font-family: verdana;
   font-size: 2vw;
 }
+
 </style>
 <body>
   <div class="w3-container w3-margin-left">
@@ -38,9 +39,34 @@ p {
   <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
   <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
 </div>
-    Template Dev site, you can register your account and setup your site and email. But the main server is coming later.
-    All accounts will later be migrated to the main server. Support E-mail: support@yzombq2l4b6mnyw2icm23faq34nv2fjjfpm44v6thg43gsiefc3qfwid.onion
-    <br>Regards, Lin's hosting service
+<div id="news">
+<?php             error_reporting(E_ALL);
+                  
+                  $entry = file("../news.txt");
+                  
+                  foreach($entry as $view)
+                  {
+                     $entry = stripslashes($view);
+                     $teile = explode("|", $view);
+                  }
+                      if($teile[1] == "")
+                      {
+                       echo "Server Status: All is normal! Namaste";
+                      }
+                      else
+                      {
+
+                      echo "<table >
+                             <tr>
+                                   <td >$teile[0] from $teile[2]</td>
+                             </tr>
+                            <tr>
+                                  <td >$teile[1]</td>
+                            </tr>
+                           </table>";
+                      }
+                  ?>
+          </div>
 <p>Here you can get yourself a hosting account on my server.</p>
 <div class="w3-card-4">
 <header class="w3-container w3-teal w3-hover-shadow">
