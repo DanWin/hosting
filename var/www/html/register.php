@@ -49,6 +49,11 @@ p {
   <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
   <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
 </div>
+<br>    
+<div class="w3-card-4">
+<header class="w3-container w3-teal">
+<h1>Hosting - Register</h1></header>
+<div class="w3-container">
 <br><?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$ok=true;
@@ -195,4 +200,7 @@ foreach(PHP_VERSIONS as $key => $version){
 <tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="https://danwin1210.me/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>
 <tr><td colspan="2"><input type="submit" value="Register"></td></tr>
 </table></form>
+</div>
+<footer class="w3-container w3-teal"><h5></h5>
+</footer></div>
 </body></html>

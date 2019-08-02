@@ -76,6 +76,11 @@ echo '<body>';
 echo '<div class="w3-container w3-margin-left"><div class="w3-container w3-margin-right">';
 echo '<div class="w3-container w3-deep-purple"><h1>Hosting - Login</h1></div>';
 echo '<div class="w3-bar w3-blue"><a href="index.php" class="w3-bar-item w3-button w3-mobile">Home</a><a href="register.php" class="w3-bar-item w3-button w3-mobile">Register</a><a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a><a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a><a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a></div>';
+echo '<br>';
+echo '<div class="w3-card-4">';
+echo '<header class="w3-container w3-teal">';
+echo '<h1>Login</h1></header>';
+echo '<div class="w3-container">';
 echo $msg;
 echo '<form method="POST" action="login.php"><br><table>';
 echo '<tr><td>Username</td><td><input type="text" name="username" value="';
@@ -86,6 +91,11 @@ echo '" required autofocus></td></tr>';
 echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
 send_captcha();
 echo '<tr><td colspan="2"><input type="submit" value="Login"></td></tr>';
-echo '</table></form>';
-echo '<p>If you disabled cookies, please re-enable them. You can\'t log in without!</p>';
+echo '</table></form></div>';
+echo '<br>';
+echo '<footer class="w3-container w3-teal">';
+echo 'If you disabled cookies, please re-enable them. You can\'t log in without!';
+echo '</footer>';
 echo '</body></html>';
+
+
