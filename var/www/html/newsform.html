@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Write news</title>
+<link rel="stylesheet" href="news.css">
+</head>
+<body>
+<form action="newsneu.php" method="post">
+          <table id="news_tab">
+            <tr>
+              <td>Subject</td>
+              <td>Entry</td>
+            </tr>
+            <tr>
+              <td id="input"><input type="text" name="subject" id="inputarea" maxlength="30"></td>
+              <td id="textarea" rowspan="3"><textarea name="text" id="area" cols="40" rows="10" ></textarea></td>
+            </tr>
+            <tr>
+              <td>Sender</td>
+            </tr>
+           <tr>
+              <td id="author"><p id="authorradio"><input type="radio" name="author" value="Webmaster" checked>Webmaster<br>
+              						<input type="radio" name="author" value="Admin">Admin<br>
+			                        <input type="radio" name="author" value="LOL">LOL<br>
+              </td>
+            </tr>
+            <tr>
+              <td id="button1"><input type="submit" name="submit" value="Save"></td>
+              <td id="button2"><input type="reset" name="reset" value="Cancel"></td>
+            </tr>
+         </table>
+</form><br>
+<div id="info">Info: Leave the subject and text box blank to clear the contents of the text file</div>
+</body>
+</html> 

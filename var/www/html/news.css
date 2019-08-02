@@ -1,0 +1,62 @@
+@charset "ISO-8859-1";
+
+body     {
+         font-family: Calibri;
+        /* background-color: #000000;
+         color: white;  }*/
+#news    {
+         margin: 0;
+         padding: 0;
+         width: 450px;
+         min-height: 200px;
+         border-top: 1px solid #FFFFFF;
+         border-bottom: 1px solid #FFFFFF;
+         border-left: 0;
+         border-right: 0;
+         text-align: center; }
+#phpp   {
+           color: #FFFFFF;
+           font-weight: bold;
+           text-align: center; }
+#phptab  { width: 100%;
+           text-align: center; }
+#phptd   {
+           background-color: #FFFFFF;
+           font-weight: bold;
+           color: #000000; }
+#news_tab {
+          margin: 0;
+          padding: 0;
+          width: 39%;
+          height: auto;
+          border-top: 1px solid #FFFFFF;
+          border-bottom: 1px solid #FFFFFF;
+          border-left: 0;
+          border-right: 0;
+          text-align: center; }
+#info    {
+         width: 39%;
+         border: 1px solid #FF0000;
+         color: #FF0000;
+         text-decoration: none;
+         text-align: center; }
+#input,#textarea,#verfasser {
+                 vertical-align: top; }
+#inputarea,#area {
+                 border: 1px solid #FFFFFF; }
+#area    {
+         resize: none; }
+#verfasserradio  { text-align: left;
+                   margin-left: 100px; }
+td        {
+          width: 400px; }
+#phplink    {
+           color: #FFFFFF;
+           font-weight: bold;
+           text-align: center; }
+#phpref  {
+         text-decoration: none;
+         color: #FFFFFF; }
+#phplink a:hover {
+                text-decoration: underline;
+                color: #C6C6C6; }

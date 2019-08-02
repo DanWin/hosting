@@ -44,9 +44,39 @@ if(empty($_SESSION['logged_in'])){
 		$cnt=$stmt->fetch(PDO::FETCH_NUM)[0];
 		echo '<a href="' . $_SERVER['SCRIPT_NAME'] . "?action=approve\">Approve pending sites ($cnt)</a> | ";
 	}
-	echo '<a href="' . $_SERVER['SCRIPT_NAME'] . '?action=list">List of accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=delete">Delete accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=suspend">Suspend hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=edit">Edit hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=logout">Logout</a></p>';
+	echo '<a href="' . $_SERVER['SCRIPT_NAME'] . '">Admin</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=list">List of accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=delete">Delete accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=suspend">Suspend hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=edit">Edit hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=logout">Logout</a></p>';
 	if(empty($_REQUEST['action']) || $_REQUEST['action']==='login'){
 		echo '<p>Welcome to the admin panel!</p>';
+    echo '<p>######News######</p>';
+    include('newsform.html');
+echo '<br>';
+echo 'News Report <br><br>';
+
+error_reporting(E_ALL);
+                  
+                  $entry = file("../news.txt");
+                 
+                  foreach($entry as $view)
+                  {
+                     $view = stripslashes($view);
+                     $teile = explode("|", $view);
+                  }
+                      if($teile[1] == "")
+                      {
+                        echo "Server Status: All is normal! Namaste"; 
+                      }
+                      else
+                      {
+
+                      echo "<table >
+                             <tr>
+                                   <td >$teile[0] from $teile[2]</td>
+                             </tr>
+                            <tr>
+                                  <td >$teile[1]</td>
+                            </tr>
+                           </table>";
+                      }
 	}elseif($_REQUEST['action'] === 'logout'){
 		session_destroy();
 		header('Location: ' . $_SERVER['SCRIPT_NAME']);
@@ -55,10 +85,10 @@ if(empty($_SESSION['logged_in'])){
 		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion link</th><th>Action</th></tr>';
-		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
+		$stmt=$db->query('SELECT users.username, onions.onion, onions.enabled FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
 		$sccounts = [];
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-			$accounts[$tmp[0]] []= $tmp[1];
+			$accounts[$tmp[0]] []= [$tmp[1], $tmp[2]];
 		}
 		foreach($accounts as $account => $onions){
 			echo "<tr><td>$account</td><td>";
@@ -69,9 +99,13 @@ if(empty($_SESSION['logged_in'])){
 				}else{
 					echo '<br>';
 				}
-				echo "<a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a>";
+				if($onion[1]=='1'){
+					echo "<a href=\"http://$onion[0].onion\" target=\"_blank\">$onion[0].onion</a>";
+				}else{
+					echo "$onion[0].onion";
+				}
 			}
-			echo "</td><td><button type=\"submit\" name=\"action\" value=\"edit_$onions[0]\">Edit</button><button type=\"submit\" name=\"action\" value=\"delete_$onions[0]\">Delete</button><button type=\"submit\" name=\"action\" value=\"suspend_$onions[0]\">Suspend</button></td></tr>";
+			echo "</td><td><button type=\"submit\" name=\"action\" value=\"edit_{$onions[0][0]}\">Edit</button><button type=\"submit\" name=\"action\" value=\"delete_{$onions[0][0]}\">Delete</button><button type=\"submit\" name=\"action\" value=\"suspend_{$onions[0][0]}\">Suspend</button></td></tr>";
 		}
 		echo '</table></form>';
 	}elseif(substr($_REQUEST['action'], 0, 7) === 'approve'){
