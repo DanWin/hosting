@@ -1,11 +1,11 @@
-Thats the original fork of Daniels hosting system.
-But with small changes:
--The template is lightweigt/responsive W3 standart
--The colors are chakra colors :-) Namaste
--News section, the admin can post news to the startsite
--there is a new const CONTACT_ME='mail@example.com'; //Main Contact emailadress 
-this const is also in the frontend and backend, all links are changed to this const.
-
+Thats the original fork of Daniels hosting system.<br>
+But with small changes:<br>
+-The template is lightweigt/responsive W3 standart<br>
+-The colors are chakra colors :-) Namaste<br>
+-News section, the admin can post news to the startsite<br>
+-there is a new const CONTACT_ME='mail@example.com'; //Main Contact emailadress <br>
+this const is also in the frontend and backend, all links are changed to this const.<br>
+<br>
 All changes are made with love and positiv energy.
 
 General Information:
