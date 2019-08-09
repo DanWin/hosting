@@ -244,6 +244,9 @@ pm.start_servers = 2
 pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 php_admin_value[mysqli.allow_persistent] = On
+php_admin_value[upload_tmp_dir] = /tmp
+php_admin_value[soap.wsdl_cache_dir] = /tmp
+php_admin_value[session.save_path] = /tmp
 php_admin_value[open_basedir] = /html/adminer:/tmp
 ";
 	if(!file_exists("/etc/php/$version/fpm/pool.d/")){
