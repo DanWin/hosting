@@ -7,6 +7,7 @@ const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
 const DBVERSION=15; //database layout version
 const CAPTCHA=0; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
+const CONTACT_ME='mail@example.com'; //Main Contact emailadress
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
 const SERVERS=[ //servers and ports we are running on
@@ -600,9 +601,14 @@ function del_user_db(PDO $db, int $user_id, string $mysql_db) {
 	}
 }
 
+function get_new_tor_instance(PDO $db){
+	$stmt = $db->query('SELECT s.ID FROM service_instances AS s LEFT JOIN onions AS o ON (s.ID = o.instance) GROUP BY s.ID ORDER BY count(s.ID) LIMIT 1;');
+	return $stmt->fetch(PDO::FETCH_NUM)[0];
+}
+
 function add_user_onion(PDO $db, int $user_id, string $onion, string $priv_key, int $onion_version) {
 		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, instance) VALUES (?, ?, ?, ?, 2, ?);');
-		$stmt->execute([$user_id, $onion, $priv_key, $onion_version, SERVICE_INSTANCES[array_rand(SERVICE_INSTANCES)]]);
+		$stmt->execute([$user_id, $onion, $priv_key, $onion_version, get_new_tor_instance($db)]);
 }
 
 function del_user_onion(PDO $db, int $user_id, string $onion) {
