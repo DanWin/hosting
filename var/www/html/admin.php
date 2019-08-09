@@ -53,9 +53,9 @@ echo '<br>';
 echo 'News Report <br><br>';
 
 error_reporting(E_ALL);
-
+                  
                   $entry = file("../news.txt");
-
+                 
                   foreach($entry as $view)
                   {
                      $view = stripslashes($view);
@@ -63,7 +63,7 @@ error_reporting(E_ALL);
                   }
                       if($teile[1] == "")
                       {
-                        echo "Server Status: All is normal! Namaste";
+                        echo "Server Status: All is normal! Namaste"; 
                       }
                       else
                       {

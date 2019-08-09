@@ -3,28 +3,18 @@ include('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting</title>
+<title>Lin's Hosting</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
+<meta name="author" content="Lin Om">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <link rel="stylesheet" href="w3.css">
 </head>
 <style>
-body {
-  background-color: lightblue;
-}
-
-h1 {
-  color: white;
-  text-align: center;
-}
-
-p {
-  font-family: verdana;
-  font-size: 2vw;
-}
-
+body {background-color: lightblue;}
+h1 {color: white;text-align: center;}
+p {font-family: verdana;font-size: 2vw;}
+btn {font-family: verdana;font-size: 1.2vw;}
 </style>
 <body>
   <div class="w3-container w3-margin-left">
@@ -38,7 +28,9 @@ p {
   <a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a>
   <a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a>
   <a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a>
+  <a href="mailto:<?php echo CONTACT_ME?>" class="w3-bar-item w3-button w3-mobile">Contact Lin's hosting service</a>
 </div>
+<div class="w3-panel">
 <div id="news">
 <?php             error_reporting(E_ALL);
                   
@@ -56,20 +48,14 @@ p {
                       else
                       {
 
-                      echo "<table >
-                             <tr>
-                                   <td >$teile[0] from $teile[2]</td>
-                             </tr>
-                            <tr>
-                                  <td >$teile[1]</td>
-                            </tr>
-                           </table>";
+                      echo "$teile[0] from $teile[2]
+                            <br>$teile[1]";
                       }
                   ?>
-          </div>
+          </div></div>
 <p>Here you can get yourself a hosting account on my server.</p>
 <div class="w3-card-4">
-<header class="w3-container w3-teal w3-hover-shadow">
+<header class="w3-container w3-green">
   <h1>What you will get:</h1>
 </header>
 <div class="w3-container">
@@ -82,27 +68,25 @@ p {
 <li>Web-based file manager</li>
 <li>FTP access</li>
 <li>SFTP access</li>
-<li>10GB disk quota and a maximum of 100.000 files. If you need more, just <a href="https://danwin1210.me/contact.php">contact me</a></li>
-<li>mail() can send e-mails from your.onion@<?php echo ADDRESS; ?> (your.onion@hosting.danwin1210.me for clearnet) - not yet working but will return in future, use <a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
+<li>10GB disk quota and a maximum of 100.000 files. If you need more, just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a></li>
+<li>mail() can send e-mails from <btn>your.onion@<?php echo ADDRESS; ?></btn><a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion domains</li>
-<li>Clearnet domains or a free subdomain of danwin1210.me</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
 <li>More to come…</li>
 </div>
-<footer class="w3-container w3-teal">
+<footer class="w3-container w3-yellow">
   <h5></h5>
 </footer>
 </div>
     <br>
 <div class="w3-card-4">
-<header class="w3-container w3-teal w3-hover-shadow">
+<header class="w3-container w3-orange ">
   <h1>Rules</h1>
 </header>
 <div class="w3-container">
-<li>No child pornography!</li>
 <li>No terroristic propaganda!</li>
 <li>No illegal content according to German law!</li>
 <li>No malware! (e.g. botnets)</li>
@@ -114,7 +98,7 @@ p {
 <li>I preserve the right to delete any site for violating these rules and adding new rules at any time.</li>
 <li>Should you not honor these rules, I will (have to) work together with Law Enfocements!</li>
 </div>
-<footer class="w3-container w3-teal">
+<footer class="w3-container w3-red">
   <h5></h5>
 </footer>
 </div> 

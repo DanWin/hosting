@@ -7,9 +7,9 @@ try{
 	die('No Connection to MySQL database!');
 }
 echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - List of hosted sites</title>';
+echo '<title>Lin\'s Hosting - List of hosted sites</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
+echo '<meta name="author" content="Lin Om">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '<link rel="stylesheet" href="w3.css">';
 echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
@@ -31,10 +31,23 @@ $stmt=$db->query('SELECT COUNT(*) FROM users WHERE public=1;');
 $count=$stmt->fetch(PDO::FETCH_NUM);
 $stmt=$db->query('SELECT COUNT(*) FROM users WHERE public=0;');
 $hidden=$stmt->fetch(PDO::FETCH_NUM);
+echo '<br>';
+echo '<div class="w3-card-4">';
+echo '<header class="w3-container w3-green">';
+echo '<h1>Onion domains</h1>';
+echo '</header>';
+echo '<div class="w3-container">';
 echo "<p>Here is a list of $count[0] public hosted sites ($hidden[0] sites hidden):</p>";
-echo '<li><h1>Onion links</h1></li>';
 $stmt=$db->query('SELECT onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE users.public=1 ORDER BY onions.onion;');
 while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-echo "<btn><a href=\"http://$tmp[0].onion\" target=\"_blank\" class=w3-btn >$tmp[0].onion</a></btn>";
+echo "<btn><a href=\"http://$tmp[0].onion\" target=\"_blank\" >$tmp[0].onion</a></btn><br>";
 }
+echo '</div>';
+echo '<footer class="w3-container w3-yellow">';
+echo '<h5></h5>';
+echo '</footer>';
+echo '</div>';
 echo '</body></html>';
+
+
+

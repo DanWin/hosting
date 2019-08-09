@@ -13,9 +13,9 @@ if(!empty($_SESSION['hosting_username'])){
 }
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - Register</title>
+<title>Lin's Hosting - Register</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
+<meta name="author" content="Lin Om">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <link rel="stylesheet" href="w3.css">
@@ -51,8 +51,8 @@ p {
 </div>
 <br>    
 <div class="w3-card-4">
-<header class="w3-container w3-teal">
-<h1>Hosting - Register</h1></header>
+<header class="w3-container w3-green">
+<h1>Register your account</h1></header>
 <div class="w3-container">
 <br><?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
@@ -197,10 +197,10 @@ foreach(PHP_VERSIONS as $key => $version){
 <?php echo isset($_REQUEST['private_key']) ? htmlspecialchars($_REQUEST['private_key']) : ''; ?>
 </textarea>
 </label></td></tr>
-<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="https://danwin1210.me/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>
+<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="privancy.php" target="_blank">Privacy Policy</a></label><br></td></tr>
 <tr><td colspan="2"><input type="submit" value="Register"></td></tr>
 </table></form>
 </div>
-<footer class="w3-container w3-teal"><h5></h5>
+<footer class="w3-container w3-yellow"><h5></h5>
 </footer></div>
 </body></html>
