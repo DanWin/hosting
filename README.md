@@ -1,3 +1,13 @@
+Thats the original fork of Daniels hosting system.
+But with small changes:
+-The template is lightweigt/responsive W3 standart
+-The colors are chakra colors :-) Namaste
+-News section, the admin can post news to the startsite
+-there is a new const CONTACT_ME='mail@example.com'; //Main Contact emailadress 
+this const is also in the frontend and backend, all links are changed to this const.
+
+All changes are made with love and positiv energy.
+
 General Information:
 --------------------
 
@@ -5,6 +15,7 @@ This is a setup for a TOR based shared hosting server. It is provided as is and 
 
 Installation Instructions:
 --------------------------
+Testet with Debian 10 stable
 
 The configuration was tested with a standard Debian sid and Ubuntu 16.04 LTS installation. It's recommended you install Debian sid on your server, but with a little tweaking you may also get this working on other distributions and/or versions.
 
@@ -17,7 +28,8 @@ If you are on Ubuntu, add the following PPA:
 ```
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 ```
-On debian this may be worth a look: https://deb.sury.org/
+??? On debian this may be worth a look: https://deb.sury.org/
+But you can also use the default debian repos.
 
 To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
 
