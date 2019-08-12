@@ -33,9 +33,9 @@ btn {font-family: verdana;font-size: 1.2vw;}
 <div class="w3-panel">
 <div id="news">
 <?php             error_reporting(E_ALL);
-                  
+
                   $entry = file("../news.txt");
-                  
+
                   foreach($entry as $view)
                   {
                      $entry = stripslashes($view);
@@ -101,6 +101,6 @@ btn {font-family: verdana;font-size: 1.2vw;}
 <footer class="w3-container w3-red">
   <h5></h5>
 </footer>
-</div> 
+</div>
 </body>
 </html>

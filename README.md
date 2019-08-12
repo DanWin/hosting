@@ -45,9 +45,9 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables locales-all logrotate mariadb-server nano nginx-full postfix postfix-mysql \
+apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nginx-full nodejs postfix postfix-mysql \
 php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
-php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip && apt-get --no-install-recommends install adminer
+php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
@@ -93,6 +93,8 @@ postmulti -i clearnet -p start
 ```
 If you created an instance, uncomment the clearnet relay related config in etc/postfix/main.cf and make sure to copy and modify the configuration files from etc/postfix-clearnet too
 
+If you encountered the following issue: `postfix: fatal: chdir(/var/spool/postfix-clearnet): No such file or directory` you can just copy the chroot from the default postfix instance like this `cd /var/spool/ && cp -a postfix/ postfix-clearnet/`
+
 After copying (and modifying) the posfix configuration, you need to create databases out of the mapping files (also each time you update those files):
 ```
 postalias /etc/aliases
@@ -110,8 +112,8 @@ As time syncronisation is important, you should configure ntp servers in `/etc/s
 
 To create all required tor and php instances run the following commands:
 ```
-for instance in 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(tor-instance-create $instance) done
-for instance in default 2 3 4 5 6 7 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(systemctl enable php7.3-fpm@$instance;) done
+for instance in 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(tor-instance-create $instance) done
+for instance in default 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(systemctl enable php7.3-fpm@$instance;) done
 ```
 
 Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the /home mountpoint. Then initialize quota:
@@ -120,15 +122,17 @@ mount -o remount /home
 quotacheck -cu /home
 quotaon /home
 ```
-For web base database administration, check out the latest phpmyadmin:
+For web base database administration, check out the latest phpmyadmin and adminer:
 ```
 cd /var/www/html/ && git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ && cd phpmyadmin && composer install --no-dev && yarn
+cd /var/www/html/ && git clone https://github.com/vrana/adminer/ && cd adminer && git submodule update --init
 ```
 
 Once installed create a mysql user for phpmyadmin and cofigure it in `/var/www/html/phpmyadmin/config.inc.php` and fill `$cfg['blowfish_secret']` with random characters:
 ```
 mysql
 CREATE USER 'phpmyadmin'@'%' IDENTIFIED BY 'MY_PASSWORD';
+CREATE DATABASE phpmyadmin;
 GRANT ALL PRIVILEGES ON phpmyadmin.* TO 'phpmyadmin'@'%';
 FLUSH PRIVILEGES;
 quit

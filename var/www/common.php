@@ -91,16 +91,16 @@ server {
 		}
 	}
 	location /adminer {
-		root /usr/share/adminer;
+		root /var/www/html/adminer;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT $document_root;
-			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_param DOCUMENT_ROOT /html/adminer;
+			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/7.3-adminer;
 		}
 	}
 	location /externals/jush/ {
-		root /usr/share/adminer;
+		root /var/www/html/adminer;
 	}
 	location /nginx/ {
 		root /var/log/;
@@ -318,9 +318,9 @@ $torrc="ClientUseIPv6 1
 ClientUseIPv4 1
 SOCKSPort 0
 MaxClientCircuitsPending 1024
-NumEntryGuards 9
-NumDirectoryGuards 9
-NumPrimaryGuards 9
+NumEntryGuards 15
+NumDirectoryGuards 15
+NumPrimaryGuards 15
 ";
 	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
 	$stmt->execute([$key]);
