@@ -440,8 +440,6 @@ function rewrite_nginx_config(PDO $db){
 			$php_location="
 		location ~ [^/]\.php(/|\$) {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /www;
-			fastcgi_param SCRIPT_FILENAME /www\$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/$tmp[system_account];
 		}";
 		}else{
@@ -472,8 +470,6 @@ function rewrite_nginx_config(PDO $db){
 			$php_location="
 		location ~ [^/]\.php(/|\$) {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /www;
-			fastcgi_param SCRIPT_FILENAME /www\$fastcgi_script_name;
 			fastcgi_pass unix:/run/php/$tmp[system_account];
 		}";
 		}else{

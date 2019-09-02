@@ -1,11 +1,19 @@
+[Unit]
+Description=A high performance web server and a reverse proxy server
+After=network.target nss-lookup.target
+
 [Service]
+Type=forking
+PIDFile=/run/nginx.pid
 LimitNOFILE=100000
 TimeoutStartSec=600
-ExecStop=
+TimeoutStopSec=5
+KillMode=mixed
 ExecStop=-/sbin/start-stop-daemon --quiet --stop --pidfile /run/nginx.pid
-ExecStartPre=
-ExecStartPre=/usr/bin/install -Z -m 02755 -o www-data -g www-data -d /var/run/nginx
+ExecStartPre=/usr/bin/install -Z -m 02755 -o www-data -g www-data -d /run/nginx
 ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
+ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
+ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
 ProtectSystem=strict
 PrivateTmp=true
 NoNewPrivileges=true
@@ -17,7 +25,9 @@ LockPersonality=true
 SystemCallArchitectures=native
 BindPaths=/var/log/nginx/
 BindPaths=/var/lib/nginx/
-BindPaths=/var/run/
 BindPaths=/var/www/var/run/
 BindPaths=/run/
 InaccessiblePaths=/root/
+
+[Install]
+WantedBy=multi-user.target

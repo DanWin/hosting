@@ -33,7 +33,7 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nginx-full nodejs postfix postfix-mysql \
+apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
 php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
 php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
@@ -157,6 +157,15 @@ Then edit the database configuration in `/var/www/common.php` and `/etc/postfix/
 Install sodium_compat for v3 hidden_service support
 ```
 cd /var/www && composer install
+```
+
+Custom optimized nginx
+```
+apt-get --no-install-recommends install libbrotli-dev libpcre3-dev zlib1g-dev
+git clone https://github.com/nginx/nginx && cd nginx
+git clone https://github.com/eustas/ngx_brotli
+./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli
+make -j $(nproc) install
 ```
 
 Last but not least setup the database by running
