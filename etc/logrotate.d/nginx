@@ -7,13 +7,8 @@
 	notifempty
 	create 0640 www-data www-data
 	sharedscripts
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi \
-	endscript
 	postrotate
-		invoke-rc.d nginx rotate >/dev/null 2>&1
+		start-stop-daemon --stop --signal USR1 --quiet --pidfile /run/nginx.pid >/dev/null 2>&1
 	endscript
 }
 /home/*/logs/*.log {
@@ -26,12 +21,7 @@
 	su root www-data
 	create 0640 www-data www-data
 	sharedscripts
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi \
-	endscript
 	postrotate
-		invoke-rc.d nginx rotate >/dev/null 2>&1
+		start-stop-daemon --stop --signal USR1 --quiet --pidfile /run/nginx.pid >/dev/null 2>&1
 	endscript
 }
