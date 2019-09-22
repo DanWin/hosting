@@ -30,6 +30,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec("CREATE TABLE onions (user_id int(11) NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', max_streams tinyint(3) unsigned NOT NULL DEFAULT '20', instance char(1) NOT NULL DEFAULT '2', KEY user_id (user_id), KEY enabled (enabled), KEY instance(instance), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE, CONSTRAINT instance_ibfk_1 FOREIGN KEY (instance) REFERENCES service_instances (id) ON DELETE RESTRICT ON UPDATE RESTRICT) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec("CREATE TABLE domains (user_id int(11) NULL, domain varchar(255) COLLATE latin1_bin NOT NULL PRIMARY KEY, enabled tinyint(1) NOT NULL DEFAULT '1', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT domains_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec('CREATE TABLE disk_quota (user_id int(11) NOT NULL, quota_size int(10) unsigned NOT NULL, quota_files int(10) unsigned NOT NULL, updated tinyint(1) NOT NULL DEFAULT 1, KEY user_id (user_id), KEY updated (updated), CONSTRAINT disk_quota_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec('CREATE TABLE nginx_rewrites (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NOT NULL, `regex` varchar(255) NOT NULL, replacement varchar(255) NOT NULL, `flag` varchar(9) NOT NULL, ifnotexists tinyint(1) NOT NULL, CONSTRAINT nginx_rewrites_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
@@ -150,6 +151,10 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$stmt = $db->prepare('INSERT INTO disk_quota (user_id, quota_size, quota_files) SELECT id, ?, ? FROM users;');
 		$stmt->execute([DEFAULT_QUOTA_SIZE, DEFAULT_QUOTA_FILES]);
 	}
+	if($version<16){
+		$db->exec('UPDATE onions SET enabled=1 WHERE enabled=2;');
+		$db->exec('CREATE TABLE nginx_rewrites (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NOT NULL, `regex` varchar(255) NOT NULL, replacement varchar(255) NOT NULL, `flag` varchar(9) NOT NULL, ifnotexists tinyint(1) NOT NULL, CONSTRAINT nginx_rewrites_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
+	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
 }
@@ -253,7 +258,7 @@ php_admin_value[open_basedir] = /html/adminer:/tmp
 		mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
 	}
 	file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
-	exec("service php$version-fpm@default reload");
+	exec('systemctl reload '.escapeshellarg("php$version-fpm@default"));
 }
 echo "Updating chroots, this might take a while…\n";
 exec('/var/www/setup_chroot.sh /var/www');
@@ -275,10 +280,32 @@ file_put_contents('/etc/nginx/streams-enabled/default', "server {
 	listen unix:/var/www/var/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
-exec("service nginx reload");
+exec('systemctl reload nginx');
 $stmt=$db->prepare('INSERT IGNORE INTO service_instances (id) VALUES (?);');
 foreach(SERVICE_INSTANCES as $key){
 	$stmt->execute([$key]);
+}
+$stmt=$db->query('SELECT id FROM service_instances;');
+$update_users=$db->prepare('UPDATE users SET instance = (SELECT id FROM service_instances WHERE id !=? ORDER BY RAND() limit 1) WHERE instance=?;');
+$update_onions=$db->prepare('UPDATE onions SET instance = (SELECT id FROM service_instances WHERE id !=? ORDER BY RAND() limit 1) WHERE instance=?;');
+$drop_instance=$db->prepare('DELETE FROM service_instances WHERE id=?;');
+while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+	if(!in_array($tmp[0], SERVICE_INSTANCES)){
+		exec('systemctl stop '.escapeshellarg("tor@$tmp[0]"));
+		exec('systemctl disable '.escapeshellarg("tor@$tmp[0]"));
+		exec('rm -r '.escapeshellarg("/var/lib/tor-instances/$tmp[0]/"));
+		exec('rm -r '.escapeshellarg("/etc/tor/instances/$tmp[0]/"));
+		exec('userdel '.escapeshellarg("_tor-$tmp[0]"));
+		foreach(PHP_VERSIONS as $version){
+			exec('systemctl stop '.escapeshellarg("php$version-fpm@$tmp[0]"));
+			exec('systemctl disable '.escapeshellarg("php$version-fpm@$tmp[0]"));
+			exec('rm -r '.escapeshellarg("/etc/php/$version/fpm/pool.d/$tmp[0]/"));
+			unlink("/etc/php/$version/fpm/php-fpm-".basename($tmp[0]).'.conf');
+		}
+		$update_users->execute([$tmp[0], $tmp[0]]);
+		$update_onions->execute([$tmp[0], $tmp[0]]);
+		$drop_instance->execute($tmp);
+	}
 }
 $db->exec('UPDATE service_instances SET reload=1;');
 echo "Done - Database and files have been updated to the latest version :)\n";

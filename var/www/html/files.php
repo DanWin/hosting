@@ -242,12 +242,14 @@ if(!empty($_FILES['files'])){
 
 $files=$dirs=[];
 $list=ftp_rawlist($ftp, '.');
-foreach($list as $file){
-	preg_match('/^([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+(.*)$/', $file, $match);
-	if($match[0][0]==='d'){
-		$dirs[$match[9]]=['name'=>"$match[9]/", 'mtime'=>strtotime("$match[6] $match[7] $match[8]"), 'size'=>'-'];
-	}else{
-		$files[$match[9]]=['name'=>$match[9], 'mtime'=>ftp_mdtm($ftp, $match[9]), 'size'=>$match[5]];
+if(is_array($list)){
+	foreach($list as $file){
+		preg_match('/^([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+(.*)$/', $file, $match);
+		if($match[0][0]==='d'){
+			$dirs[$match[9]]=['name'=>"$match[9]/", 'mtime'=>strtotime("$match[6] $match[7] $match[8]"), 'size'=>'-'];
+		}else{
+			$files[$match[9]]=['name'=>$match[9], 'mtime'=>ftp_mdtm($ftp, $match[9]), 'size'=>$match[5]];
+		}
 	}
 }
 

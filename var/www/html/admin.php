@@ -146,13 +146,13 @@ if(empty($_SESSION['logged_in'])){
 			if($error=check_csrf_error()){
 				echo '<p style="color:red;">'.$error.'</p>';
 			}elseif(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $onion, $match)){
-				$stmt=$db->prepare('SELECT null FROM onions WHERE onion=?;');
+				$stmt=$db->prepare('SELECT instance FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
-				if($stmt->fetch(PDO::FETCH_NUM)){
+				if($instance=$stmt->fetch(PDO::FETCH_NUM)){
 					$stmt=$db->prepare('UPDATE onions SET enabled=-2 WHERE onion=?;');
 					$stmt->execute([$match[1]]);
 					echo "<p style=\"color:green;\">Successfully queued for suspension!</p>";
-					enqueue_instance_reload($db, substr($match[1], 0, 1));
+					enqueue_instance_reload($db, $instance[0]);
 				}else{
 					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";
 				}
@@ -179,7 +179,7 @@ if(empty($_SESSION['logged_in'])){
 				echo '<p style="color:red;">'.$error.'</p>';
 			}elseif(preg_match('~^([a-z2-7]{16}|[a-z2-7]{56})(\.onion)?$~', $onion, $match)){
 				if(isset($_POST['num_intros'])){
-					$stmt=$db->prepare('SELECT version FROM onions WHERE onion=?;');
+					$stmt=$db->prepare('SELECT version, instance FROM onions WHERE onion=?;');
 					$stmt->execute([$match[1]]);
 					if($onion=$stmt->fetch(PDO::FETCH_NUM)){
 						$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion=?;');
@@ -200,7 +200,7 @@ if(empty($_SESSION['logged_in'])){
 							$max_streams = 65535;
 						}
 						$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $match[1]]);
-						enqueue_instance_reload($db, substr($match[1], 0, 1));
+						enqueue_instance_reload($db, $onion[1]);
 						echo "<p style=\"color:green;\">Changes successfully saved!</p>";
 					}
 				}

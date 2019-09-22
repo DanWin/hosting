@@ -15,33 +15,31 @@ function CHROOT_BINARY() {
     if [ "$LIB_FILES" != "" ]; then
         for LIB_FILE in $LIB_FILES; do
             LIB_DIRECTORY="$(dirname $LIB_FILE)"
-            test -d $CHROOT_DIRECTORY$LIB_DIRECTORY || mkdir -pm 0555 $CHROOT_DIRECTORY$LIB_DIRECTORY
-            diff $LIB_FILE $CHROOT_DIRECTORY$LIB_FILE > /dev/null 2>&1 || cp $LIB_FILE $CHROOT_DIRECTORY$LIB_FILE
+            mkdir -pm 0555 $CHROOT_DIRECTORY$LIB_DIRECTORY
+            cp $LIB_FILE $CHROOT_DIRECTORY$LIB_FILE
             chmod 0555 $CHROOT_DIRECTORY$LIB_FILE
         done
     fi
     if [ "$LDD_FILES" != "" ]; then
         for LDD_FILE in $LDD_FILES; do
             LDD_DIRECTORY="$(dirname $LDD_FILE)"
-            test -d $CHROOT_DIRECTORY$LDD_DIRECTORY || mkdir -pm 0555 $CHROOT_DIRECTORY${LDD_DIRECTORY}
-            diff $LDD_FILE $CHROOT_DIRECTORY$LDD_FILE > /dev/null 2>&1 || cp $LDD_FILE $CHROOT_DIRECTORY$LDD_FILE
+            mkdir -pm 0555 $CHROOT_DIRECTORY${LDD_DIRECTORY}
+            cp $LDD_FILE $CHROOT_DIRECTORY$LDD_FILE
             chmod 0555 $CHROOT_DIRECTORY$LDD_FILE
         done
     fi
-    diff $BINARY $CHROOT_DIRECTORY/$BINARY > /dev/null 2>&1 || cp $BINARY $CHROOT_DIRECTORY/$BINARY
+    cp $BINARY $CHROOT_DIRECTORY/$BINARY
     chmod 0555 $CHROOT_DIRECTORY/$BINARY
 }
 
 function CHROOT_FILE() {
-    diff $1 $CHROOT_DIRECTORY/$1 > /dev/null 2>&1 || cp $1 $CHROOT_DIRECTORY/$1
+    cp $1 $CHROOT_DIRECTORY/$1
 }
 
 function CHROOT_DIRECTORY() {
-    test -d $CHROOT_DIRECTORY/$1 || mkdir -pm 0555 $CHROOT_DIRECTORY/$1
-    diff -r $1 $CHROOT_DIRECTORY/$1 > /dev/null 2>&1 || {
-        test ! -d $CHROOT_DIRECTORY/$1 || rm -rf $CHROOT_DIRECTORY/$1/ > /dev/null 2>&1
-        cp -Rp $1 $CHROOT_DIRECTORY/$1
-    }
+    mkdir -pm 0555 $CHROOT_DIRECTORY/$1
+    rm -rf $CHROOT_DIRECTORY/$1/ > /dev/null 2>&1
+    cp -Rp $1 $CHROOT_DIRECTORY/$1
 }
 
 ### variables
@@ -204,6 +202,9 @@ echo "root:x:0:0:root:/root:/bin/bash" > $CHROOT_DIRECTORY/etc/passwd
 echo "www-data:x:33:33::/var/www:/bin/bash" >> $CHROOT_DIRECTORY/etc/passwd
 echo "root:x:0:" > $CHROOT_DIRECTORY/etc/group
 echo "www-data:x:33:www-data" >> $CHROOT_DIRECTORY/etc/group
+echo "export HOME=/" > $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
+echo "export HISTFILE=/.bash_history" >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
+
 # /dev devices
 test -e $CHROOT_DIRECTORY/dev/null      || mknod -m 666 $CHROOT_DIRECTORY/dev/null c 1 3
 test -e $CHROOT_DIRECTORY/dev/zero      || mknod -m 666 $CHROOT_DIRECTORY/dev/zero c 1 5
@@ -235,4 +236,4 @@ done
 for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
-diff $CHROOT_DIRECTORY/usr/bin/php7.3 $CHROOT_DIRECTORY/usr/bin/php > /dev/null 2>&1 || cp -r $CHROOT_DIRECTORY/usr/bin/php7.3 $CHROOT_DIRECTORY/usr/bin/php
+cp -l $CHROOT_DIRECTORY/usr/bin/php7.3 $CHROOT_DIRECTORY/usr/bin/php

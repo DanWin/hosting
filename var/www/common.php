@@ -23,7 +23,7 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
-const SERVICE_INSTANCES=['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 100 accounts. Adding new instances is always possible at a later time, just removing one takes some manual cleanup for now - run setup.php after change
+const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
 const PHP_VERSIONS=[4 => '7.3']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.3'; //default php version
@@ -81,7 +81,6 @@ server {
 		}
 	}
 	location /phpmyadmin {
-		root /usr/share;
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
@@ -113,6 +112,7 @@ const MAX_NUM_USER_DOMAINS = 3; //maximum number of clearnet domains a user may 
 const SKIP_USER_CHROOT_UPDATE = true; //skips updating user chroots when running setup.php
 const DEFAULT_QUOTA_SIZE = 10 * 1024 * 1024; //per user disk quota in kb - Defaults to 10 GB
 const DEFAULT_QUOTA_FILES = 100000; //per user file quota - by default allow no more than 100000 files
+const NUM_GUARDS = 50; //number of tor guard relays to distribute the load on
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -312,36 +312,65 @@ function check_captcha_error() {
 	return false;
 }
 
-function rewrite_torrc(PDO $db, string $key){
-$torrc="ClientUseIPv6 1
+function rewrite_torrc(PDO $db, string $instance){
+	$update_onion=$db->prepare('UPDATE onions SET private_key=? WHERE onion=?;');
+	$torrc='ClientUseIPv6 1
 ClientUseIPv4 1
 SOCKSPort 0
 MaxClientCircuitsPending 1024
-NumEntryGuards 15
-NumDirectoryGuards 15
-NumPrimaryGuards 15
-";
-	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
-	$stmt->execute([$key]);
-	while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-if($tmp[6]==1){
-	$socket=$tmp[1];
-}else{
-	$socket='suspended';
-}
-		$torrc.="HiddenServiceDir /var/lib/tor-instances/$key/hidden_service_$tmp[0].onion
-HiddenServiceNumIntroductionPoints $tmp[2]
-HiddenServiceVersion $tmp[4]
+NumEntryGuards '.NUM_GUARDS.'
+NumDirectoryGuards '.NUM_GUARDS.'
+NumPrimaryGuards '.NUM_GUARDS.'
+';
+	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled, onions.private_key FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
+	$stmt->execute([$instance]);
+	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		if(!file_exists("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion")){
+			if($tmp['version']==2){
+				//php openssl implementation has some issues, re-export using native openssl
+				$pkey=openssl_pkey_get_private($tmp['private_key']);
+				openssl_pkey_export($pkey, $exported);
+				openssl_pkey_free($pkey);
+				$priv_key=shell_exec('echo ' . escapeshellarg($exported) . ' | openssl rsa');
+				//save hidden service
+				mkdir("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion", 0700);
+				file_put_contents("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/private_key", $priv_key);
+				chmod("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/private_key", 0600);
+				chown("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/", "_tor-$instance");
+				chown("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/private_key", "_tor-$instance");
+				chgrp("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/", "_tor-$instance");
+				chgrp("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/private_key", "_tor-$instance");
+				$update_onion->execute([$priv_key, $tmp['onion']]);
+			}elseif($tmp['version']==3){
+				$priv_key=base64_decode($tmp['private_key']);
+				//save hidden service
+				mkdir("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion", 0700);
+				file_put_contents("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/hs_ed25519_secret_key", $priv_key);
+				chmod("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/hs_ed25519_secret_key", 0600);
+				chown("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/", "_tor-$instance");
+				chown("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/hs_ed25519_secret_key", "_tor-$instance");
+				chgrp("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/", "_tor-$instance");
+				chgrp("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion/hs_ed25519_secret_key", "_tor-$instance");
+			}
+		}
+		if($tmp['enabled']==1){
+			$socket=$tmp['system_account'];
+		}else{
+			$socket='suspended';
+		}
+		$torrc.="HiddenServiceDir /var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion
+HiddenServiceNumIntroductionPoints $tmp[num_intros]
+HiddenServiceVersion $tmp[version]
 HiddenServiceMaxStreamsCloseCircuit 1
-HiddenServiceMaxStreams $tmp[5]
+HiddenServiceMaxStreams $tmp[max_streams]
 HiddenServicePort 80 unix:/var/run/nginx/$socket
 ";
-		if($tmp[3]){
+		if($tmp['enable_smtp']){
 			$torrc.="HiddenServicePort 25\n";
 		}
 	}
-	file_put_contents("/etc/tor/instances/$key/torrc", $torrc);
-	exec("service tor@$key reload");
+	file_put_contents("/etc/tor/instances/$instance/torrc", $torrc);
+	exec('systemctl reload '.escapeshellarg("tor@$instance"));
 }
 
 function private_key_to_onion(string $priv_key) : array {
@@ -433,8 +462,27 @@ function ed25519_seckey_expand(string $seed) : string {
 
 function rewrite_nginx_config(PDO $db){
 	$nginx='';
+	$rewrites = [];
+	// rewrite rules
+	$stmt = $db->query('SELECT user_id, regex, replacement, flag, ifnotexists FROM nginx_rewrites;');
+	while($tmp = $stmt->fetch(PDO::FETCH_ASSOC)){
+		if(!isset($rewrites[$tmp['user_id']])){
+			$rewrites[$tmp['user_id']] = '';
+		}
+		if($tmp['ifnotexists']){
+			$rewrites[$tmp['user_id']] .= "if (!-e \$request_filename) {\n\t\t";
+		}
+		$rewrites[$tmp['user_id']] .= "rewrite '$tmp[regex]' '$tmp[replacement]'";
+		if(!empty($tmp['flag'])){
+			$rewrites[$tmp['user_id']] .= " $tmp[flag]";
+		}
+		$rewrites[$tmp['user_id']] .= ";\n\t";
+		if($tmp['ifnotexists']){
+			$rewrites[$tmp['user_id']] .= "}\n\t";
+		}
+	}
 	// onions
-	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
+	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion, users.id FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		if($tmp['php']>0){
 			$php_location="
@@ -456,7 +504,11 @@ function rewrite_nginx_config(PDO $db){
 	error_log /home/$tmp[system_account]/logs/error.log notice;
 	disable_symlinks on from=/home/$tmp[system_account];
 	autoindex $autoindex;
-	location / {
+	";
+		if(isset($rewrites[$tmp['id']])){
+			$nginx .= $rewrites[$tmp['id']];
+		}
+		$nginx .= "location / {
 		try_files \$uri \$uri/ =404;$php_location
 	}
 }
@@ -464,7 +516,7 @@ function rewrite_nginx_config(PDO $db){
 
 	}
 	// clearnet domains
-	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, domains.domain FROM users INNER JOIN domains ON (domains.user_id=users.id) WHERE domains.enabled = 1 AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete != 1;");
+	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, domains.domain, users.id FROM users INNER JOIN domains ON (domains.user_id=users.id) WHERE domains.enabled = 1 AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete != 1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		if($tmp['php']>0){
 			$php_location="
@@ -486,7 +538,11 @@ function rewrite_nginx_config(PDO $db){
 	error_log /home/$tmp[system_account]/logs/error.log notice;
 	disable_symlinks on from=/home/$tmp[system_account];
 	autoindex $autoindex;
-	location / {
+	";
+		if(isset($rewrites[$tmp['id']])){
+			$nginx .= $rewrites[$tmp['id']];
+		}
+		$nginx .= "location / {
 		try_files \$uri \$uri/ =404;$php_location
 	}
 }
@@ -504,7 +560,7 @@ function rewrite_nginx_config(PDO $db){
 ";
 	}
 	file_put_contents("/etc/nginx/streams-enabled/hosted_sites", $nginx);
-	exec("service nginx reload");
+	exec('systemctl reload nginx');
 }
 
 function rewrite_php_config(PDO $db, string $key){
@@ -529,7 +585,7 @@ listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
 pm = ondemand
-pm.max_children = 75
+pm.max_children = 50
 pm.process_idle_timeout = 10s;
 chroot = /home/$tmp[system_account]
 php_admin_value[memory_limit] = 256M
@@ -540,7 +596,7 @@ php_admin_value[session.save_path] = /tmp
 ";
 		}
 		file_put_contents("/etc/php/$version/fpm/pool.d/$key/www.conf", $php);
-		exec("service php$version-fpm@$key restart");
+		exec('systemctl restart '.escapeshellarg("php$version-fpm@$key"));
 	}
 }
 
@@ -602,7 +658,7 @@ function get_new_tor_instance(PDO $db){
 }
 
 function add_user_onion(PDO $db, int $user_id, string $onion, string $priv_key, int $onion_version) {
-		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, instance) VALUES (?, ?, ?, ?, 2, ?);');
+		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, enable_smtp, instance) VALUES (?, ?, ?, ?, 1, 0, ?);');
 		$stmt->execute([$user_id, $onion, $priv_key, $onion_version, get_new_tor_instance($db)]);
 }
 
