@@ -100,8 +100,8 @@ As time syncronisation is important, you should configure ntp servers in `/etc/s
 
 To create all required tor and php instances run the following commands:
 ```
-for instance in 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(tor-instance-create $instance) done
-for instance in default 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z; do(systemctl enable php7.3-fpm@$instance;) done
+for instance in a b c d e f g h i j k l m n o p q r s; do(tor-instance-create $instance) done
+for instance in default a b c d e f g h i j k l m n o p q r s; do(systemctl enable php7.3-fpm@$instance;) done
 ```
 
 Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the /home mountpoint. Then initialize quota:
