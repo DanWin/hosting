@@ -33,7 +33,7 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter composer curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
+apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
 php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
 php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
@@ -154,8 +154,9 @@ quit
 
 Then edit the database configuration in `/var/www/common.php` and `/etc/postfix/sql/alias.cf`
 
-Install sodium_compat for v3 hidden_service support
+Install composer and sodium_compat for v3 hidden_service support
 ```
+curl -sSL https://github.com/composer/composer/releases/download/1.9.0/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
 cd /var/www && composer install
 ```
 

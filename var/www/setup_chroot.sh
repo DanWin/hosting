@@ -123,6 +123,7 @@ BINARIES_GENERAL=(
     '/usr/bin/vim'
     '/usr/bin/vi'
     '/usr/bin/awk'
+    '/usr/bin/composer'
 )
 FILES_GENERAL=(
     '/etc/hosts'
@@ -202,8 +203,6 @@ echo "root:x:0:0:root:/root:/bin/bash" > $CHROOT_DIRECTORY/etc/passwd
 echo "www-data:x:33:33::/var/www:/bin/bash" >> $CHROOT_DIRECTORY/etc/passwd
 echo "root:x:0:" > $CHROOT_DIRECTORY/etc/group
 echo "www-data:x:33:www-data" >> $CHROOT_DIRECTORY/etc/group
-echo "export HOME=/" > $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
-echo "export HISTFILE=/.bash_history" >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 
 # /dev devices
 test -e $CHROOT_DIRECTORY/dev/null      || mknod -m 666 $CHROOT_DIRECTORY/dev/null c 1 3
@@ -215,6 +214,8 @@ test -e $CHROOT_DIRECTORY/dev/urandom	|| mknod -m 644 $CHROOT_DIRECTORY/dev/uran
 for DIRECTORY in ${DIRECTORIES_GENERAL[@]}; do
     CHROOT_DIRECTORY $DIRECTORY
 done
+echo "export HOME=/" > $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
+echo "export HISTFILE=/.bash_history" >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 # copy general files
 for FILE in ${FILES_GENERAL[@]}; do
     CHROOT_FILE $FILE
