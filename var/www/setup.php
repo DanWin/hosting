@@ -281,10 +281,28 @@ file_put_contents('/etc/nginx/streams-enabled/default', "server {
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
 exec('systemctl reload nginx');
-$stmt=$db->prepare('INSERT IGNORE INTO service_instances (id) VALUES (?);');
-foreach(SERVICE_INSTANCES as $key){
-	$stmt->execute([$key]);
+// add new php/tor instances if not yet existing
+$check=$db->prepare('SELECT null FROM service_instances WHERE id = ?;');
+$stmt=$db->prepare('INSERT INTO service_instances (id) VALUES (?);');
+foreach(SERVICE_INSTANCES as $instance){
+	$check->execute([$instance]);
+	if(!$check->fetch()){
+		exec('useradd -d '.escapeshellarg("/var/lib/tor-instances/$instance").' -r -s /bin/false -M -U '.escapeshellarg("_tor-$instance"));
+		exec('install -Z -d -m 02700 -o '.escapeshellarg("_tor-$instance").' -g '.escapeshellarg("_tor-$instance").' '.escapeshellarg("/var/lib/tor-instances/$instance"));
+		exec('install -d '.escapeshellarg("/etc/tor/instances/$instance"));
+		rewrite_torrc($db, $instance);
+		exec("systemctl enable ".escapeshellarg("tor@$instance"));
+		exec("systemctl start ".escapeshellarg("tor@$instance"));
+		foreach(PHP_VERSIONS as $version){
+			rewrite_php_config($db, $instance);
+			exec("systemctl enable ".escapeshellarg("php$version-fpm@$instance"));
+			exec("systemctl start ".escapeshellarg("php$version-fpm@$instance"));
+		}
+		$stmt->execute([$instance]);
+		echo "Successfully added new instance $instance. Don't forget to add _tor-$instance as allowed user to your firewall rules in /etc/rc.local";
+	}
 }
+// remove no longer enabled php/tor instances
 $stmt=$db->query('SELECT id FROM service_instances;');
 $update_users=$db->prepare('UPDATE users SET instance = (SELECT id FROM service_instances WHERE id !=? ORDER BY RAND() limit 1) WHERE instance=?;');
 $update_onions=$db->prepare('UPDATE onions SET instance = (SELECT id FROM service_instances WHERE id !=? ORDER BY RAND() limit 1) WHERE instance=?;');

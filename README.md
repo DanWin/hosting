@@ -98,10 +98,9 @@ tmpfs /var/log/nginx tmpfs rw,user 0 0
 
 As time syncronisation is important, you should configure ntp servers in `/etc/systemd/timesyncd.conf` and make them match with the entries in `/etc/rc.local` iptables configuration
 
-To create all required tor and php instances run the following commands:
+Enable the PHP-FPM default instance:
 ```
-for instance in a b c d e f g h i j k l m n o p q r s; do(tor-instance-create $instance) done
-for instance in default a b c d e f g h i j k l m n o p q r s; do(systemctl enable php7.3-fpm@$instance;) done
+systemctl enable php7.3-fpm@default
 ```
 
 Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the /home mountpoint. Then initialize quota:
