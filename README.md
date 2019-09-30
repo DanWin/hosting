@@ -25,8 +25,8 @@ To get the latest mariadb version, you should follow these instructions to add t
 
 Add yarn + nodejs to our repositories:
 ```
-apt-key adv --recv 1655A0AB68576280
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list
 echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.list
 ```
