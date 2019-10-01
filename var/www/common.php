@@ -46,7 +46,7 @@ opcache.validate_timestamps=1
 opcache.revalidate_freq=2
 opcache.revalidate_path=1
 opcache.save_comments=1
-opcache.optimization_level=0xffffffff
+opcache.optimization_level=0x7fffffff
 opcache.validate_permission=1
 opcache.validate_root=1
 ';
