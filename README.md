@@ -92,8 +92,8 @@ postmap /etc/postfix-clearnet/canonical /etc/postfix-clearnet/sasl_password /etc
 
 To save temporary files in memory, add the following to `/etc/fstab`:
 ```
-tmpfs /tmp tmpfs defaults 0 0
-tmpfs /var/log/nginx tmpfs rw,user 0 0
+tmpfs /tmp tmpfs defaults,noatime 0 0
+tmpfs /var/log/nginx tmpfs rw,user,noatime 0 0
 ```
 
 As time syncronisation is important, you should configure ntp servers in `/etc/systemd/timesyncd.conf` and make them match with the entries in `/etc/rc.local` iptables configuration
@@ -103,7 +103,7 @@ Enable the PHP-FPM default instance:
 systemctl enable php7.3-fpm@default
 ```
 
-Edit `/etc/fstab` and add the `usrjquota=aquota.user,jqfmt=vfsv1` option to the /home mountpoint. Then initialize quota:
+Edit `/etc/fstab` and add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` option to the `/home` mountpoint and `noatime`to `/`. Then initialize quota:
 ```
 mount -o remount /home
 quotacheck -cu /home
