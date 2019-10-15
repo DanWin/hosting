@@ -13,12 +13,6 @@ Uninstall packages that may interfere with this setup:
 apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.service
 ```
 
-If you are on Ubuntu, add the following PPA:
-```
-LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
-```
-On debian this may be worth a look: https://deb.sury.org/
-
 To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
 
 To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
@@ -33,9 +27,8 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor aspell bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq haveged hunspell iptables libsasl2-modules locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
-php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-curl php7.3-dba php7.3-enchant php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-json php7.3-mbstring php7.3-mysql php7.3-opcache php7.3-pspell php7.3-readline php7.3-recode php7.3-soap php7.3-sqlite3 php7.3-tidy php7.3-xml php7.3-xmlrpc php7.3-xsl php7.3-zip \
-php-apcu php-gnupg php-imagick quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
+apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq g++ gcc haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
+quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
@@ -138,7 +131,6 @@ D. > select dovecot
 4. General Options > 9. Allow editing of identity > n Users should not be able to fake email addresses > y They should be able to change display name > y They should be able to set a reply to mail > y additional headers are not required
 10. Language settings > 4. Enable aggressive decoding
 11. Tweaks > 2. Ask user info on first login > n (commonly confuses users)
-11. Tweaks > 4. Use php recode functions > y
 11. Tweaks > 5. Use php iconv functions > y
 ```
 
@@ -166,6 +158,11 @@ git clone https://github.com/nginx/nginx && cd nginx
 git clone https://github.com/google/ngx_brotli
 ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli
 make -j $(nproc) install
+```
+
+Install custom optimized php
+```
+./install_php.sh
 ```
 
 Last but not least setup the database by running

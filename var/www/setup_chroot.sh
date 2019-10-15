@@ -107,7 +107,9 @@ BINARIES_GENERAL=(
     '/usr/bin/sftp'
     '/usr/bin/ssh'
     '/usr/bin/wget'
+    '/usr/bin/php7.2'
     '/usr/bin/php7.3'
+    '/usr/bin/php7.4'
     '/usr/bin/mysql'
     '/usr/bin/mysqldump'
     '/usr/bin/mysqlcheck'
@@ -177,8 +179,6 @@ DIRECTORIES_GENERAL=(
     '/lib/terminfo'
     '/usr/share/terminfo'
     '/usr/lib/php'
-    '/etc/php/7.3/cli'
-    '/etc/php/7.3/mods-available'
     '/etc/profile.d'
 )
 ### test variables/parameters
@@ -237,4 +237,4 @@ done
 for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
-cp -l $CHROOT_DIRECTORY/usr/bin/php7.3 $CHROOT_DIRECTORY/usr/bin/php
+ln $CHROOT_DIRECTORY/usr/bin/php7.4 $CHROOT_DIRECTORY/usr/bin/php

@@ -19,36 +19,42 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 '7ae7e9bac6be76f00e0d95347111f037', //default file
 '703fac6634bf637f942db8906092d0ab', //new default file
 'e109a5a44969c2a109aee0ea3565529e', //TOR HTML Site
+'31ff0d6a1d280d610a700f3c1ec6d857', //MyHacker test page
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
-const PHP_VERSIONS=[4 => '7.3']; //currently active php versions
+const PHP_VERSIONS=[3 => '7.2', 4 => '7.3', 5 => '7.4']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.3'; //default php version
-const PHP_CONFIG='memory_limit = 256M
+const PHP_CONFIG='zend_extension=opcache.so
+memory_limit = 256M
 error_reporting = E_ALL
+display_errors = Off
+log_errors = On
+expose_php = Off
+variables_order = "GPCS"
+request_order = "GP"
 post_max_size = 10G
 upload_max_filesize = 10G
 max_file_uploads = 100
 date.timezone = UTC
-pdo_odbc.connection_pooling=off
+pdo_odbc.connection_pooling = Off
 odbc.allow_persistent = Off
-ibase.allow_persistent = 0
 mysqli.allow_persistent = Off
 pgsql.allow_persistent = Off
-opcache.enable=1
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=20000
-opcache.use_cwd=1
-opcache.validate_timestamps=1
-opcache.revalidate_freq=2
-opcache.revalidate_path=1
-opcache.save_comments=1
-opcache.optimization_level=0x7fffffff
-opcache.validate_permission=1
-opcache.validate_root=1
+opcache.enable = 1
+opcache.interned_strings_buffer = 8
+opcache.max_accelerated_files = 20000
+opcache.use_cwd = 1
+opcache.validate_timestamps = 1
+opcache.revalidate_freq = 2
+opcache.revalidate_path = 1
+opcache.save_comments = 1
+opcache.optimization_level = 0x7fffffff
+opcache.validate_permission = 1
+opcache.validate_root = 1
 ';
 const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=2048;

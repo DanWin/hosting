@@ -439,9 +439,9 @@ function ftp_recursive_delete($ftp, $file){
 			}
 		}
 		ftp_chdir($ftp, '..');
-		ftp_rmdir($ftp, $file);
+		@ftp_rmdir($ftp, $file);
 	}else{
-		ftp_delete($ftp, $file);
+		@ftp_delete($ftp, $file);
 	}
 }
 
