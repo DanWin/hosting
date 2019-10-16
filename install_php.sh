@@ -138,3 +138,4 @@ CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=nati
 make -j $(nproc) install
 make distclean
 git reset --hard
+ln -fs /usr/bin/php7.4 /usr/bin/php

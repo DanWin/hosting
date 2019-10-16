@@ -23,11 +23,11 @@ ProtectKernelModules=true
 ProtectControlGroups=true
 LockPersonality=true
 SystemCallArchitectures=native
-BindPaths=/var/log/nginx/
-BindPaths=/var/lib/nginx/
-BindPaths=/var/www/var/run/
-BindPaths=/run/
-InaccessiblePaths=/root/
+ReadWritePaths=-/var/log/nginx/
+ReadWritePaths=-/var/lib/nginx/
+ReadWritePaths=-/var/www/var/run/
+ReadWritePaths=-/run/
+InaccessiblePaths=-/root/
 
 [Install]
 WantedBy=multi-user.target
