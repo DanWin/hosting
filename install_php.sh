@@ -1,5 +1,5 @@
 #!/bin/sh
-apt-get install --no-install-recommends -y bison ghostscript libreadline-dev librecode-dev libmariadb-dev libargon2-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev re2c libxml2-dev libsqlite3-dev libsystemd-dev libwebp-dev libgmp-dev libkrb5-dev libldap2-dev libsasl2-dev libonig-dev libtidy-dev libxslt1-dev libenchant-dev libpspell-dev libzip-dev libxpm-dev libffi-dev libgd-dev libmagickwand-dev libssh2-1-dev liblmdb-dev libpng-dev poppler-utils libqdbm-dev
+apt-get install --no-install-recommends -y bison ghostscript libreadline-dev librecode-dev libmariadb-dev libargon2-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev re2c libxml2-dev libsodium-dev libsqlite3-dev libsystemd-dev libwebp-dev libgmp-dev libkrb5-dev libldap2-dev libsasl2-dev libonig-dev libtidy-dev libxslt1-dev libenchant-dev libpspell-dev libzip-dev libxpm-dev libffi-dev libgd-dev libmagickwand-dev libssh2-1-dev liblmdb-dev libpng-dev poppler-utils libqdbm-dev
 ln -s /usr/include/qdbm/depot.h /usr/include/depot.h
 git clone https://github.com/php/php-src
 cd php-src
