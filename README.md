@@ -104,6 +104,27 @@ mount -o remount /home
 quotacheck -cu /home
 quotaon /home
 ```
+
+Custom optimized nginx
+```
+apt-get --no-install-recommends install libbrotli-dev libpcre3-dev libssl-dev zlib1g-dev
+git clone https://github.com/nginx/nginx && cd nginx
+git clone https://github.com/google/ngx_brotli
+./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli
+make -j $(nproc) install
+```
+
+Install custom optimized php
+```
+./install_php.sh
+```
+
+Install composer and sodium_compat for v3 hidden_service support
+```
+curl -sSL https://github.com/composer/composer/releases/download/1.9.0/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
+cd /var/www && composer install
+```
+
 For web base database administration, check out the latest phpmyadmin and adminer:
 ```
 cd /var/www/html/ && git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ && cd phpmyadmin && composer install --no-dev && yarn
@@ -146,26 +167,6 @@ quit
 ```
 
 Then edit the database configuration in `/var/www/common.php` and `/etc/postfix/sql/alias.cf`
-
-Install composer and sodium_compat for v3 hidden_service support
-```
-curl -sSL https://github.com/composer/composer/releases/download/1.9.0/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
-cd /var/www && composer install
-```
-
-Custom optimized nginx
-```
-apt-get --no-install-recommends install libbrotli-dev libpcre3-dev libssl-dev zlib1g-dev
-git clone https://github.com/nginx/nginx && cd nginx
-git clone https://github.com/google/ngx_brotli
-./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli
-make -j $(nproc) install
-```
-
-Install custom optimized php
-```
-./install_php.sh
-```
 
 Last but not least setup the database by running
 ```
