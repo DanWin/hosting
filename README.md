@@ -27,7 +27,7 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq g++ gcc haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql \
+apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq g++ gcc haveged iptables libsasl2-modules locales locales-all logrotate make mariadb-server nano nodejs postfix postfix-mysql \
 quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
 
