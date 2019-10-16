@@ -91,9 +91,11 @@ tmpfs /var/log/nginx tmpfs rw,user,noatime 0 0
 
 As time syncronisation is important, you should configure ntp servers in `/etc/systemd/timesyncd.conf` and make them match with the entries in `/etc/rc.local` iptables configuration
 
-Enable the PHP-FPM default instance:
+Enable the PHP-FPM default instances:
 ```
+systemctl enable php7.2-fpm@default
 systemctl enable php7.3-fpm@default
+systemctl enable php7.4-fpm@default
 ```
 
 Edit `/etc/fstab` and add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` option to the `/home` mountpoint and `noatime`to `/`. Then initialize quota:
