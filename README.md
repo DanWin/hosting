@@ -27,8 +27,11 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq g++ gcc haveged iptables libsasl2-modules locales locales-all logrotate make mariadb-server nano nodejs postfix postfix-mysql \
-quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
+apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
+```
+The following command will install all required build dependencies for nginx and php:
+```
+apt-get --no-install-recommends install -y bison g++ gcc ghostscript libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libsasl2-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssh2-1-dev libssl-dev libsystemd-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
@@ -108,7 +111,6 @@ quotaon /home
 
 Custom optimized nginx
 ```
-apt-get --no-install-recommends install libbrotli-dev libpcre3-dev libssl-dev zlib1g-dev
 git clone https://github.com/nginx/nginx && cd nginx
 git clone https://github.com/google/ngx_brotli
 ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli
