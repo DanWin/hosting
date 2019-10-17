@@ -9,11 +9,10 @@ LimitNOFILE=100000
 TimeoutStartSec=600
 TimeoutStopSec=5
 KillMode=mixed
-ExecStop=-/sbin/start-stop-daemon --quiet --stop --pidfile /run/nginx.pid
-ExecStartPre=/usr/bin/install -Z -m 02755 -o www-data -g www-data -d /run/nginx
-ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
-ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
-ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
+ExecStop=/usr/sbin/nginx -s stop
+ExecStartPre=/usr/sbin/nginx -t -q
+ExecStart=/usr/sbin/nginx
+ExecReload=/usr/sbin/nginx -s reload
 ProtectSystem=strict
 PrivateTmp=true
 NoNewPrivileges=true
@@ -28,6 +27,7 @@ ReadWritePaths=-/var/lib/nginx/
 ReadWritePaths=-/var/www/var/run/
 ReadWritePaths=-/run/
 InaccessiblePaths=-/root/
+RuntimeDirectory=nginx
 
 [Install]
 WantedBy=multi-user.target
