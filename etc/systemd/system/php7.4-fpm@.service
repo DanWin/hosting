@@ -30,6 +30,7 @@ CPUQuota=100%
 MemoryHigh=25%
 MemoryMax=35%
 RuntimeDirectory=php
+RuntimeDirectoryPreserve=yes
 
 [Install]
 WantedBy=multi-user.target
