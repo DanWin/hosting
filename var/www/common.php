@@ -75,7 +75,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/7.3-hosting;
+			fastcgi_pass unix:/var/run/php/7.4-hosting;
 		}
 	}
 	location /squirrelmail {
@@ -83,7 +83,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT $document_root;
 			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/7.3-squirrelmail;
+			fastcgi_pass unix:/var/run/php/7.4-squirrelmail;
 		}
 	}
 	location /phpmyadmin {
@@ -91,7 +91,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/7.3-phpmyadmin;
+			fastcgi_pass unix:/run/php/7.4-phpmyadmin;
 		}
 	}
 	location /adminer {
@@ -100,7 +100,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html/adminer;
 			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/7.3-adminer;
+			fastcgi_pass unix:/run/php/7.4-adminer;
 		}
 	}
 	location /externals/jush/ {
