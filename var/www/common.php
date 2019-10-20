@@ -508,7 +508,6 @@ function rewrite_nginx_config(PDO $db){
 	access_log /home/$tmp[system_account]/logs/access.log custom buffer=4k flush=1m;
 	error_log /var/log/nginx/error_$tmp[system_account].log notice;
 	error_log /home/$tmp[system_account]/logs/error.log notice;
-	disable_symlinks on from=/home/$tmp[system_account];
 	autoindex $autoindex;
 	";
 		if(isset($rewrites[$tmp['id']])){
@@ -542,7 +541,6 @@ function rewrite_nginx_config(PDO $db){
 	access_log /home/$tmp[system_account]/logs/access.log custom buffer=4k flush=1m;
 	error_log /var/log/nginx/error_$tmp[system_account].log notice;
 	error_log /home/$tmp[system_account]/logs/error.log notice;
-	disable_symlinks on from=/home/$tmp[system_account];
 	autoindex $autoindex;
 	";
 		if(isset($rewrites[$tmp['id']])){
