@@ -166,7 +166,6 @@ function base32_encode(string $input) : string {
 }
 
 function send_captcha() {
-	global $db;
 	if(!CAPTCHA || !extension_loaded('gd')){
 		return;
 	}
@@ -178,6 +177,7 @@ function send_captcha() {
 	}
 	$randid = mt_rand();
 	$time = time();
+	$db = get_db_instance();
 	$stmt = $db->prepare('INSERT INTO captcha (id, time, code) VALUES (?, ?, ?);');
 	$stmt->execute([$randid, $time, $code]);
 	echo "<tr><td>Copy: ";
@@ -264,7 +264,6 @@ function send_captcha() {
 }
 
 function check_login(){
-	global $db;
 	if(empty($_SESSION['csrf_token'])){
 		$_SESSION['csrf_token']=sha1(uniqid());
 	}
@@ -273,6 +272,7 @@ function check_login(){
 		session_destroy();
 		exit;
 	}
+	$db = get_db_instance();
 	$stmt=$db->prepare('SELECT * FROM users WHERE username=?;');
 	$stmt->execute([$_SESSION['hosting_username']]);
 	if(!$user=$stmt->fetch(PDO::FETCH_ASSOC)){
@@ -293,11 +293,11 @@ function get_system_hash($pass) {
 }
 
 function check_captcha_error() {
-	global $db;
 	if(CAPTCHA){
 		if(!isset($_REQUEST['challenge'])){
 			return 'Error: Wrong Captcha';
 		}else{
+			$db = get_db_instance();
 			$stmt=$db->prepare('SELECT code FROM captcha WHERE id=?;');
 			$stmt->execute([$_REQUEST['challenge']]);
 			$stmt->bindColumn(1, $code);
@@ -318,7 +318,8 @@ function check_captcha_error() {
 	return false;
 }
 
-function rewrite_torrc(PDO $db, string $instance){
+function rewrite_torrc(string $instance){
+	$db = get_db_instance();
 	$update_onion=$db->prepare('UPDATE onions SET private_key=? WHERE onion=?;');
 	$torrc='ClientUseIPv6 1
 ClientUseIPv4 1
@@ -466,7 +467,8 @@ function ed25519_seckey_expand(string $seed) : string {
 	return $sk;
 }
 
-function rewrite_nginx_config(PDO $db){
+function rewrite_nginx_config(){
+	$db = get_db_instance();
 	$nginx='';
 	$rewrites = [];
 	// rewrite rules
@@ -567,7 +569,8 @@ function rewrite_nginx_config(PDO $db){
 	exec('systemctl reload nginx');
 }
 
-function rewrite_php_config(PDO $db, string $key){
+function rewrite_php_config(string $key){
+	$db = get_db_instance();
 	$stmt=$db->prepare("SELECT system_account FROM users WHERE instance = ? AND php=? AND todelete!=1 AND id NOT IN (SELECT user_id FROM new_account);");
 	foreach(array_replace(PHP_VERSIONS, DISABLED_PHP_VERSIONS) as $php_key => $version){
 		$stmt->execute([$key, $php_key]);
@@ -604,7 +607,8 @@ php_admin_value[session.save_path] = /tmp
 	}
 }
 
-function add_mysql_user(PDO $db, string $password) : string {
+function add_mysql_user(string $password) : string {
+	$db = get_db_instance();
 	$mysql_user = '';
 	$stmt = $db->prepare('SELECT null FROM users WHERE mysql_user = ?;');
 	do {
@@ -616,7 +620,8 @@ function add_mysql_user(PDO $db, string $password) : string {
 	return $mysql_user;
 }
 
-function add_user_db(PDO $db, int $user_id) : ?string {
+function add_user_db(int $user_id) : ?string {
+	$db = get_db_instance();
 	$mysql_db = '';
 	$stmt = $db->prepare('SELECT COUNT(*) FROM mysql_databases WHERE user_id = ?;');
 	$stmt->execute([$user_id]);
@@ -641,7 +646,8 @@ function add_user_db(PDO $db, int $user_id) : ?string {
 	return $mysql_db;
 }
 
-function del_user_db(PDO $db, int $user_id, string $mysql_db) {
+function del_user_db(int $user_id, string $mysql_db) {
+	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT mysql_user FROM users WHERE id = ?;');
 	$stmt->execute([$user_id]);
 	$user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -656,17 +662,20 @@ function del_user_db(PDO $db, int $user_id, string $mysql_db) {
 	}
 }
 
-function get_new_tor_instance(PDO $db){
+function get_new_tor_instance(){
+	$db = get_db_instance();
 	$stmt = $db->query('SELECT s.ID FROM service_instances AS s LEFT JOIN onions AS o ON (s.ID = o.instance) GROUP BY s.ID ORDER BY count(s.ID) LIMIT 1;');
 	return $stmt->fetch(PDO::FETCH_NUM)[0];
 }
 
-function add_user_onion(PDO $db, int $user_id, string $onion, string $priv_key, int $onion_version) {
-		$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, enable_smtp, instance) VALUES (?, ?, ?, ?, 1, 0, ?);');
-		$stmt->execute([$user_id, $onion, $priv_key, $onion_version, get_new_tor_instance($db)]);
+function add_user_onion(int $user_id, string $onion, string $priv_key, int $onion_version) {
+	$db = get_db_instance();
+	$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, enable_smtp, instance) VALUES (?, ?, ?, ?, 1, 0, ?);');
+	$stmt->execute([$user_id, $onion, $priv_key, $onion_version, get_new_tor_instance()]);
 }
 
-function del_user_onion(PDO $db, int $user_id, string $onion) {
+function del_user_onion(int $user_id, string $onion) {
+	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT null FROM onions WHERE user_id = ? AND onion = ? AND enabled IN (0, 1);');
 	$stmt->execute([$user_id, $onion]);
 	if($stmt->fetch()){
@@ -675,7 +684,7 @@ function del_user_onion(PDO $db, int $user_id, string $onion) {
 	}
 }
 
-function add_user_domain(PDO $db, int $user_id, string $domain) : string {
+function add_user_domain(int $user_id, string $domain) : string {
 	$domain = strtolower($domain);
 	if(strlen($domain) > 255){
 		return "Domain can't be longer than 255 characters.";
@@ -692,6 +701,7 @@ function add_user_domain(PDO $db, int $user_id, string $domain) : string {
 			return 'Invalid domain';
 		}
 	}
+	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT null FROM domains WHERE domain = ?;');
 	$stmt->execute([$domain]);
 	if($stmt->fetch()){
@@ -702,7 +712,8 @@ function add_user_domain(PDO $db, int $user_id, string $domain) : string {
 	return '';
 }
 
-function del_user_domain(PDO $db, int $user_id, string $domain) {
+function del_user_domain(int $user_id, string $domain) {
+	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT null FROM domains WHERE user_id = ? AND domain = ? AND enabled IN (0, 1);');
 	$stmt->execute([$user_id, $domain]);
 	if($stmt->fetch()){
@@ -718,11 +729,25 @@ function check_csrf_error(){
 	return false;
 }
 
-function enqueue_instance_reload($db, $instance = null){
+function enqueue_instance_reload($instance = null){
+	$db = get_db_instance();
 	if($instance === null){
 		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 LIMIT 1;');
 	}else{
 		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?;');
 		$stmt->execute([$instance]);
 	}
+}
+
+function get_db_instance(){
+	static $db = null;
+	if($db !== null){
+		return $db;
+	}
+	try{
+		$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
+	}catch(PDOException $e){
+		die('No Connection to MySQL database!');
+	}
+	return $db;
 }

@@ -272,6 +272,9 @@ if(!SKIP_USER_CHROOT_UPDATE){
 		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
 	}
 }
+if(!file_exists("/etc/nginx/sites-enabled/")){
+	mkdir("/etc/nginx/sites-enabled/", 0755, true);
+}
 file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
 if(!file_exists("/etc/nginx/streams-enabled/")){
 	mkdir("/etc/nginx/streams-enabled/", 0755, true);
@@ -290,11 +293,11 @@ foreach(SERVICE_INSTANCES as $instance){
 		exec('useradd -d '.escapeshellarg("/var/lib/tor-instances/$instance").' -r -s /bin/false -M -U '.escapeshellarg("_tor-$instance"));
 		exec('install -Z -d -m 02700 -o '.escapeshellarg("_tor-$instance").' -g '.escapeshellarg("_tor-$instance").' '.escapeshellarg("/var/lib/tor-instances/$instance"));
 		exec('install -d '.escapeshellarg("/etc/tor/instances/$instance"));
-		rewrite_torrc($db, $instance);
+		rewrite_torrc($instance);
 		exec("systemctl enable ".escapeshellarg("tor@$instance"));
 		exec("systemctl start ".escapeshellarg("tor@$instance"));
 		foreach(PHP_VERSIONS as $version){
-			rewrite_php_config($db, $instance);
+			rewrite_php_config($instance);
 			exec("systemctl enable ".escapeshellarg("php$version-fpm@$instance"));
 			exec("systemctl start ".escapeshellarg("php$version-fpm@$instance"));
 		}

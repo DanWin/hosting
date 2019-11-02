@@ -1,23 +1,23 @@
 <?php
 include('../common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
+$db = get_db_instance();
 header('Content-Type: text/html; charset=UTF-8');
 session_start(['name'=>'hosting_admin']);
 if($_SERVER['REQUEST_METHOD']==='HEAD'){
 	exit; // headers sent, no further processing needed
 }
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Admin panel</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-echo '<link rel="canonical" href="'.CANONICAL_URL. $_SERVER['SCRIPT_NAME'] .'">';
-echo '</head><body>';
-echo '<h1>Hosting - Admin panel</h1>';
+?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Admin panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="'.CANONICAL_URL. $_SERVER['SCRIPT_NAME'] .'">
+<style>td{padding:5px;}</style>
+<base target="_blank">
+</head><body>
+<h1>Hosting - Admin panel</h1>
+<?php
 $error=false;
 if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['pass']) && $_POST['pass']===ADMIN_PASSWORD){
 	if(!($error=check_captcha_error())){
@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['pass']) && $_POST['pass'
 	}
 }
 if(empty($_SESSION['logged_in'])){
-	echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST"><table>';
+	echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self"><table>';
 	echo "<tr><td>Password </td><td><input type=\"password\" name=\"pass\" size=\"30\" required autofocus></td></tr>";
 	send_captcha();
 	echo "<tr><td colspan=\"2\"><input type=\"submit\" name=\"action\" value=\"login\"></td></tr>";
@@ -42,9 +42,9 @@ if(empty($_SESSION['logged_in'])){
 	if(REQUIRE_APPROVAL){
 		$stmt=$db->query('SELECT COUNT(*) FROM new_account WHERE approved=0;');
 		$cnt=$stmt->fetch(PDO::FETCH_NUM)[0];
-		echo '<a href="' . $_SERVER['SCRIPT_NAME'] . "?action=approve\">Approve pending sites ($cnt)</a> | ";
+		echo '<a href="' . $_SERVER['SCRIPT_NAME'] . "?action=approve\" target=\"_self\">Approve pending sites ($cnt)</a> | ";
 	}
-	echo '<a href="' . $_SERVER['SCRIPT_NAME'] . '?action=list">List of accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=delete">Delete accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=suspend">Suspend hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=edit">Edit hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=logout">Logout</a></p>';
+	echo '<a href="' . $_SERVER['SCRIPT_NAME'] . '?action=list" target="_self">List of accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=delete" target="_self">Delete accounts</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=suspend" target="_self">Suspend hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=edit" target="_self">Edit hidden services</a> | <a href="' . $_SERVER['SCRIPT_NAME'] . '?action=logout" target="_self">Logout</a></p>';
 	if(empty($_REQUEST['action']) || $_REQUEST['action']==='login'){
 		echo '<p>Welcome to the admin panel!</p>';
 	}elseif($_REQUEST['action'] === 'logout'){
@@ -52,7 +52,8 @@ if(empty($_SESSION['logged_in'])){
 		header('Location: ' . $_SERVER['SCRIPT_NAME']);
 		exit;
 	}elseif($_REQUEST['action'] === 'list'){
-		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
+		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion link</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion, onions.enabled FROM users INNER JOIN onions ON (onions.user_id=users.id) ORDER BY users.username;');
@@ -70,7 +71,7 @@ if(empty($_SESSION['logged_in'])){
 					echo '<br>';
 				}
 				if($onion[1]=='1'){
-					echo "<a href=\"http://$onion[0].onion\" target=\"_blank\">$onion[0].onion</a>";
+					echo "<a href=\"http://$onion[0].onion\">$onion[0].onion</a>";
 				}else{
 					echo "$onion[0].onion";
 				}
@@ -89,12 +90,13 @@ if(empty($_SESSION['logged_in'])){
 				echo '<p style="color:green;">Successfully approved</p>';
 			}
 		}
-		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . "\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self">';
+		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<table border="1">';
 		echo '<tr><th>Username</th><th>Onion address</th><th>Action</th></tr>';
 		$stmt=$db->query('SELECT users.username, onions.onion FROM users INNER JOIN new_account ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) WHERE new_account.approved=0 ORDER BY users.username;');
 		while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
-			echo "<tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\" target=\"_blank\">$tmp[1].onion</a></td><td><button type=\"submit\" name=\"action\" value=\"approve_$tmp[1]\">Approve</button><button type=\"submit\" name=\"action\" value=\"delete_$tmp[1]\">Delete</button></td></tr>";
+			echo "<tr><td>$tmp[0]</td><td><a href=\"http://$tmp[1].onion\">$tmp[1].onion</a></td><td><button type=\"submit\" name=\"action\" value=\"approve_$tmp[1]\">Approve</button><button type=\"submit\" name=\"action\" value=\"delete_$tmp[1]\">Delete</button></td></tr>";
 		}
 		echo '</table></form>';
 	}elseif(substr($_REQUEST['action'], 0, 6) === 'delete'){
@@ -105,7 +107,7 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 7);
 		}
 		echo '<p>Delete accouts:</p>';
-		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self">';
 		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
@@ -136,8 +138,8 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 8);
 		}
 		echo '<p>Suspend hidden service:</p>';
-		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
-		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self">';
+		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
 		echo '" required autofocus></p>';
@@ -152,7 +154,7 @@ if(empty($_SESSION['logged_in'])){
 					$stmt=$db->prepare('UPDATE onions SET enabled=-2 WHERE onion=?;');
 					$stmt->execute([$match[1]]);
 					echo "<p style=\"color:green;\">Successfully queued for suspension!</p>";
-					enqueue_instance_reload($db, $instance[0]);
+					enqueue_instance_reload($instance[0]);
 				}else{
 					echo "<p style=\"color:red;\">Onion address not hosted by us!</p>";
 				}
@@ -168,8 +170,8 @@ if(empty($_SESSION['logged_in'])){
 			$onion = substr($_REQUEST['action'], 5);
 		}
 		echo '<p>Edit hidden service:</p>';
-		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
-		echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
+		echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self">';
+		echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 		echo '<p>Onion address: <input type="text" name="onion" size="30" value="';
 		echo htmlspecialchars($onion);
 		echo '" required autofocus></p>';
@@ -200,15 +202,15 @@ if(empty($_SESSION['logged_in'])){
 							$max_streams = 65535;
 						}
 						$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $match[1]]);
-						enqueue_instance_reload($db, $onion[1]);
+						enqueue_instance_reload($onion[1]);
 						echo "<p style=\"color:green;\">Changes successfully saved!</p>";
 					}
 				}
 				$stmt=$db->prepare('SELECT onion, enabled, enable_smtp, num_intros, max_streams, version FROM onions WHERE onion=?;');
 				$stmt->execute([$match[1]]);
 				if($onion=$stmt->fetch(PDO::FETCH_NUM)){
-					echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST">';
-					echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
+					echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="POST" target="_self">';
+					echo '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
 					echo '<table border="1"><tr><th>Onion</th><th>Enabled</th><th>SMTP enabled</th><th>Nr. of intros</th><th>Max streams per rend circuit</th><th>Save</th></tr>';
 					echo '<tr><td><input type="text" name="onion" size="15" value="'.$onion[0].'" required autofocus></td>';
 					echo '<td><label><input type="checkbox" name="enabled" value="1"';

@@ -1,6 +1,7 @@
 <?php
 include('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
+header('X-Accel-Expires: 60');
 ?>
 <!DOCTYPE html><html><head>
 <title>Daniel's Hosting</title>

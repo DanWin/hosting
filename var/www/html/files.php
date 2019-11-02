@@ -1,10 +1,6 @@
 <?php
 include('../common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
+$db = get_db_instance();
 session_start();
 $user=check_login();
 if(!empty($_POST['ftp_pass'])){
@@ -137,7 +133,7 @@ if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
 	}
 	$tmpfile='/tmp/'.uniqid();
 	touch($tmpfile);
-	ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
+	@ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
 	unlink($tmpfile);
 }
 
@@ -155,7 +151,7 @@ if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
 		die($error);
 	}
 	foreach($_POST['files'] as $old=>$new){
-		ftp_rename($ftp, $old, $new);
+		@ftp_rename($ftp, $old, $new);
 	}
 }
 
@@ -174,7 +170,7 @@ if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
 	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $name=>$content){
 		file_put_contents($tmpfile, $content);
-		ftp_put($ftp, $name, $tmpfile, FTP_BINARY);
+		@ftp_put($ftp, $name, $tmpfile, FTP_BINARY);
 	}
 	unlink($tmpfile);
 }
@@ -197,7 +193,7 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 			continue;
 		}
 		$tmpfile='/tmp/'.uniqid().'.zip';
-		if(!ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
+		if(@!ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
 			continue;
 		}
 		//prevent zip-bombs
@@ -232,7 +228,7 @@ if(!empty($_FILES['files'])){
 	$c=count($_FILES['files']['name']);
 	for($i=0; $i<$c; ++$i){
 		if($_FILES['files']['error'][$i]===UPLOAD_ERR_OK){
-			ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
+			@ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
 			unlink($_FILES['files']['tmp_name'][$i]);
 		}
 	}
@@ -424,7 +420,7 @@ function ftp_recursive_upload($ftp, $path){
 			ftp_chdir($ftp, '..');
 			rmdir($dir->path.$file);
 		}else{
-			ftp_put($ftp, $file, $dir->path.$file, FTP_BINARY);
+			@ftp_put($ftp, $file, $dir->path.$file, FTP_BINARY);
 			unlink($dir->path.$file);
 		}
 	}

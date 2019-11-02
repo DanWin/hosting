@@ -1,10 +1,5 @@
 <?php
 include('../common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
 session_start();
 $user=check_login();
 if(!isset($_REQUEST['old']) || $_REQUEST['old']==0){

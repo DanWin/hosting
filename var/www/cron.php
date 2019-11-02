@@ -1,10 +1,6 @@
 <?php
 include('common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
+$db = get_db_instance();
 
 //instances to reload
 $reload=[];
@@ -77,11 +73,11 @@ foreach($onions as $onion){
 
 //reload services
 if(!empty($reload)){
-	rewrite_nginx_config($db);
+	rewrite_nginx_config();
 }
 foreach($reload as $key => $val){
-	rewrite_php_config($db, $key);
-	rewrite_torrc($db, $key);
+	rewrite_php_config($key);
+	rewrite_torrc($key);
 }
 
 //continue deleting old accounts

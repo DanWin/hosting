@@ -1,17 +1,13 @@
 <?php
 include('../common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
+$db = get_db_instance();
 session_start();
 $user=check_login();
 if(isset($_POST['action']) && $_POST['action']==='add_db'){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	add_user_db($db, $user['id']);
+	add_user_db($user['id']);
 }
 if(isset($_POST['action']) && $_POST['action']==='del_db' && !empty($_POST['db'])){
 	if($error=check_csrf_error()){
@@ -37,7 +33,7 @@ if(isset($_POST['action']) && $_POST['action']==='del_db_2' && !empty($_POST['db
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	del_user_db($db, $user['id'], $_POST['db']);
+	del_user_db($user['id'], $_POST['db']);
 }
 if(isset($_POST['action']) && $_POST['action']==='del_onion' && !empty($_POST['onion'])){
 	if($error=check_csrf_error()){
@@ -102,24 +98,24 @@ if(isset($_POST['action']) && $_POST['action']==='add_onion'){
 		$ok = false;
 	}
 	if($ok){
-		add_user_onion($db, $user['id'], $onion, $priv_key, $onion_version);
+		add_user_onion($user['id'], $onion, $priv_key, $onion_version);
 	}
 }
 if(isset($_POST['action']) && $_POST['action']==='del_onion_2' && !empty($_POST['onion'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	del_user_onion($db, $user['id'], $_POST['onion']);
+	del_user_onion($user['id'], $_POST['onion']);
 }
 if(isset($_POST['action']) && $_POST['action']==='add_domain' && !empty($_POST['domain'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$error = add_user_domain($db, $user['id'], $_POST['domain']);
+	$error = add_user_domain($user['id'], $_POST['domain']);
 	if(!empty($error)){
 		$msg = "<p style=\"color:red;\">$error</p>";
 	}else{
-		enqueue_instance_reload($db);
+		enqueue_instance_reload();
 	}
 }
 if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['domain'])){
@@ -146,8 +142,8 @@ if(isset($_POST['action']) && $_POST['action']==='del_domain_2' && !empty($_POST
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	del_user_domain($db, $user['id'], $_POST['domain']);
-	enqueue_instance_reload($db);
+	del_user_domain($user['id'], $_POST['domain']);
+	enqueue_instance_reload();
 }
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit_onion'){
 	if($error=check_csrf_error()){
@@ -174,7 +170,7 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 			$max_streams = 65535;
 		}
 		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
-		enqueue_instance_reload($db, substr($_REQUEST['onion'], 0, 1));
+		enqueue_instance_reload(substr($_REQUEST['onion'], 0, 1));
 	}
 }
 if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='edit_domain'){
@@ -187,7 +183,7 @@ if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='
 		$stmt=$db->prepare('UPDATE domains SET enabled = ? WHERE domain = ?;');
 		$enabled = isset($_POST['enabled']) ? 1 : 0;
 		$stmt->execute([$enabled, $_POST['domain']]);
-		enqueue_instance_reload($db);
+		enqueue_instance_reload();
 	}
 }
 
@@ -296,7 +292,8 @@ while($mysql=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '<form action="home.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="db" value="'.$mysql['mysql_database'].'">';
-	echo "<tr><td>$mysql[mysql_database]</td><td>localhost</td><td>$user[mysql_user]</td><td><button type=\"submit\" name=\"action\" value=\"del_db\">Delete</button></td></tr>";
+	echo '<tr><td>'.htmlspecialchars($mysql['mysql_database']).'</td><td>localhost</td><td>'.htmlspecialchars($user['mysql_user']).'</td>';
+	echo '<td><button type="submit" name="action" value="del_db">Delete</button></td></tr>';
 	echo '</form>';
 }
 echo '</table>';
@@ -304,7 +301,7 @@ if($count_dbs<MAX_NUM_USER_DBS){
 	echo '<p><form action="home.php" method="post"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><button type="submit" name="action" value="add_db">Add new database</button></form></p>';
 }
 echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';
-echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration.</p>';
+echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/?username='.htmlspecialchars($user['mysql_user']).'" target="_blank">Adminer</a> for web based database administration.</p>';
 echo '<h3>System Account</h3>';
 echo '<table border="1">';
 echo '<tr><th>Username</th><th>Host</th><th>FTP Port</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>';

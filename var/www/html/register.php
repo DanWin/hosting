@@ -1,10 +1,6 @@
 <?php
 include('../common.php');
-try{
-	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-}catch(PDOException $e){
-	die('No Connection to MySQL database!');
-}
+$db = get_db_instance();
 header('Content-Type: text/html; charset=UTF-8');
 session_start();
 if(!empty($_SESSION['hosting_username'])){
@@ -106,14 +102,14 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		echo '<p style="color:red;">To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.</p>';
 		$ok=false;
 	}elseif($ok){
-		$mysql_user = add_mysql_user($db, $_POST['pass']);
+		$mysql_user = add_mysql_user($_POST['pass']);
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user, instance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, get_new_tor_instance($db)]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, get_new_tor_instance()]);
 		$user_id = $db->lastInsertId();
 		$stmt = $db->prepare('INSERT INTO disk_quota (user_id, quota_size, quota_files) VALUES (?, ?, ?);');
 		$stmt->execute([$user_id, DEFAULT_QUOTA_SIZE, DEFAULT_QUOTA_FILES]);
-		add_user_onion($db, $user_id, $onion, $priv_key, $onion_version);
-		add_user_db($db, $user_id);
+		add_user_onion($user_id, $onion, $priv_key, $onion_version);
+		add_user_db($user_id);
 		$stmt=$db->prepare('INSERT INTO new_account (user_id, password) VALUES (?, ?);');
 		$stmt->execute([$user_id, get_system_hash($_POST['pass'])]);
 		if(EMAIL_TO!==''){
