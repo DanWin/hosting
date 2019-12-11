@@ -671,3 +671,4 @@ function enqueue_instance_reload($db, $instance = null){
 		$stmt->execute([$instance]);
 	}
 }
+
