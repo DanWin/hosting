@@ -73,7 +73,8 @@ if(isset($_POST['username'])){
 echo '" required autofocus></td></tr>';
 echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
 send_captcha();
-echo '<tr><td colspan="2"><input type="submit" value="Login"></td></tr>';
-echo '</table></form>';
-echo '<p>If you disabled cookies, please re-enable them. You can\'t log in without!</p>';
-echo '</body></html>';
+?>
+<tr><td colspan="2"><input type="submit" value="Login"></td></tr>
+</table></form>
+<p>If you disabled cookies, please re-enable them. You can't log in without!</p>
+</body></html>

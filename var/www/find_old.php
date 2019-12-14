@@ -2,6 +2,19 @@
 include('common.php');
 $db = get_db_instance();
 
+//update quota usage
+$stmt=$db->query('SELECT id, system_account FROM users WHERE id NOT IN (SELECT user_id FROM new_account) AND todelete!=1;');
+$update=$db->prepare('UPDATE disk_quota SET quota_size_used = ?, quota_files_used = ? WHERE user_id = ?;');
+while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
+	$quota = shell_exec('quota -pu ' . escapeshellarg($tmp[1]));
+	$quota_array = explode("\n", $quota);
+	if(!empty($quota_array[2])){
+		$quota_size=(int) preg_replace('~^\s+[^\s]+\s+([^\s]+).*~', '$1', $quota_array[2]);
+		$quota_files=(int) preg_replace('~^\s+[^\s]+\s+[^\s]+\s+[^\s]+\s+[^\s]+\s+[^\s]+\s+([^\s]+).*~', '$1', $quota_array[2]);
+		$update->execute([$quota_size, $quota_files, $tmp[0]]);
+	}
+}
+
 //delete tmp files older than 24 hours
 $stmt=$db->query('SELECT system_account FROM users;');
 $all=$stmt->fetchAll(PDO::FETCH_NUM);

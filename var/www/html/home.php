@@ -3,6 +3,7 @@ include('../common.php');
 $db = get_db_instance();
 session_start();
 $user=check_login();
+header('Content-Type: text/html; charset=UTF-8');
 if(isset($_POST['action']) && $_POST['action']==='add_db'){
 	if($error=check_csrf_error()){
 		die($error);
@@ -186,17 +187,18 @@ if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='
 		enqueue_instance_reload();
 	}
 }
-
-header('Content-Type: text/html; charset=UTF-8');
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Dashboard</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
-echo '<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>';
-echo '</head><body>';
-echo "<p>Logged in as $user[username] <a href=\"logout.php\">Logout</a> | <a href=\"password.php\">Change passwords</a> | <a target=\"_blank\" href=\"files.php\">FileManager</a> | <a href=\"delete.php\">Delete account</a></p>";
+?>
+<!DOCTYPE html><html><head>
+<title>Daniel's Hosting - Dashboard</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
+<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
+<style>td{padding:5px}meter{width:200px}</style>
+</head><body>
+<p>Logged in as <?php echo htmlspecialchars($user['username']); ?> <a href="logout.php">Logout</a> | <a href="password.php">Change passwords</a> | <a target="_blank" href="files.php">FileManager</a> | <a href="delete.php">Delete account</a></p>
+<?php
 if(!empty($msg)){
 	echo $msg;
 }
@@ -300,21 +302,31 @@ echo '</table>';
 if($count_dbs<MAX_NUM_USER_DBS){
 	echo '<p><form action="home.php" method="post"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><button type="submit" name="action" value="add_db">Add new database</button></form></p>';
 }
-echo '<p><a href="password.php?type=sql">Change MySQL password</a></p>';
-echo '<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/?username='.htmlspecialchars($user['mysql_user']).'" target="_blank">Adminer</a> for web based database administration.</p>';
-echo '<h3>System Account</h3>';
-echo '<table border="1">';
-echo '<tr><th>Username</th><th>Host</th><th>FTP Port</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>';
+?>
+<p><a href="password.php?type=sql">Change MySQL password</a></p>
+<p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/?username=<?php echo rawurlencode($user['mysql_user']); ?>" target="_blank">Adminer</a> for web based database administration.</p>
+<h3>System Account</h3>
+<table border="1">
+<tr><th>Username</th><th>Host</th><th>FTP Port</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>
+<?php
 foreach(SERVERS as $server=>$tmp){
 	echo "<tr><td>$user[system_account]</td><td>$server</td><td>$tmp[ftp]</td><td>$tmp[sftp]</td><td>$tmp[pop3]</td><td>$tmp[imap]</td><td>$tmp[smtp]</td></tr>";
 }
-echo '</table>';
-echo '<p><a href="password.php?type=sys">Change system account password</a></p>';
-echo '<p>You can use the <a target="_blank" href="files.php">FileManager</a> for web based file management.</p>';
-echo '<h3>Logs</h3>';
-echo '<table border="1">';
-echo '<tr><th>Date</th><th>access.log</th><th>error.log</th></tr>';
-echo '<tr><td>Today</td><td><a href="log.php?type=access&amp;old=0" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=0" target="_blank">error.log</a></td></tr>';
-echo '<tr><td>Yesterday</td><td><a href="log.php?type=access&amp;old=1" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=1" target="_blank">error.log</a></td></tr>';
-echo '</table>';
-echo '</body></html>';
+?>
+</table>
+<p><a href="password.php?type=sys">Change system account password</a></p>
+<p>You can use the <a target="_blank" href="files.php">FileManager</a> for web based file management.</p>
+<?php
+$stmt = $db->prepare('SELECT quota_size, quota_size_used FROM disk_quota WHERE user_id = ?;');
+$stmt->execute([$user['id']]);
+$quota = $stmt->fetch(PDO::FETCH_ASSOC);
+$quota_usage = $quota['quota_size_used'] / $quota['quota_size'];
+?>
+<p>Your disk usage: <meter value="<?php echo round($quota_usage, 2); ?>"><?php echo round($quota_usage * 100); ?>%</meter> - <?php echo round($quota_usage * 100, 2); ?>% (updated hourly) <a href="upgrade.php">Upgrade</a></p>
+<h3>Logs</h3>
+<table border="1">
+<tr><th>Date</th><th>access.log</th><th>error.log</th></tr>
+<tr><td>Today</td><td><a href="log.php?type=access&amp;old=0" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=0" target="_blank">error.log</a></td></tr>
+<tr><td>Yesterday</td><td><a href="log.php?type=access&amp;old=1" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=1" target="_blank">error.log</a></td></tr>
+</table>
+</body></html>

@@ -29,8 +29,9 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec('CREATE TABLE mysql_databases (user_id int(11) NOT NULL, mysql_database varchar(64) COLLATE latin1_bin NOT NULL, KEY user_id (user_id), CONSTRAINT mysql_database_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec("CREATE TABLE onions (user_id int(11) NULL, onion varchar(56) COLLATE latin1_bin NOT NULL PRIMARY KEY, private_key varchar(1000) COLLATE latin1_bin NOT NULL, version tinyint(1) NOT NULL, enabled tinyint(1) NOT NULL DEFAULT '1', num_intros tinyint(3) NOT NULL DEFAULT '3', enable_smtp tinyint(1) NOT NULL DEFAULT '1', max_streams tinyint(3) unsigned NOT NULL DEFAULT '20', instance char(1) NOT NULL DEFAULT '2', KEY user_id (user_id), KEY enabled (enabled), KEY instance(instance), CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE, CONSTRAINT instance_ibfk_1 FOREIGN KEY (instance) REFERENCES service_instances (id) ON DELETE RESTRICT ON UPDATE RESTRICT) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec("CREATE TABLE domains (user_id int(11) NULL, domain varchar(255) COLLATE latin1_bin NOT NULL PRIMARY KEY, enabled tinyint(1) NOT NULL DEFAULT '1', KEY user_id (user_id), KEY enabled (enabled), CONSTRAINT domains_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
-	$db->exec('CREATE TABLE disk_quota (user_id int(11) NOT NULL, quota_size int(10) unsigned NOT NULL, quota_files int(10) unsigned NOT NULL, updated tinyint(1) NOT NULL DEFAULT 1, KEY user_id (user_id), KEY updated (updated), CONSTRAINT disk_quota_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
+	$db->exec("CREATE TABLE disk_quota (user_id int(11) NOT NULL, quota_size int(10) unsigned NOT NULL, quota_files int(10) unsigned NOT NULL, updated tinyint(1) NOT NULL DEFAULT 1, quota_size_used int(10) unsigned NOT NULL DEFAULT '0', quota_files_used int(10) unsigned NOT NULL DEFAULT '0', KEY user_id (user_id), KEY updated (updated), CONSTRAINT disk_quota_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 	$db->exec('CREATE TABLE nginx_rewrites (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NOT NULL, `regex` varchar(255) NOT NULL, replacement varchar(255) NOT NULL, `flag` varchar(9) NOT NULL, ifnotexists tinyint(1) NOT NULL, CONSTRAINT nginx_rewrites_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
+	$db->exec('CREATE TABLE payments (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NULL, payment_for varchar(255) COLLATE latin1_bin NOT NULL, txn_id varchar(255) COLLATE utf8mb4_bin NOT NULL, status tinyint NOT NULL, CONSTRAINT payments_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
@@ -154,6 +155,10 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	if($version<16){
 		$db->exec('UPDATE onions SET enabled=1 WHERE enabled=2;');
 		$db->exec('CREATE TABLE nginx_rewrites (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NOT NULL, `regex` varchar(255) NOT NULL, replacement varchar(255) NOT NULL, `flag` varchar(9) NOT NULL, ifnotexists tinyint(1) NOT NULL, CONSTRAINT nginx_rewrites_ibfk_2 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;');
+	}
+	if($version<17){
+		$db->exec("ALTER TABLE disk_quota ADD quota_size_used int(10) unsigned NOT NULL DEFAULT '0', ADD quota_files_used int(10) unsigned NOT NULL DEFAULT '0';");
+		$db->exec('CREATE TABLE payments (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, user_id int(11) NULL, payment_for varchar(255) COLLATE latin1_bin NOT NULL, txn_id varchar(255) COLLATE utf8mb4_bin NOT NULL, status tinyint NOT NULL, CONSTRAINT payments_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
@@ -302,7 +307,7 @@ foreach(SERVICE_INSTANCES as $instance){
 			exec("systemctl start ".escapeshellarg("php$version-fpm@$instance"));
 		}
 		$stmt->execute([$instance]);
-		echo "Successfully added new instance $instance. Don't forget to add _tor-$instance as allowed user to your firewall rules in /etc/rc.local";
+		echo "Successfully added new instance $instance. Don't forget to add _tor-$instance as allowed user to your firewall rules in /etc/rc.local\n";
 	}
 }
 // remove no longer enabled php/tor instances

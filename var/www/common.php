@@ -5,7 +5,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=16; //database layout version
+const DBVERSION=17; //database layout version
 const CAPTCHA=1; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
@@ -24,7 +24,7 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
-const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. - run setup.php after change
+const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. If tor starts using 100% cpu and failing circuits every few hours after a restart, add more instances. In my experience this happens around 250 hidden services per instance - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
 const PHP_VERSIONS=[3 => '7.2', 4 => '7.3', 5 => '7.4']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.3'; //default php version
@@ -116,9 +116,20 @@ const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
 const MAX_NUM_USER_ONIONS = 3; //maximum number of onion domains a user may have
 const MAX_NUM_USER_DOMAINS = 3; //maximum number of clearnet domains a user may have
 const SKIP_USER_CHROOT_UPDATE = true; //skips updating user chroots when running setup.php
-const DEFAULT_QUOTA_SIZE = 10 * 1024 * 1024; //per user disk quota in kb - Defaults to 10 GB
+const DEFAULT_QUOTA_SIZE = 1024 * 1024; //per user disk quota in kb - Defaults to 1 GB
 const DEFAULT_QUOTA_FILES = 100000; //per user file quota - by default allow no more than 100000 files
 const NUM_GUARDS = 50; //number of tor guard relays to distribute the load on
+//Optional paid upgrades in format of 'identifier' => ['name', 'usd_price']
+const ACCOUNT_UPGRADES = [
+	'1g_quota' => ['name' => '+1GB disk Quota', 'usd_price' => 10],
+	'5g_quota' => ['name' => '+5GB disk Quota', 'usd_price' => 20],
+	'10g_quota' => ['name' => '+10GB disk Quota', 'usd_price' => 30],
+	'20g_quota' => ['name' => '+20GB disk Quota', 'usd_price' => 40],
+];
+const COINPAYMENTS_PRIVATE = 'COINPAYMENTS_PRIVATE_API_KEY';
+const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC_API_KEY';
+const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID';
+const COINPAYMENTS_IPN_SECRET = 'COINPAYMENTS_IPN_SECRET';
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -750,4 +761,104 @@ function get_db_instance(){
 		die('No Connection to MySQL database!');
 	}
 	return $db;
+}
+
+function coinpayments_create_transaction(string $currency, int $price, string $payment_for, $user_id = null){
+	$query=[];
+	$query['currency1'] = 'USD';
+	$query['currency2'] = $currency;
+	$query['amount'] = $price;
+	$query['buyer_email'] = 'daniel@danwin1210.me';
+	$query['version'] = '1';
+	$query['cmd'] = 'create_transaction';
+	$query['key'] = COINPAYMENTS_PUBLIC;
+	$query['format'] = 'json';
+	$query_string = http_build_query( $query );
+	$hmac = hash_hmac( 'sha512', $query_string, COINPAYMENTS_PRIVATE );
+
+	$ch = curl_init();
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, $query_string );
+	curl_setopt( $ch, CURLOPT_HTTPHEADER, ["HMAC: $hmac", 'Content-type: application/x-www-form-urlencoded'] );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $ch, CURLOPT_URL, 'https://www.coinpayments.net/api.php' );
+	$result = curl_exec( $ch );
+	if( !$result ) {
+		return false;
+	}
+	$json = json_decode( $result, true );
+	if( !$json ){
+		return false;
+	}
+	if( $json['error'] !== 'ok' ) {
+		return false;
+	}
+	$db = get_db_instance();
+	$stmt = $db->prepare('INSERT INTO payments (user_id, payment_for, txn_id, status) VALUES (?, ?, ?, 0);');
+	$stmt->execute([$user_id, $payment_for, $json['result']['txn_id']]);
+	return $json['result'];
+}
+
+function coinpayments_get_rates(){
+	$query=[];
+	$query['accepted'] = '1';
+	$query['short'] = '0';
+	$query['version'] = '1';
+	$query['cmd'] = 'rates';
+	$query['key'] = COINPAYMENTS_PUBLIC;
+	$query['format'] = 'json';
+	$query_string = http_build_query( $query );
+	$hmac = hash_hmac( 'sha512', $query_string, COINPAYMENTS_PRIVATE );
+
+	$ch = curl_init();
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, $query_string );
+	curl_setopt( $ch, CURLOPT_HTTPHEADER, ["HMAC: $hmac", 'Content-type: application/x-www-form-urlencoded'] );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $ch, CURLOPT_URL, 'https://www.coinpayments.net/api.php' );
+	$result = curl_exec( $ch );
+	if( !$result ) {
+		return false;
+	}
+	$json = json_decode( $result, true );
+	if( !$json ){
+		return false;
+	}
+	if( $json['error'] !== 'ok' ) {
+		return false;
+	}
+	return $json['result'];
+}
+
+function payment_status_update(string $txid){
+	$db = get_db_instance();
+	$stmt = $db->prepare('SELECT * FROM payments WHERE txn_id = ?;');
+	$stmt->execute([$txid]);
+	while($tmp = $stmt->fetch(PDO::FETCH_ASSOC)){
+		if($tmp['status'] == '2'){
+			switch($tmp['payment_for']){
+				case '1g_quota':
+					add_disk_quota($tmp['user_id'], 1024 * 1024);
+					break;
+				case '5g_quota':
+					add_disk_quota($tmp['user_id'], 5 * 1024 * 1024);
+					break;
+				case '10g_quota':
+					add_disk_quota($tmp['user_id'], 10 * 1024 * 1024);
+					break;
+				case '20g_quota':
+					add_disk_quota($tmp['user_id'], 20 * 1024 * 1024);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+}
+
+function add_disk_quota(int $user_id, int $kb){
+	$db = get_db_instance();
+	$stmt = $db->prepare('SELECT quota_size FROM disk_quota WHERE user_id = ?;');
+	$stmt->execute([$user_id]);
+	$tmp = $stmt->fetch(PDO::FETCH_ASSOC);
+	$stmt = $db->prepare('UPDATE disk_quota SET quota_size = ?, updated = 1 WHERE user_id = ?;');
+	$stmt->execute([$tmp['quota_size'] + $kb, $user_id]);
 }

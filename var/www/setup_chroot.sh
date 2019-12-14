@@ -237,4 +237,4 @@ done
 for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
-ln $CHROOT_DIRECTORY/usr/bin/php7.4 $CHROOT_DIRECTORY/usr/bin/php
+ln -f $CHROOT_DIRECTORY/usr/bin/php7.4 $CHROOT_DIRECTORY/usr/bin/php
