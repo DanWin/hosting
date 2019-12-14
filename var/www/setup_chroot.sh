@@ -216,6 +216,7 @@ for DIRECTORY in ${DIRECTORIES_GENERAL[@]}; do
 done
 echo "export HOME=/" > $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 echo "export HISTFILE=/.bash_history" >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
+echo 'export PATH="$PATH:/.composer/vendor/bin"' >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 # copy general files
 for FILE in ${FILES_GENERAL[@]}; do
     CHROOT_FILE $FILE
