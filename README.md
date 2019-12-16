@@ -27,11 +27,11 @@ echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.lis
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync sasl2-bin ssh subversion tor unzip vim vsftpd wget yarn zip
+apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim vsftpd wget yarn zip
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
-apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libsasl2-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssh2-1-dev libssl-dev libsystemd-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
+apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssh2-1-dev libssl-dev libsystemd-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
@@ -61,12 +61,7 @@ Replace the default domain with your domain in the following files:
 /etc/postfix-clearnet/canonical
 ```
 
-In `/etc/postfix(-clearnet)/canonical` don't change the line that has `hosting.danwin1210.me` in it. It is a clearnet/tor address rewriting rule, and if you have your own clearnet domain, you should copy this and modify your copy to preserve sending mail to my host via tor and not via clearnet:
-
-To allow sasl authentication add the `postfix` user to the `sasl` group:
-```
-usermod -aG sasl postfix
-```
+In `/etc/postfix(-clearnet)/canonical` don't change the line that has `hosting.danwin1210.me` in it. It is a clearnet/tor address rewriting rule, and if you have your own clearnet domain, you should copy this and modify your copy to preserve sending mail to my host via tor and not via clearnet.
 
 This setup has two postfix instances, one for receiving and sending mail to other .onion services and one for rewriting addresses to pass them on to a clearnet facing mail relay. You may or may not want to create the second instance by running
 ```
