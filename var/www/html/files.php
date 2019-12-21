@@ -16,7 +16,6 @@ if(@!ftp_login($ftp, $user[system_account], $_SESSION['ftp_pass'])){
 	exit;
 }
 //prepare reusable data
-const SUFFIX=['B', 'KiB', 'MiB', 'GiB'];
 const TYPES=[
 'jpg'=>'img',
 'psd'=>'img',
@@ -372,12 +371,7 @@ function get_properties($name, &$icon, &$size){
 		}else{
 			$icon='ukwn';
 		}
-		$class=(int) log($size, 1024);
-		if($class!==0){
-			$size=sprintf('%1.1f', $size / pow(1024, $class)) . SUFFIX[$class];
-		}else{
-			$size.=SUFFIX[0];
-		}
+		$size = bytes_to_human_readable($size);
 	}
 }
 

@@ -125,11 +125,13 @@ const ACCOUNT_UPGRADES = [
 	'5g_quota' => ['name' => '+5GB disk Quota', 'usd_price' => 20],
 	'10g_quota' => ['name' => '+10GB disk Quota', 'usd_price' => 30],
 	'20g_quota' => ['name' => '+20GB disk Quota', 'usd_price' => 40],
+	'100k_files_quota' => ['name' => '+100k files Quota', 'usd_price' => 10],
 ];
-const COINPAYMENTS_PRIVATE = 'COINPAYMENTS_PRIVATE_API_KEY';
-const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC_API_KEY';
-const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID';
-const COINPAYMENTS_IPN_SECRET = 'COINPAYMENTS_IPN_SECRET';
+const COINPAYMENTS_PRIVATE = 'COINPAYMENTS_PRIVATE'; //Coinpayments private API key
+const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC'; //Coinpayments public API key
+const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID'; //Coinpayments merchant ID
+const COINPAYMENTS_IPN_SECRET = 'COINPAYMENTS_IPN_SECRET'; //Coinpayments IPN secret
+const COINPAYMENTS_FAKE_BUYER_EMAIL = 'daniel@danwin1210.me'; //fixed email used for the required buyer email field
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -768,7 +770,7 @@ function coinpayments_create_transaction(string $currency, int $price, string $p
 	$query['currency1'] = 'USD';
 	$query['currency2'] = $currency;
 	$query['amount'] = $price;
-	$query['buyer_email'] = 'daniel@danwin1210.me';
+	$query['buyer_email'] = COINPAYMENTS_FAKE_BUYER_EMAIL;
 	$query['version'] = '1';
 	$query['cmd'] = 'create_transaction';
 	$query['key'] = COINPAYMENTS_PUBLIC;
@@ -847,6 +849,9 @@ function payment_status_update(string $txid){
 				case '20g_quota':
 					add_disk_quota($tmp['user_id'], 20 * 1024 * 1024);
 					break;
+				case '100k_files_quota':
+					add_files_quota($tmp['user_id'], 100000);
+					break;
 				default:
 					break;
 			}
@@ -861,4 +866,23 @@ function add_disk_quota(int $user_id, int $kb){
 	$tmp = $stmt->fetch(PDO::FETCH_ASSOC);
 	$stmt = $db->prepare('UPDATE disk_quota SET quota_size = ?, updated = 1 WHERE user_id = ?;');
 	$stmt->execute([$tmp['quota_size'] + $kb, $user_id]);
+}
+
+function add_files_quota(int $user_id, int $number){
+	$db = get_db_instance();
+	$stmt = $db->prepare('SELECT quota_files FROM disk_quota WHERE user_id = ?;');
+	$stmt->execute([$user_id]);
+	$tmp = $stmt->fetch(PDO::FETCH_ASSOC);
+	$stmt = $db->prepare('UPDATE disk_quota SET quota_files = ?, updated = 1 WHERE user_id = ?;');
+	$stmt->execute([$tmp['quota_files'] + $number, $user_id]);
+}
+
+function bytes_to_human_readable(int $bytes) : string {
+	$suffix = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+	$size_class=(int) log($bytes, 1024);
+	if($size_class!==0){
+		return sprintf('%1.1f', $bytes / pow(1024, $size_class)) . $suffix[$size_class];
+	}else{
+		return $bytes . $suffix[0];
+	}
 }

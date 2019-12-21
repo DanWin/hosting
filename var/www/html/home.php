@@ -317,12 +317,16 @@ foreach(SERVERS as $server=>$tmp){
 <p><a href="password.php?type=sys">Change system account password</a></p>
 <p>You can use the <a target="_blank" href="files.php">FileManager</a> for web based file management.</p>
 <?php
-$stmt = $db->prepare('SELECT quota_size, quota_size_used FROM disk_quota WHERE user_id = ?;');
+$stmt = $db->prepare('SELECT quota_size, quota_size_used, quota_files, quota_files_used FROM disk_quota WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
 $quota = $stmt->fetch(PDO::FETCH_ASSOC);
 $quota_usage = $quota['quota_size_used'] / $quota['quota_size'];
+$quota_files_usage = $quota['quota_files_used'] / $quota['quota_files'];
+$usage_text = bytes_to_human_readable($quota['quota_size_used'] * 1024) . ' of ' . bytes_to_human_readable($quota['quota_size'] * 1024) . ' - ' . round($quota_usage * 100, 2).'%';
+$usage_files_text = "$quota[quota_files_used]  of $quota[quota_files] - " . round($quota_files_usage * 100, 2).'%';
 ?>
-<p>Your disk usage: <meter value="<?php echo round($quota_usage, 2); ?>"><?php echo round($quota_usage * 100); ?>%</meter> - <?php echo round($quota_usage * 100, 2); ?>% (updated hourly) <a href="upgrade.php">Upgrade</a></p>
+<p>Your disk usage: <meter value="<?php echo round($quota_usage, 2); ?>"><?php echo $usage_text; ?></meter> - <?php echo $usage_text; ?> (updated hourly) <a href="upgrade.php?upgrade=1g_quota">Upgrade</a></p>
+<p>Your file number usage: <meter value="<?php echo round($quota_file_usage, 2); ?>"><?php echo $usage_files_text; ?></meter> - <?php echo $usage_files_text; ?> (updated hourly) <a href="upgrade.php?upgrade=100k_files_quota">Upgrade</a></p>
 <h3>Logs</h3>
 <table border="1">
 <tr><th>Date</th><th>access.log</th><th>error.log</th></tr>
