@@ -31,7 +31,7 @@ apt-get --no-install-recommends install apt-transport-tor bzip2 clamav-daemon cl
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
-apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssh2-1-dev libssl-dev libsystemd-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
+apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gnupg1 libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssh2-1-dev libssl-dev libsystemd-dev libtidy-dev libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
