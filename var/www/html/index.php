@@ -30,7 +30,7 @@ header('X-Accel-Expires: 60');
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion domains</li>
 <li>Clearnet domains or a free subdomain of danwin1210.me</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
 <li>More to come…</li>
 </ul>
