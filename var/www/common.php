@@ -7,6 +7,7 @@ const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
 const DBVERSION=17; //database layout version
 const CAPTCHA=1; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
+const CONTACT_ME='mail@example.com'; //Main Contact emailadress
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
 const SERVERS=[ //servers and ports we are running on
