@@ -61,11 +61,24 @@ echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
-echo '</head><body>';
-echo '<h1>Hosting - Login</h1>';
-echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
+echo '<link rel="stylesheet" href="w3.css">';
+echo '</head>';
+echo '<style>';
+echo 'body {background-color: lightblue;}';
+echo 'h1 {color: white;text-align: center;}';
+echo 'p {font-family: verdana;font-size: 2vw;}';
+echo '</style>';
+echo '<body>';
+echo '<div class="w3-container w3-margin-left"><div class="w3-container w3-margin-right">';
+echo '<div class="w3-container w3-deep-purple"><h1>Hosting - Login</h1></div>';
+echo '<div class="w3-bar w3-blue"><a href="index.php" class="w3-bar-item w3-button w3-mobile">Home</a><a href="register.php" class="w3-bar-item w3-button w3-mobile">Register</a><a href="login.php" class="w3-bar-item w3-button w3-mobile">Login</a><a href="list.php" class="w3-bar-item w3-button w3-mobile">List of hosted sites</a><a href="faq.php" class="w3-bar-item w3-button w3-mobile">FAQ</a></div>';
+echo '<br>';
+echo '<div class="w3-card-4">';
+echo '<header class="w3-container w3-green">';
+echo '<h1>Login to your account</h1></header>';
+echo '<div class="w3-container">';
 echo $msg;
-echo '<form method="POST" action="login.php"><table>';
+echo '<form method="POST" action="login.php"><br><table>';
 echo '<tr><td>Username</td><td><input type="text" name="username" value="';
 if(isset($_POST['username'])){
 	echo htmlspecialchars($_POST['username']);
@@ -73,8 +86,10 @@ if(isset($_POST['username'])){
 echo '" required autofocus></td></tr>';
 echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
 send_captcha();
-?>
-<tr><td colspan="2"><input type="submit" value="Login"></td></tr>
-</table></form>
-<p>If you disabled cookies, please re-enable them. You can't log in without!</p>
-</body></html>
+echo '<tr><td colspan="2"><input type="submit" value="Login"></td></tr>';
+echo '</table></form></div>';
+echo '<br>';
+echo '<footer class="w3-container w3-yellow">';
+echo 'If you disabled cookies, please re-enable them. You can\'t log in without!';
+echo '</footer>';
+echo '</body></html>';
