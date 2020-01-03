@@ -32,28 +32,7 @@ btn {font-family: verdana;font-size: 1.2vw;}
   <a href="mailto:<?php echo CONTACT_ME?>" class="w3-bar-item w3-button w3-mobile">Contact Daniel's hosting service</a>
 </div>
 <div class="w3-panel">
-<div id="news">
-<?php             error_reporting(E_ALL);
-
-                  $entry = file("../news.txt");
-
-                  foreach($entry as $view)
-                  {
-                     $entry = stripslashes($view);
-                     $teile = explode("|", $view);
-                  }
-                      if($teile[1] == "")
-                      {
-                       echo "Server Status: All is normal! Namaste";
-                      }
-                      else
-                      {
-
-                      echo "$teile[0] from $teile[2]
-                            <br>$teile[1]";
-                      }
-                  ?>
-          </div></div>
+</div>
 <p>Here you can get yourself a hosting account on my server.</p>
 <div class="w3-card-4">
 <header class="w3-container w3-green">
