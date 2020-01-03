@@ -49,7 +49,8 @@ btn {font-family: verdana;font-size: 1.2vw;}
 <li>FTP access</li>
 <li>SFTP access</li>
 <li>1GB disk quota and a maximum of 100.000 files. If you need more, just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a></li>
-<li>mail() can send e-mails from <btn>your.onion@<?php echo ADDRESS; ?></btn><a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
+<li>mail() can send e-mails from <btn>your.onion@<?php echo ADDRESS; ?></btn>
+  <br><a href="https://github.com/PHPMailer/PHPMailer" target="_blank">https://github.com/PHPMailer/PHPMailer</a> or similar for now</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion domains</li>
