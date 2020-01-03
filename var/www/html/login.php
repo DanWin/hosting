@@ -93,3 +93,4 @@ echo '<footer class="w3-container w3-yellow">';
 echo 'If you disabled cookies, please re-enable them. You can\'t log in without!';
 echo '</footer>';
 echo '</body></html>';
+
