@@ -2,237 +2,7 @@
 git clone https://github.com/nginx/nginx
 cd nginx
 git clone https://github.com/google/ngx_brotli
-# apply dynamic TLS record patch by CloudFlare
-cat | git apply - <<EOF
---- a/src/event/ngx_event_openssl.c
-+++ b/src/event/ngx_event_openssl.c
-@@ -1267,6 +1267,7 @@ ngx_ssl_create_connection(ngx_ssl_t *ssl, ngx_connection_t *c, ngx_uint_t flags)
- 
-     sc->buffer = ((flags & NGX_SSL_BUFFER) != 0);
-     sc->buffer_size = ssl->buffer_size;
-+    sc->dyn_rec = ssl->dyn_rec;
- 
-     sc->session_ctx = ssl->ctx;
- 
-@@ -2115,6 +2116,41 @@ ngx_ssl_send_chain(ngx_connection_t *c, ngx_chain_t *in, off_t limit)
- 
-     for ( ;; ) {
- 
-+        /* Dynamic record resizing:
-+           We want the initial records to fit into one TCP segment
-+           so we don't get TCP HoL blocking due to TCP Slow Start.
-+           A connection always starts with small records, but after
-+           a given amount of records sent, we make the records larger
-+           to reduce header overhead.
-+           After a connection has idled for a given timeout, begin
-+           the process from the start. The actual parameters are
-+           configurable. If dyn_rec_timeout is 0, we assume dyn_rec is off. */
-+
-+        if (c->ssl->dyn_rec.timeout > 0 ) {
-+
-+            if (ngx_current_msec - c->ssl->dyn_rec_last_write >
-+                c->ssl->dyn_rec.timeout)
-+            {
-+                buf->end = buf->start + c->ssl->dyn_rec.size_lo;
-+                c->ssl->dyn_rec_records_sent = 0;
-+
-+            } else {
-+                if (c->ssl->dyn_rec_records_sent >
-+                    c->ssl->dyn_rec.threshold * 2)
-+                {
-+                    buf->end = buf->start + c->ssl->buffer_size;
-+
-+                } else if (c->ssl->dyn_rec_records_sent >
-+                           c->ssl->dyn_rec.threshold)
-+                {
-+                    buf->end = buf->start + c->ssl->dyn_rec.size_hi;
-+
-+                } else {
-+                    buf->end = buf->start + c->ssl->dyn_rec.size_lo;
-+                }
-+            }
-+        }
-+
-         while (in && buf->last < buf->end && send < limit) {
-             if (in->buf->last_buf || in->buf->flush) {
-                 flush = 1;
-@@ -2222,6 +2258,9 @@ ngx_ssl_write(ngx_connection_t *c, u_char *data, size_t size)
- 
-     if (n > 0) {
- 
-+        c->ssl->dyn_rec_records_sent++;
-+        c->ssl->dyn_rec_last_write = ngx_current_msec;
-+
-         if (c->ssl->saved_read_handler) {
- 
-             c->read->handler = c->ssl->saved_read_handler;
---- a/src/event/ngx_event_openssl.h
-+++ b/src/event/ngx_event_openssl.h
-@@ -64,10 +64,19 @@
- #endif
- 
- 
-+typedef struct {
-+    ngx_msec_t                  timeout;
-+    ngx_uint_t                  threshold;
-+    size_t                      size_lo;
-+    size_t                      size_hi;
-+} ngx_ssl_dyn_rec_t;
-+
-+
- struct ngx_ssl_s {
-     SSL_CTX                    *ctx;
-     ngx_log_t                  *log;
-     size_t                      buffer_size;
-+    ngx_ssl_dyn_rec_t           dyn_rec;
- };
- 
- 
-@@ -95,6 +104,11 @@ struct ngx_ssl_connection_s {
-     unsigned                    no_wait_shutdown:1;
-     unsigned                    no_send_shutdown:1;
-     unsigned                    handshake_buffer_set:1;
-+
-+    ngx_ssl_dyn_rec_t           dyn_rec;
-+    ngx_msec_t                  dyn_rec_last_write;
-+    ngx_uint_t                  dyn_rec_records_sent;
-+
-     unsigned                    try_early_data:1;
-     unsigned                    in_early:1;
-     unsigned                    early_preread:1;
-@@ -107,7 +121,7 @@ struct ngx_ssl_connection_s {
- #define NGX_SSL_DFLT_BUILTIN_SCACHE  -5
- 
- 
--#define NGX_SSL_MAX_SESSION_SIZE  4096
-+#define NGX_SSL_MAX_SESSION_SIZE  16384
- 
- typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
- 
---- a/src/http/modules/ngx_http_ssl_module.c
-+++ b/src/http/modules/ngx_http_ssl_module.c
-@@ -246,6 +246,41 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
-       offsetof(ngx_http_ssl_srv_conf_t, early_data),
-       NULL },
- 
-+    { ngx_string("ssl_dyn_rec_enable"),
-+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
-+      ngx_conf_set_flag_slot,
-+      NGX_HTTP_SRV_CONF_OFFSET,
-+      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_enable),
-+      NULL },
-+
-+    { ngx_string("ssl_dyn_rec_timeout"),
-+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
-+      ngx_conf_set_msec_slot,
-+      NGX_HTTP_SRV_CONF_OFFSET,
-+      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_timeout),
-+      NULL },
-+
-+    { ngx_string("ssl_dyn_rec_size_lo"),
-+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
-+      ngx_conf_set_size_slot,
-+      NGX_HTTP_SRV_CONF_OFFSET,
-+      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_size_lo),
-+      NULL },
-+
-+    { ngx_string("ssl_dyn_rec_size_hi"),
-+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
-+      ngx_conf_set_size_slot,
-+      NGX_HTTP_SRV_CONF_OFFSET,
-+      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_size_hi),
-+      NULL },
-+
-+    { ngx_string("ssl_dyn_rec_threshold"),
-+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
-+      ngx_conf_set_num_slot,
-+      NGX_HTTP_SRV_CONF_OFFSET,
-+      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_threshold),
-+      NULL },
-+
-       ngx_null_command
- };
- 
-@@ -576,6 +611,11 @@ ngx_http_ssl_create_srv_conf(ngx_conf_t *cf)
-     sscf->session_ticket_keys = NGX_CONF_UNSET_PTR;
-     sscf->stapling = NGX_CONF_UNSET;
-     sscf->stapling_verify = NGX_CONF_UNSET;
-+    sscf->dyn_rec_enable = NGX_CONF_UNSET;
-+    sscf->dyn_rec_timeout = NGX_CONF_UNSET_MSEC;
-+    sscf->dyn_rec_size_lo = NGX_CONF_UNSET_SIZE;
-+    sscf->dyn_rec_size_hi = NGX_CONF_UNSET_SIZE;
-+    sscf->dyn_rec_threshold = NGX_CONF_UNSET_UINT;
- 
-     return sscf;
- }
-@@ -643,6 +683,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
-     ngx_conf_merge_str_value(conf->stapling_responder,
-                          prev->stapling_responder, "");
- 
-+    ngx_conf_merge_value(conf->dyn_rec_enable, prev->dyn_rec_enable, 0);
-+    ngx_conf_merge_msec_value(conf->dyn_rec_timeout, prev->dyn_rec_timeout,
-+                             1000);
-+    /* Default sizes for the dynamic record sizes are defined to fit maximal
-+       TLS + IPv6 overhead in a single TCP segment for lo and 3 segments for hi:
-+       1369 = 1500 - 40 (IP) - 20 (TCP) - 10 (Time) - 61 (Max TLS overhead) */
-+    ngx_conf_merge_size_value(conf->dyn_rec_size_lo, prev->dyn_rec_size_lo,
-+                             1369);
-+    /* 4229 = (1500 - 40 - 20 - 10) * 3  - 61 */
-+    ngx_conf_merge_size_value(conf->dyn_rec_size_hi, prev->dyn_rec_size_hi,
-+                             4229);
-+    ngx_conf_merge_uint_value(conf->dyn_rec_threshold, prev->dyn_rec_threshold,
-+                             40);
-+
-     conf->ssl.log = cf->log;
- 
-     if (conf->enable) {
-@@ -827,6 +881,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
-         return NGX_CONF_ERROR;
-     }
- 
-+    if (conf->dyn_rec_enable) {
-+        conf->ssl.dyn_rec.timeout = conf->dyn_rec_timeout;
-+        conf->ssl.dyn_rec.threshold = conf->dyn_rec_threshold;
-+
-+        if (conf->buffer_size > conf->dyn_rec_size_lo) {
-+            conf->ssl.dyn_rec.size_lo = conf->dyn_rec_size_lo;
-+
-+        } else {
-+            conf->ssl.dyn_rec.size_lo = conf->buffer_size;
-+        }
-+
-+        if (conf->buffer_size > conf->dyn_rec_size_hi) {
-+            conf->ssl.dyn_rec.size_hi = conf->dyn_rec_size_hi;
-+
-+        } else {
-+            conf->ssl.dyn_rec.size_hi = conf->buffer_size;
-+        }
-+
-+    } else {
-+        conf->ssl.dyn_rec.timeout = 0;
-+    }
-+
-     return NGX_CONF_OK;
- }
- 
---- a/src/http/modules/ngx_http_ssl_module.h
-+++ b/src/http/modules/ngx_http_ssl_module.h
-@@ -58,6 +58,12 @@ typedef struct {
- 
-     u_char                         *file;
-     ngx_uint_t                      line;
-+
-+    ngx_flag_t                      dyn_rec_enable;
-+    ngx_msec_t                      dyn_rec_timeout;
-+    size_t                          dyn_rec_size_lo;
-+    size_t                          dyn_rec_size_hi;
-+    ngx_uint_t                      dyn_rec_threshold;
- } ngx_http_ssl_srv_conf_t;
- 
- 
-EOF
-
-# apply HTTP2 HPACK patch by CloudFlare
+# apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
 cat | git apply - <<EOF
 diff --git a/auto/modules b/auto/modules
 index d78e2823..ec8a4653 100644
@@ -357,11 +127,245 @@ index 54e867d3..322b3df9 100644
 +
  
  #endif /* _NGX_MURMURHASH_H_INCLUDED_ */
+diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
+index 91b415ca..44b3158c 100644
+--- a/src/event/ngx_event_openssl.c
++++ b/src/event/ngx_event_openssl.c
+@@ -1507,6 +1507,7 @@ ngx_ssl_create_connection(ngx_ssl_t *ssl, ngx_connection_t *c, ngx_uint_t flags)
+ 
+     sc->buffer = ((flags & NGX_SSL_BUFFER) != 0);
+     sc->buffer_size = ssl->buffer_size;
++    sc->dyn_rec = ssl->dyn_rec;
+ 
+     sc->session_ctx = ssl->ctx;
+ 
+@@ -2404,6 +2405,41 @@ ngx_ssl_send_chain(ngx_connection_t *c, ngx_chain_t *in, off_t limit)
+ 
+     for ( ;; ) {
+ 
++        /* Dynamic record resizing:
++           We want the initial records to fit into one TCP segment
++           so we don't get TCP HoL blocking due to TCP Slow Start.
++           A connection always starts with small records, but after
++           a given amount of records sent, we make the records larger
++           to reduce header overhead.
++           After a connection has idled for a given timeout, begin
++           the process from the start. The actual parameters are
++           configurable. If dyn_rec_timeout is 0, we assume dyn_rec is off. */
++
++        if (c->ssl->dyn_rec.timeout > 0 ) {
++
++            if (ngx_current_msec - c->ssl->dyn_rec_last_write >
++                c->ssl->dyn_rec.timeout)
++            {
++                buf->end = buf->start + c->ssl->dyn_rec.size_lo;
++                c->ssl->dyn_rec_records_sent = 0;
++
++            } else {
++                if (c->ssl->dyn_rec_records_sent >
++                    c->ssl->dyn_rec.threshold * 2)
++                {
++                    buf->end = buf->start + c->ssl->buffer_size;
++
++                } else if (c->ssl->dyn_rec_records_sent >
++                           c->ssl->dyn_rec.threshold)
++                {
++                    buf->end = buf->start + c->ssl->dyn_rec.size_hi;
++
++                } else {
++                    buf->end = buf->start + c->ssl->dyn_rec.size_lo;
++                }
++            }
++        }
++
+         while (in && buf->last < buf->end && send < limit) {
+             if (in->buf->last_buf || in->buf->flush) {
+                 flush = 1;
+@@ -2511,6 +2547,9 @@ ngx_ssl_write(ngx_connection_t *c, u_char *data, size_t size)
+ 
+     if (n > 0) {
+ 
++        c->ssl->dyn_rec_records_sent++;
++        c->ssl->dyn_rec_last_write = ngx_current_msec;
++
+         if (c->ssl->saved_read_handler) {
+ 
+             c->read->handler = c->ssl->saved_read_handler;
+diff --git a/src/event/ngx_event_openssl.h b/src/event/ngx_event_openssl.h
+index 61da0c5d..ae293d63 100644
+--- a/src/event/ngx_event_openssl.h
++++ b/src/event/ngx_event_openssl.h
+@@ -64,10 +64,19 @@
+ #endif
+ 
+ 
++typedef struct {
++    ngx_msec_t                  timeout;
++    ngx_uint_t                  threshold;
++    size_t                      size_lo;
++    size_t                      size_hi;
++} ngx_ssl_dyn_rec_t;
++
++
+ struct ngx_ssl_s {
+     SSL_CTX                    *ctx;
+     ngx_log_t                  *log;
+     size_t                      buffer_size;
++    ngx_ssl_dyn_rec_t           dyn_rec;
+ };
+ 
+ 
+@@ -95,6 +104,11 @@ struct ngx_ssl_connection_s {
+     unsigned                    no_wait_shutdown:1;
+     unsigned                    no_send_shutdown:1;
+     unsigned                    handshake_buffer_set:1;
++
++    ngx_ssl_dyn_rec_t           dyn_rec;
++    ngx_msec_t                  dyn_rec_last_write;
++    ngx_uint_t                  dyn_rec_records_sent;
++
+     unsigned                    try_early_data:1;
+     unsigned                    in_early:1;
+     unsigned                    early_preread:1;
+@@ -108,7 +122,7 @@ struct ngx_ssl_connection_s {
+ #define NGX_SSL_DFLT_BUILTIN_SCACHE  -5
+ 
+ 
+-#define NGX_SSL_MAX_SESSION_SIZE  4096
++#define NGX_SSL_MAX_SESSION_SIZE  16384
+ 
+ typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
+ 
+diff --git a/src/http/modules/ngx_http_ssl_module.c b/src/http/modules/ngx_http_ssl_module.c
+index 495e628d..9480b73a 100644
+--- a/src/http/modules/ngx_http_ssl_module.c
++++ b/src/http/modules/ngx_http_ssl_module.c
+@@ -249,6 +249,41 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
+       offsetof(ngx_http_ssl_srv_conf_t, early_data),
+       NULL },
+ 
++    { ngx_string("ssl_dyn_rec_enable"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_flag_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_enable),
++      NULL },
++
++    { ngx_string("ssl_dyn_rec_timeout"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_msec_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_timeout),
++      NULL },
++
++    { ngx_string("ssl_dyn_rec_size_lo"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_size_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_size_lo),
++      NULL },
++
++    { ngx_string("ssl_dyn_rec_size_hi"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_size_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_size_hi),
++      NULL },
++
++    { ngx_string("ssl_dyn_rec_threshold"),
++      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_CONF_FLAG,
++      ngx_conf_set_num_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, dyn_rec_threshold),
++      NULL },
++
+       ngx_null_command
+ };
+ 
+@@ -580,6 +615,11 @@ ngx_http_ssl_create_srv_conf(ngx_conf_t *cf)
+     sscf->session_ticket_keys = NGX_CONF_UNSET_PTR;
+     sscf->stapling = NGX_CONF_UNSET;
+     sscf->stapling_verify = NGX_CONF_UNSET;
++    sscf->dyn_rec_enable = NGX_CONF_UNSET;
++    sscf->dyn_rec_timeout = NGX_CONF_UNSET_MSEC;
++    sscf->dyn_rec_size_lo = NGX_CONF_UNSET_SIZE;
++    sscf->dyn_rec_size_hi = NGX_CONF_UNSET_SIZE;
++    sscf->dyn_rec_threshold = NGX_CONF_UNSET_UINT;
+ 
+     return sscf;
+ }
+@@ -647,6 +687,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+     ngx_conf_merge_str_value(conf->stapling_responder,
+                          prev->stapling_responder, "");
+ 
++    ngx_conf_merge_value(conf->dyn_rec_enable, prev->dyn_rec_enable, 0);
++    ngx_conf_merge_msec_value(conf->dyn_rec_timeout, prev->dyn_rec_timeout,
++                             1000);
++    /* Default sizes for the dynamic record sizes are defined to fit maximal
++       TLS + IPv6 overhead in a single TCP segment for lo and 3 segments for hi:
++       1369 = 1500 - 40 (IP) - 20 (TCP) - 10 (Time) - 61 (Max TLS overhead) */
++    ngx_conf_merge_size_value(conf->dyn_rec_size_lo, prev->dyn_rec_size_lo,
++                             1369);
++    /* 4229 = (1500 - 40 - 20 - 10) * 3  - 61 */
++    ngx_conf_merge_size_value(conf->dyn_rec_size_hi, prev->dyn_rec_size_hi,
++                             4229);
++    ngx_conf_merge_uint_value(conf->dyn_rec_threshold, prev->dyn_rec_threshold,
++                             40);
++
+     conf->ssl.log = cf->log;
+ 
+     if (conf->enable) {
+@@ -857,6 +911,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+         return NGX_CONF_ERROR;
+     }
+ 
++    if (conf->dyn_rec_enable) {
++        conf->ssl.dyn_rec.timeout = conf->dyn_rec_timeout;
++        conf->ssl.dyn_rec.threshold = conf->dyn_rec_threshold;
++
++        if (conf->buffer_size > conf->dyn_rec_size_lo) {
++            conf->ssl.dyn_rec.size_lo = conf->dyn_rec_size_lo;
++
++        } else {
++            conf->ssl.dyn_rec.size_lo = conf->buffer_size;
++        }
++
++        if (conf->buffer_size > conf->dyn_rec_size_hi) {
++            conf->ssl.dyn_rec.size_hi = conf->dyn_rec_size_hi;
++
++        } else {
++            conf->ssl.dyn_rec.size_hi = conf->buffer_size;
++        }
++
++    } else {
++        conf->ssl.dyn_rec.timeout = 0;
++    }
++
+     return NGX_CONF_OK;
+ }
+ 
+diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_ssl_module.h
+index 26fdccfe..b14b52ad 100644
+--- a/src/http/modules/ngx_http_ssl_module.h
++++ b/src/http/modules/ngx_http_ssl_module.h
+@@ -61,6 +61,12 @@ typedef struct {
+ 
+     u_char                         *file;
+     ngx_uint_t                      line;
++
++    ngx_flag_t                      dyn_rec_enable;
++    ngx_msec_t                      dyn_rec_timeout;
++    size_t                          dyn_rec_size_lo;
++    size_t                          dyn_rec_size_hi;
++    ngx_uint_t                      dyn_rec_threshold;
+ } ngx_http_ssl_srv_conf_t;
+ 
+ 
 diff --git a/src/http/v2/ngx_http_v2.c b/src/http/v2/ngx_http_v2.c
-index d0e44475..c83b04cf 100644
+index 9b5a0cd5..ce28c64b 100644
 --- a/src/http/v2/ngx_http_v2.c
 +++ b/src/http/v2/ngx_http_v2.c
-@@ -270,6 +270,8 @@ ngx_http_v2_init(ngx_event_t *rev)
+@@ -271,6 +271,8 @@ ngx_http_v2_init(ngx_event_t *rev)
  
      h2c->frame_size = NGX_HTTP_V2_DEFAULT_FRAME_SIZE;
  
@@ -370,7 +374,7 @@ index d0e44475..c83b04cf 100644
      h2scf = ngx_http_get_module_srv_conf(hc->conf_ctx, ngx_http_v2_module);
  
      h2c->concurrent_pushes = h2scf->concurrent_pushes;
-@@ -2091,6 +2093,13 @@ ngx_http_v2_state_settings_params(ngx_http_v2_connection_t *h2c, u_char *pos,
+@@ -2092,6 +2094,13 @@ ngx_http_v2_state_settings_params(ngx_http_v2_connection_t *h2c, u_char *pos,
  
          case NGX_HTTP_V2_HEADER_TABLE_SIZE_SETTING:
  
