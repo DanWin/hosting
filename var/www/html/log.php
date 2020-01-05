@@ -1,6 +1,5 @@
 <?php
 include('../common.php');
-session_start();
 $user=check_login();
 if(!isset($_REQUEST['old']) || $_REQUEST['old']==0){
 	$old='';

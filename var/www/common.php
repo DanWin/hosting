@@ -277,10 +277,11 @@ function send_captcha() {
 }
 
 function check_login(){
+	session_start();
 	if(empty($_SESSION['csrf_token'])){
 		$_SESSION['csrf_token']=sha1(uniqid());
 	}
-	if(empty($_SESSION['hosting_username'])){
+	if(empty($_SESSION['hosting_username']) || !empty($_SESSION['2fa_code'])){
 		header('Location: login.php');
 		session_destroy();
 		exit;
@@ -569,16 +570,31 @@ function rewrite_nginx_config(){
 
 	}
 	file_put_contents("/etc/nginx/sites-enabled/hosted_sites", $nginx);
-	$nginx='';
+	unset($nginx);
+	$nginx_mysql='';
+	$nginx_mail='';
 	$stmt=$db->query("SELECT system_account FROM users WHERE id NOT IN (SELECT user_id FROM new_account) AND todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
-		$nginx.="server {
+		$nginx_mysql.="server {
 	listen unix:/home/$tmp[system_account]/var/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }
 ";
+		$nginx_mail.="server {
+	listen unix:/home/$tmp[system_account]/var/run/mail.sock;
+	root /var/www/mail;
+	location / {
+		include snippets/fastcgi-php.conf;
+		fastcgi_param MAIL_USER $tmp[system_account];
+		fastcgi_param DOCUMENT_ROOT /var/www/mail;
+		fastcgi_param SCRIPT_FILENAME /var/www/mail\$fastcgi_script_name;
+		fastcgi_pass unix:/var/run/php/7.4-mail;
 	}
-	file_put_contents("/etc/nginx/streams-enabled/hosted_sites", $nginx);
+}
+";
+	}
+	file_put_contents("/etc/nginx/streams-enabled/hosted_sites", $nginx_mysql);
+	file_put_contents("/etc/nginx/sites-enabled/hosted_sites_mail", $nginx_mail);
 	exec('systemctl reload nginx');
 }
 
@@ -613,6 +629,7 @@ php_admin_value[disable_functions] = pcntl_alarm,pcntl_async_signals,pcntl_exec,
 php_admin_value[upload_tmp_dir] = /tmp
 php_admin_value[soap.wsdl_cache_dir] = /tmp
 php_admin_value[session.save_path] = /tmp
+php_admin_value[sendmail_path] = '/usr/bin/php -r eval\(base64_decode\(\\\"JGM9Y3VybF9pbml0KCcxJyk7Y3VybF9zZXRvcHRfYXJyYXkoJGMsW0NVUkxPUFRfVU5JWF9TT0NLRVRfUEFUSD0+Jy92YXIvcnVuL21haWwuc29jaycsQ1VSTE9QVF9QT1NURklFTERTPT5bJ2NvbnRlbnQnPT5maWxlX2dldF9jb250ZW50cygncGhwOi8vc3RkaW4nKV1dKTtjdXJsX2V4ZWMoJGMpOwo=\\\"\)\)\;'
 env[HOME]=/
 ";
 		}

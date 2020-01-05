@@ -3,7 +3,7 @@ include('../common.php');
 $db = get_db_instance();
 header('Content-Type: text/html; charset=UTF-8');
 session_start();
-if(!empty($_SESSION['hosting_username'])){
+if(!empty($_SESSION['hosting_username']) && empty($_SESSION['2fa_code'])){
 	header('Location: home.php');
 	exit;
 }

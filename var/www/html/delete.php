@@ -1,7 +1,6 @@
 <?php
 include('../common.php');
 $db = get_db_instance();
-session_start();
 $user=check_login();
 $msg='';
 if($_SERVER['REQUEST_METHOD']==='POST'){

@@ -1,7 +1,6 @@
 <?php
 include('../common.php');
 $db = get_db_instance();
-session_start();
 $user=check_login();
 if(!isset($_REQUEST['type'])){
 	$_REQUEST['type']='acc';

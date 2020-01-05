@@ -1,7 +1,6 @@
 <?php
 include('../common.php');
 $db = get_db_instance();
-session_start();
 $user=check_login();
 header('Content-Type: text/html; charset=UTF-8');
 if(isset($_POST['action']) && $_POST['action']==='add_db'){
@@ -326,7 +325,7 @@ $usage_text = bytes_to_human_readable($quota['quota_size_used'] * 1024) . ' of '
 $usage_files_text = "$quota[quota_files_used]  of $quota[quota_files] - " . round($quota_files_usage * 100, 2).'%';
 ?>
 <p>Your disk usage: <meter value="<?php echo round($quota_usage, 2); ?>"><?php echo $usage_text; ?></meter> - <?php echo $usage_text; ?> (updated hourly) <a href="upgrade.php?upgrade=1g_quota">Upgrade</a></p>
-<p>Your file number usage: <meter value="<?php echo round($quota_file_usage, 2); ?>"><?php echo $usage_files_text; ?></meter> - <?php echo $usage_files_text; ?> (updated hourly) <a href="upgrade.php?upgrade=100k_files_quota">Upgrade</a></p>
+<p>Your file number usage: <meter value="<?php echo round($quota_files_usage, 2); ?>"><?php echo $usage_files_text; ?></meter> - <?php echo $usage_files_text; ?> (updated hourly) <a href="upgrade.php?upgrade=100k_files_quota">Upgrade</a></p>
 <h3>Logs</h3>
 <table border="1">
 <tr><th>Date</th><th>access.log</th><th>error.log</th></tr>

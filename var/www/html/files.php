@@ -1,7 +1,6 @@
 <?php
 include('../common.php');
 $db = get_db_instance();
-session_start();
 $user=check_login();
 if(!empty($_POST['ftp_pass'])){
 	$_SESSION['ftp_pass']=$_POST['ftp_pass'];

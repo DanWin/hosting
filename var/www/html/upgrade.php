@@ -1,6 +1,5 @@
 <?php
 require('../common.php');
-session_start();
 $user=check_login();
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
@@ -27,7 +26,11 @@ if($rates === false){
 	<select name="upgrade">
 	<?php
 	foreach(ACCOUNT_UPGRADES as $name => $upgrade){
-		echo '<option value="'.htmlspecialchars($name).'">'.htmlspecialchars($upgrade['name']).' ($'.$upgrade['usd_price'].')</option>';
+		echo '<option value="'.htmlspecialchars($name).'"';
+		if(isset($_REQUEST['upgrade']) && $name===$_REQUEST['upgrade']){
+			echo ' selected';
+		}
+		echo '>'.htmlspecialchars($upgrade['name']).' ($'.$upgrade['usd_price'].')</option>';
 	}
 	?>
 	</td></tr>
