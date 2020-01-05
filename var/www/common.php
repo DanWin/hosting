@@ -613,6 +613,7 @@ php_admin_value[disable_functions] = pcntl_alarm,pcntl_async_signals,pcntl_exec,
 php_admin_value[upload_tmp_dir] = /tmp
 php_admin_value[soap.wsdl_cache_dir] = /tmp
 php_admin_value[session.save_path] = /tmp
+env[HOME]=/
 ";
 		}
 		file_put_contents("/etc/php/$version/fpm/pool.d/$key/www.conf", $php);

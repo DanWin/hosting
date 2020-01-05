@@ -126,6 +126,7 @@ BINARIES_GENERAL=(
     '/usr/bin/vi'
     '/usr/bin/awk'
     '/usr/bin/composer'
+    '/usr/bin/gpg'
 )
 FILES_GENERAL=(
     '/etc/hosts'

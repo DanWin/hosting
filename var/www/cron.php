@@ -24,7 +24,7 @@ while($id=$stmt->fetch(PDO::FETCH_NUM)){
 	exec('useradd -l -p ' . escapeshellarg($id[2]) . ' -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
 	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
 	exec('grep ' . escapeshellarg($system_account) . ' /etc/passwd >> ' . escapeshellarg("/home/$system_account/etc/passwd"));
-	foreach(['.cache', '.composer', '.config', '.local', '.ssh', 'data', 'Maildir'] as $dir){
+	foreach(['.cache', '.composer', '.config', '.gnupg', '.local', '.ssh', 'data', 'Maildir'] as $dir){
 		mkdir("/home/$system_account/$dir", 0700);
 		chown("/home/$system_account/$dir", $system_account);
 		chgrp("/home/$system_account/$dir", 'www-data');
