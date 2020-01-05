@@ -484,9 +484,9 @@ index 59ddf54e..caa2db23 100644
 +u_char *
 +ngx_http_v2_write_int(u_char *pos, ngx_uint_t prefix, ngx_uint_t value);
 +
-+#define ngx_http_v2_write_name(dst, src, len, tmp)                            \
++#define ngx_http_v2_write_name(dst, src, len, tmp)                            \\
 +    ngx_http_v2_string_encode(dst, src, len, tmp, 1)
-+#define ngx_http_v2_write_value(dst, src, len, tmp)                           \
++#define ngx_http_v2_write_value(dst, src, len, tmp)                           \\
 +    ngx_http_v2_string_encode(dst, src, len, tmp, 0)
 +
 +u_char *
@@ -497,12 +497,12 @@ index 59ddf54e..caa2db23 100644
 +void
 +ngx_http_v2_table_resize(ngx_http_v2_connection_t *h2c);
 +
-+#define ngx_http_v2_write_header_str(key, value)                        \
-+    ngx_http_v2_write_header(h2c, pos, (u_char *) key, sizeof(key) - 1, \
++#define ngx_http_v2_write_header_str(key, value)                        \\
++    ngx_http_v2_write_header(h2c, pos, (u_char *) key, sizeof(key) - 1, \\
 +    (u_char *) value, sizeof(value) - 1, tmp);
 +
-+#define ngx_http_v2_write_header_tbl(key, val)                          \
-+    ngx_http_v2_write_header(h2c, pos, (u_char *) key, sizeof(key) - 1, \
++#define ngx_http_v2_write_header_tbl(key, val)                          \\
++    ngx_http_v2_write_header(h2c, pos, (u_char *) key, sizeof(key) - 1, \\
 +    val.data, val.len, tmp);
 +
  #endif /* _NGX_HTTP_V2_H_INCLUDED_ */
