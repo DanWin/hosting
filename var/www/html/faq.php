@@ -47,7 +47,7 @@ p {
 <br>
 <div class="w3-container">
 <table border="1">
-<tr><td>I can't sent emails with php mail. how can i fix it?</td><td>You can download this: <a href="lins-php-mailer.zip" class="w3-bar-item">php-mailer</a></td></tr>
+<tr><td>I can't sent emails with php mail. how can i fix it?</td><td>You can download this: <a href="https://github.com/PHPMailer/PHPMailer" target="_blank" class="w3-bar-item">PHPMailer</a></td></tr>
 <tr><td>Your rules are so strict. Can't you make an exception for my site?</td><td>No, I will not make exceptions for any site and neither am I corruptible by offering me money. Once I start making an exception for your site, I would have to for every other site as well which is the same as if the rules didn't exist.</td></tr>
 <tr><td>I have an .htaccess file, but it doesn't work. How can I fix it?</td><td>.htaccess files are meant for Apache2 webservers. My server is based on NginX, which is much faster due to using static configuration files and not reading files like .htaccess at runtime. You can <a href="mailto:<?php echo CONTACT_ME?>">contact me</a> and tell me your sites address where the .htaccess file is. I will then check your .htaccess and convert the rules to NginX rules and apply those.</td></tr>
 <tr><td>I just uploaded my page, but it's broken. HELP!</td><td>Most likely your site makes use of rewriting rules, which are typically located in an .htaccess file or are mentioned in a README file. Just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a> in this case. Also see the previous question.</td></tr>
