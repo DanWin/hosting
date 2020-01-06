@@ -46,8 +46,8 @@ btn {font-family: verdana;font-size: 1.2vw;}
 <li>MariaDB (MySQL) database support</li>
 <li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
 <li>Web-based file manager</li>
-<li>FTP access</li>
-<li>SFTP access</li>
+<li>FTP and SFTP access</li>
+<li>command line access to shell via SSH</li>
 <li>1GB disk quota and a maximum of 100.000 files. If you need more, just <a href="mailto:<?php echo CONTACT_ME?>">contact me</a></li>
 <li>mail() can send e-mails from <btn>your.onion@<?php echo ADDRESS; ?></btn>
 <br>(your_system_account@hosting.danwin1210.me for clearnet)</li>
