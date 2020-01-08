@@ -4,3 +4,6 @@ Description=Delete old shared hosting accounts
 [Service]
 Type=simple
 ExecStart=/usr/bin/php /var/www/find_old.php
+Nice=19
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
