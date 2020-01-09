@@ -237,13 +237,14 @@ group = www-data
 listen = /run/php/$version-squirrelmail
 listen.owner = www-data
 listen.group = www-data
+chroot = /var/www
 pm = dynamic
 pm.max_children = 25
 pm.start_servers = 2
 pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 php_admin_value[mysqli.allow_persistent] = On
-php_admin_value[open_basedir] = /var/local/squirrelmail:/var/www/html/squirrelmail:/tmp
+php_admin_value[open_basedir] = /data/squirrelmail:/html/squirrelmail:/tmp
 env[HOME]=/
 [adminer]
 user = www-data

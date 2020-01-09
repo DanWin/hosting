@@ -133,7 +133,7 @@ quit
 
 For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
 ```
-cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure && mkdir /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach && chown www-data:www-data /var/local/squirrelmail /var/local/squirrelmail/data /var/local/squirrelmail/attach
+cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure && mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach && chown www-data:www-data -R /var/www/data
 ```
 
 Once it is downloaded, it will ask you for configuration. Things to change are:
@@ -141,6 +141,8 @@ Once it is downloaded, it will ask you for configuration. Things to change are:
 D. > select dovecot
 2. Server Settings > 1. Domain > Set your own .onion domain here
 2. Server Settings > B. Update SMTP settings > 7. SMTP Authentication -> y -> plain -> n User are authenticated using their username + password
+4. General Options > 1. Data Directory > /data/squirrelmail/data/
+4. General Options > 2. Attachment Directory > /data/squirrelmail/attach/
 4. General Options > 9. Allow editing of identity > n Users should not be able to fake email addresses > y They should be able to change display name > y They should be able to set a reply to mail > y additional headers are not required
 10. Language settings > 4. Enable aggressive decoding
 11. Tweaks > 2. Ask user info on first login > n (commonly confuses users)

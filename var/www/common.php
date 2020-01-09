@@ -81,8 +81,8 @@ server {
 	location /squirrelmail {
 		location ~ \.php$ {
 			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT $document_root;
-			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_param DOCUMENT_ROOT /html;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php/7.4-squirrelmail;
 		}
 	}
