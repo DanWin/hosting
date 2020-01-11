@@ -14,7 +14,7 @@ LimitNOFILE=100000
 TimeoutStartSec=300
 ProtectSystem=strict
 PrivateTmp=true
-# sendmail requires it... enable once chrooted
+# sendmail requires it...
 #NoNewPrivileges=true
 PrivateDevices=true
 ProtectKernelTunables=true
@@ -27,6 +27,7 @@ ReadWritePaths=-/var/run/
 ReadWritePaths=-/run/
 ReadWritePaths=-/var/local/squirrelmail/
 ReadWritePaths=-/var/www/
+ReadWritePaths=-/var/spool/postfix/
 InaccessiblePaths=-/root/
 CPUQuota=100%
 MemoryHigh=25%
