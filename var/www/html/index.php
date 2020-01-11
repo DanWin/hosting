@@ -24,7 +24,7 @@ header('X-Accel-Expires: 60');
 <li>Web-based file manager</li>
 <li>FTP and SFTP access</li>
 <li>command line access to shell via SSH</li>
-<li>1GB disk quota and a maximum of 100.000 files. - upgradable</li>
+<li>1GB disk quota and a maximum of 100.000 files<?php echo ENABLE_UPGRADES ? ' - upgradable' : ''; ?></li>
 <li>mail() can send e-mails from your_system_account@<?php echo ADDRESS; ?> (your_system_account@hosting.danwin1210.me for clearnet)</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>

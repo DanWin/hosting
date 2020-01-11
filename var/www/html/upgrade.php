@@ -1,5 +1,9 @@
 <?php
 require('../common.php');
+if(!ENABLE_UPGRADES || !COINPAYMENTS_ENABLED){
+	header('Location: home.php');
+	exit;
+}
 $user=check_login();
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;

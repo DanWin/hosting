@@ -119,6 +119,7 @@ const SKIP_USER_CHROOT_UPDATE = true; //skips updating user chroots when running
 const DEFAULT_QUOTA_SIZE = 1024 * 1024; //per user disk quota in kb - Defaults to 1 GB
 const DEFAULT_QUOTA_FILES = 100000; //per user file quota - by default allow no more than 100000 files
 const NUM_GUARDS = 50; //number of tor guard relays to distribute the load on
+const ENABLE_UPGRADES = true; //enable users to upgrade their account againt payment? true/false
 //Optional paid upgrades in format of 'identifier' => ['name', 'usd_price']
 const ACCOUNT_UPGRADES = [
 	'1g_quota' => ['name' => '+1GB disk Quota', 'usd_price' => 10],
@@ -127,6 +128,7 @@ const ACCOUNT_UPGRADES = [
 	'20g_quota' => ['name' => '+20GB disk Quota', 'usd_price' => 40],
 	'100k_files_quota' => ['name' => '+100k files Quota', 'usd_price' => 10],
 ];
+const COINPAYMENTS_ENABLED = true; //enable CoinPayments as payment processor true/false
 const COINPAYMENTS_PRIVATE = 'COINPAYMENTS_PRIVATE'; //Coinpayments private API key
 const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC'; //Coinpayments public API key
 const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID'; //Coinpayments merchant ID
