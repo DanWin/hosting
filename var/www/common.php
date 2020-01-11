@@ -384,8 +384,14 @@ HiddenServiceNumIntroductionPoints $tmp[num_intros]
 HiddenServiceVersion $tmp[version]
 HiddenServiceMaxStreamsCloseCircuit 1
 HiddenServiceMaxStreams $tmp[max_streams]
-HiddenServicePort 80 unix:/var/run/nginx/$socket
 ";
+		if($tmp['version']=='3'){
+			$torrc.="HiddenServiceEnableIntroDoSDefense 1
+HiddenServiceEnableIntroDoSRatePerSec 10
+HiddenServiceEnableIntroDoSBurstPerSec 100
+";
+		}
+		$torrc.="HiddenServicePort 80 unix:/var/run/nginx/$socket\n";
 		if($tmp['enable_smtp']){
 			$torrc.="HiddenServicePort 25\n";
 		}

@@ -60,6 +60,9 @@ HiddenServicePort 5049
 HiddenServicePort 5050
 HiddenServiceVersion 3
 HiddenServiceNumIntroductionPoints 5
+HiddenServiceEnableIntroDoSDefense 1
+HiddenServiceEnableIntroDoSRatePerSec 10
+HiddenServiceEnableIntroDoSBurstPerSec 100
 
 ClientUseIPv6 1
 ClientUseIPv4 1
