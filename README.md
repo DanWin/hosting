@@ -13,16 +13,16 @@ Uninstall packages that may interfere with this setup:
 apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.service
 ```
 
-To get the latest tor version, you should follow these instructions to add the official tor repository for your distribution: (https://www.torproject.org/docs/debian)
-
 To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
 
-Add yarn + nodejs to our repositories:
+Add yarn + nodejs + torproject to our repositories:
 ```
 curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list
 echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.list
+echo "deb https://deb.torproject.org/torproject.org sid main" >> /etc/apt/sources.list
 ```
 
 The following command will install all required packages:
