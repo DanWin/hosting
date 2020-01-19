@@ -3,7 +3,7 @@ git clone https://github.com/nginx/nginx
 cd nginx
 git clone https://github.com/google/ngx_brotli
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
-cat | git apply - <<EOF
+cat <<EOF | git apply -
 diff --git a/auto/modules b/auto/modules
 index d78e2823..ec8a4653 100644
 --- a/auto/modules
@@ -1249,7 +1249,7 @@ make -j $(nproc) install
 make distclean
 git reset --hard
 git checkout PHP-7.3
-cat | git apply - <<EOF
+cat <<EOF | git apply -
 From: =?utf-8?b?T25kxZllaiBTdXLDvQ==?= <ondrej@sury.org>
 Date: Mon, 22 Oct 2018 06:54:31 +0000
 Subject: Use pkg-config for FreeType2 detection
@@ -1311,7 +1311,7 @@ make -j $(nproc) install
 make distclean
 git reset --hard
 git checkout PHP-7.2
-cat | git apply - <<EOF
+cat <<EOF | git apply -
 From: =?utf-8?b?T25kxZllaiBTdXLDvQ==?= <ondrej@sury.org>
 Date: Mon, 22 Oct 2018 06:54:31 +0000
 Subject: Use pkg-config for FreeType2 detection
