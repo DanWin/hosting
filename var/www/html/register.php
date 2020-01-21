@@ -1,6 +1,5 @@
 <?php
-include('../common.php');
-$db = get_db_instance();
+require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 session_start();
 if(!empty($_SESSION['hosting_username'])){
@@ -9,7 +8,7 @@ if(!empty($_SESSION['hosting_username'])){
 }
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - Register</title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - Register</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +19,7 @@ if(!empty($_SESSION['hosting_username'])){
 <p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
+	$db = get_db_instance();
 	$ok=true;
 	$onion='';
 	$onion_version=3;

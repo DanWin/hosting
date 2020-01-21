@@ -1,10 +1,10 @@
 <?php
-include('../common.php');
+require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Accel-Expires: 60');
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - FAQ</title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - FAQ</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">

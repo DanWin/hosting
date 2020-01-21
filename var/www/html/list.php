@@ -1,11 +1,11 @@
 <?php
-include_once('../common.php');
+require_once('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Accel-Expires: 60');
 $db = get_db_instance();
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - List of hosted sites</title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - List of hosted sites</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">

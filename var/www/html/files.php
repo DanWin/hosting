@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+require('../common.php');
 $db = get_db_instance();
 $user=check_login();
 if(!empty($_POST['ftp_pass'])){
@@ -283,7 +283,7 @@ $dir=htmlspecialchars($dir);
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<title>Daniel's Hosting - FileManager - Index of <?php echo $dir; ?></title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - FileManager - Index of <?php echo $dir; ?></title>
 <style type="text/css">.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){text-align:right;} .list tr{height:28px;}
 .back{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM2ZmZpmZmSH5BAUAAAQALAAAAAAUABYAAANLSLrc/oKE8CoZM1O7os7c9WmcN04WdoKQdBIANypAHG5YbS/7kus1RlDxA+p4xqSRpmwCKE7nINqMwKi6wEAY1VaS3tBV/OiRz4sEADs=);}
 .dir{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5lmM//MmSH5BAUAAAQALAAAAAAUABYAAANUSLrc/jDKSRm4+E4wuu9AxH1kpimAQHpqiQ5CLMcrHI71GgdXngs8nI8F7A1JReFxZzyygk4iNNpJUmFWmFbF3cJ4hNRsPA6Aw+a0es0LLEzwjDsBADs=);}
@@ -388,14 +388,16 @@ function send_not_found(){
 }
 
 function send_login(){
-	echo '<!DOCTYPE html><html><head>';
-	echo '<title>Daniel\'s Hosting - FileManager - Login</title>';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-	echo '</head><body>';
-	echo '<p>Please type in your system account password: <form action="files.php" method="post"><input name="ftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>';
-	echo '<p><a href="home.php">Go back to dashboard</a>.</p>';
-	echo '</body></html>';
+?>
+<!DOCTYPE html><html><head>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - FileManager - Login</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+</head><body>
+<p>Please type in your system account password: <form action="files.php" method="post"><input name="ftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
+<p><a href="home.php">Go back to dashboard</a>.</p>
+</body></html>
+<?php
 }
 
 function ftp_recursive_upload($ftp, $path){
@@ -436,7 +438,7 @@ function ftp_recursive_delete($ftp, $file){
 
 function send_rename($dir){
 	echo '<!DOCTYPE html><html><head>';
-	echo '<title>Daniel\'s Hosting - FileManager - Rename file</title>';
+	echo '<title>' . htmlspecialchars(SITE_NAME) . ' - FileManager - Rename file</title>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';
@@ -455,7 +457,7 @@ function send_rename($dir){
 
 function send_edit($ftp, $dir){
 	echo '<!DOCTYPE html><html><head>';
-	echo '<title>Daniel\'s Hosting - FileManager - Edit file</title>';
+	echo '<title>' . htmlspecialchars(SITE_NAME) . ' - FileManager - Edit file</title>';
 	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
 	echo '</head><body>';

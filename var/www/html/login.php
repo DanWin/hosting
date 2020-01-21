@@ -1,6 +1,5 @@
 <?php
-include('../common.php');
-$db = get_db_instance();
+require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 session_start();
 if(!empty($_SESSION['hosting_username']) && empty($_SESSION['2fa_code'])){
@@ -10,6 +9,7 @@ if(!empty($_SESSION['hosting_username']) && empty($_SESSION['2fa_code'])){
 $msg='';
 $username='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
+	$db = get_db_instance();
 	$ok=true;
 	if($error=check_captcha_error()){
 		$msg.="<p style=\"color:red;\">$error</p>";
@@ -55,25 +55,25 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		exit;
 	}
 }
-echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Login</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
-echo '</head><body>';
-echo '<h1>Hosting - Login</h1>';
-echo '<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>';
-echo $msg;
-echo '<form method="POST" action="login.php"><table>';
-echo '<tr><td>Username</td><td><input type="text" name="username" value="';
+?>
+<!DOCTYPE html><html><head>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - Login</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
+</head><body>
+<h1>Hosting - Login</h1>
+<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | Login | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
+<?php echo $msg; ?>
+<form method="POST" action="login.php"><table>
+<tr><td>Username</td><td><input type="text" name="username" value="<?php
 if(isset($_POST['username'])){
 	echo htmlspecialchars($_POST['username']);
 }
-echo '" required autofocus></td></tr>';
-echo '<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>';
-send_captcha();
-?>
+?>" required autofocus></td></tr>
+<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>
+<?php send_captcha(); ?>
 <tr><td colspan="2"><input type="submit" value="Login"></td></tr>
 </table></form>
 <p>If you disabled cookies, please re-enable them. You can't log in without!</p>

@@ -1,5 +1,5 @@
 <?php
-include('common.php');
+require('common.php');
 $db = get_db_instance();
 
 //instances to reload

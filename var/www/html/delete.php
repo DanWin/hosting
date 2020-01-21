@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+require('../common.php');
 $db = get_db_instance();
 $user=check_login();
 $msg='';
@@ -19,7 +19,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - Delete account</title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - Delete account</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">

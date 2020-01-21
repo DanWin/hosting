@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+require('../common.php');
 $db = get_db_instance();
 $user=check_login();
 if(!isset($_REQUEST['type'])){
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 }
 header('Content-Type: text/html; charset=UTF-8');
 echo '<!DOCTYPE html><html><head>';
-echo '<title>Daniel\'s Hosting - Change password</title>';
+echo '<title>' . htmlspecialchars(SITE_NAME) . ' - Change password</title>';
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 echo '<meta name="author" content="Daniel Winzen">';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1">';

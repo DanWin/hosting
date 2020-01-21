@@ -1,5 +1,5 @@
 <?php
-include('common.php');
+require('common.php');
 if(!extension_loaded('pdo_mysql')){
 	die("Error: You need to install and enable the PDO php module\n");
 }

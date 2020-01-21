@@ -1,5 +1,5 @@
 <?php
-include('../common.php');
+require('../common.php');
 $db = get_db_instance();
 header('Content-Type: text/html; charset=UTF-8');
 session_start(['name'=>'hosting_admin']);
@@ -8,7 +8,7 @@ if($_SERVER['REQUEST_METHOD']==='HEAD'){
 }
 ?>
 <!DOCTYPE html><html><head>
-<title>Daniel's Hosting - Admin panel</title>
+<title><?php echo htmlspecialchars(SITE_NAME); ?> - Admin panel</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">
 <meta name="viewport" content="width=device-width, initial-scale=1">
