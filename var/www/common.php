@@ -914,3 +914,33 @@ function bytes_to_human_readable(int $bytes) : string {
 		return $bytes . $suffix[0];
 	}
 }
+
+function setup_chroot($system_account){
+	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
+	$user = posix_getpwnam($system_account);
+	$passwd_line = "$user[name]:$user[passwd]:$user[uid]:$user[gid]:$user[gecos]:/:$user[shell]";
+	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
+	file_put_contents("/home/$system_account/etc/passwd", $passwd_line, FILE_APPEND);
+	foreach(['.cache', '.composer', '.config', '.gnupg', '.local', '.ssh', 'data', 'Maildir'] as $dir){
+		if(!is_dir("/home/$system_account/$dir")){
+			mkdir("/home/$system_account/$dir", 0700);
+		}
+		chown("/home/$system_account/$dir", $system_account);
+		chgrp("/home/$system_account/$dir", 'www-data');
+	}
+	foreach(['logs'] as $dir){
+		if(!is_dir("/home/$system_account/$dir")){
+			mkdir("/home/$system_account/$dir", 0550);
+		}
+		chown("/home/$system_account/$dir", $system_account);
+		chgrp("/home/$system_account/$dir", 'www-data');
+	}
+	foreach(['.bash_history', '.bashrc', '.gitconfig', '.profile'] as $file){
+		if(!file_exists("/home/$system_account/$file")){
+			touch("/home/$system_account/$file");
+		}
+		chmod("/home/$system_account/$file", 0600);
+		chown("/home/$system_account/$file", $system_account);
+		chgrp("/home/$system_account/$file", 'www-data');
+	}
+}

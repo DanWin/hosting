@@ -22,24 +22,7 @@ while($id=$stmt->fetch(PDO::FETCH_NUM)){
 	//add and manage rights of system user
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	exec('useradd -l -p ' . escapeshellarg($id[2]) . ' -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
-	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
-	exec('grep ' . escapeshellarg($system_account) . ' /etc/passwd >> ' . escapeshellarg("/home/$system_account/etc/passwd"));
-	foreach(['.cache', '.composer', '.config', '.gnupg', '.local', '.ssh', 'data', 'Maildir'] as $dir){
-		mkdir("/home/$system_account/$dir", 0700);
-		chown("/home/$system_account/$dir", $system_account);
-		chgrp("/home/$system_account/$dir", 'www-data');
-	}
-	foreach(['logs'] as $dir){
-		mkdir("/home/$system_account/$dir", 0550);
-		chown("/home/$system_account/$dir", $system_account);
-		chgrp("/home/$system_account/$dir", 'www-data');
-	}
-	foreach(['.bash_history', '.bashrc', '.gitconfig', '.profile'] as $file){
-		touch("/home/$system_account/$file");
-		chmod("/home/$system_account/$file", 0600);
-		chown("/home/$system_account/$file", $system_account);
-		chgrp("/home/$system_account/$file", 'www-data');
-	}
+	setup_chroot($system_account);
 	//remove from to-add queue
 	$del->execute([$id[5]]);
 }

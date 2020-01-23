@@ -295,8 +295,7 @@ if(!SKIP_USER_CHROOT_UPDATE){
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		echo "Updating chroot for user $tmp[system_account]…\n";
 		exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
-		exec('/var/www/setup_chroot.sh ' . escapeshellarg('/home/'.$tmp['system_account']));
-		exec('grep ' . escapeshellarg($tmp['system_account']) . ' /etc/passwd >> ' . escapeshellarg("/home/$tmp[system_account]/etc/passwd"));
+		setup_chroot($tmp['system_account']);
 	}
 }
 if(!file_exists("/etc/nginx/sites-enabled/")){
