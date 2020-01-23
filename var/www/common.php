@@ -134,7 +134,8 @@ const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC'; //Coinpayments public API key
 const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID'; //Coinpayments merchant ID
 const COINPAYMENTS_IPN_SECRET = 'COINPAYMENTS_IPN_SECRET'; //Coinpayments IPN secret
 const COINPAYMENTS_FAKE_BUYER_EMAIL = 'daniel@danwin1210.me'; //fixed email used for the required buyer email field
-const SITE_NAME = "Daniel's Hosting";
+const SITE_NAME = "Daniel's Hosting"; //globally changes the sites title
+const HOME_MOUNT_PATH = '/home'; //mount path of the home directory. Usually /home as own partition or / on a system with no extra home partition
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
