@@ -298,6 +298,7 @@ function check_login(){
 		session_destroy();
 		exit;
 	}
+	$user['system_account'] = basename($user['system_account']);
 	return $user;
 }
 
@@ -350,6 +351,11 @@ NumPrimaryGuards '.NUM_GUARDS.'
 	$stmt=$db->prepare('SELECT onions.onion, users.system_account, onions.num_intros, onions.enable_smtp, onions.version, onions.max_streams, onions.enabled, onions.private_key FROM onions LEFT JOIN users ON (users.id=onions.user_id) WHERE onions.instance = ? AND onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;');
 	$stmt->execute([$instance]);
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		$system_account = sanitize_system_account($tmp['system_account']);
+		if($system_account === false){
+			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			continue;
+		}
 		if(!file_exists("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion")){
 			if($tmp['version']==2){
 				//php openssl implementation has some issues, re-export using native openssl
@@ -516,6 +522,11 @@ function rewrite_nginx_config(){
 	// onions
 	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, onions.onion, users.id FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE onions.enabled IN (1, -2) AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		$system_account = sanitize_system_account($tmp['system_account']);
+		if($system_account === false){
+			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			continue;
+		}
 		if($tmp['php']>0){
 			$php_location="
 		location ~ [^/]\.php(/|\$) {
@@ -549,6 +560,11 @@ function rewrite_nginx_config(){
 	// clearnet domains
 	$stmt=$db->query("SELECT users.system_account, users.php, users.autoindex, domains.domain, users.id FROM users INNER JOIN domains ON (domains.user_id=users.id) WHERE domains.enabled = 1 AND users.id NOT IN (SELECT user_id FROM new_account) AND users.todelete != 1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		$system_account = sanitize_system_account($tmp['system_account']);
+		if($system_account === false){
+			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			continue;
+		}
 		if($tmp['php']>0){
 			$php_location="
 		location ~ [^/]\.php(/|\$) {
@@ -585,6 +601,11 @@ function rewrite_nginx_config(){
 	$nginx_mail='';
 	$stmt=$db->query("SELECT system_account FROM users WHERE id NOT IN (SELECT user_id FROM new_account) AND todelete!=1;");
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+		$system_account = sanitize_system_account($tmp['system_account']);
+		if($system_account === false){
+			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			continue;
+		}
 		$nginx_mysql.="server {
 	listen unix:/home/$tmp[system_account]/var/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
@@ -623,6 +644,11 @@ pm = ondemand
 pm.max_children = 8
 ";
 		while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
+			$system_account = sanitize_system_account($tmp['system_account']);
+			if($system_account === false){
+				echo "ERROR: Account $tmp[system_account] looks strange\n";
+				continue;
+			}
 			$php.='['.$tmp['system_account']."]
 user = $tmp[system_account]
 group = www-data
@@ -915,7 +941,12 @@ function bytes_to_human_readable(int $bytes) : string {
 	}
 }
 
-function setup_chroot($system_account){
+function setup_chroot(string $account){
+	$system_account = sanitize_system_account($account);
+	if($system_account === false){
+		echo "ERROR: Account $account looks strange\n";
+		return;
+	}
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	$user = posix_getpwnam($system_account);
 	$passwd_line = "$user[name]:$user[passwd]:$user[uid]:$user[gid]:$user[gecos]:/:$user[shell]";
@@ -945,7 +976,12 @@ function setup_chroot($system_account){
 	}
 }
 
-function update_system_user_password($user, $password){
+function update_system_user_password(string $user, string $password){
+	$system_account = sanitize_system_account($user);
+	if($system_account === false){
+		echo "ERROR: Account $user looks strange\n";
+		return;
+	}
 	$fp = fopen("/etc/shadow", "r+");
 	$locked = false;
 	do{
@@ -969,4 +1005,13 @@ function update_system_user_password($user, $password){
 	fflush($fp);
 	flock($fp, LOCK_UN);
 	fclose($fp);
+}
+
+function sanitize_system_account(string $system_account){
+	$account = basename($system_account);
+	$user = posix_getpwnam($account);
+	if($account !== $system_account || $user === false || $user['gid'] !== 33 || $user['uid'] < 1000){
+		return false;
+	}
+	return $account;
 }
