@@ -13,18 +13,16 @@ $db->query('UPDATE service_instances SET reload=0 WHERE reload=1;');
 //add new accounts
 $del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
 $approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
-$stmt=$db->query("SELECT users.system_account, users.username, new_account.password, users.php, users.autoindex, users.id, onions.onion, users.instance FROM new_account INNER JOIN users ON (users.id=new_account.user_id) INNER JOIN onions ON (onions.user_id=users.id) $approval LIMIT 100;");
-while($id=$stmt->fetch(PDO::FETCH_NUM)){
-	$onion=$id[6];
-	$system_account=$id[0];
-	$instance=$id[7];
-	$reload[$instance]=true;
+$stmt=$db->query("SELECT users.system_account, new_account.password, users.id, users.instance FROM new_account INNER JOIN users ON (users.id=new_account.user_id) $approval LIMIT 100;");
+while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
+	$reload[$account['instance']] = true;
 	//add and manage rights of system user
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
-	exec('useradd -l -p ' . escapeshellarg($id[2]) . ' -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
-	setup_chroot($system_account);
+	exec('useradd -l -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($account['system_account']));
+	update_system_user_password($account['system_account'], $account['password']);
+	setup_chroot($account['system_account']);
 	//remove from to-add queue
-	$del->execute([$id[5]]);
+	$del->execute([$account['id']]);
 }
 
 //delete old accounts
@@ -104,9 +102,9 @@ foreach($accounts as $account){
 // update passwords
 $stmt=$db->query("SELECT users.system_account, pass_change.password, users.id FROM pass_change INNER JOIN users ON (users.id=pass_change.user_id) LIMIT 100;");
 $del=$db->prepare("DELETE FROM pass_change WHERE user_id=?;");
-while($account=$stmt->fetch(PDO::FETCH_NUM)){
-	exec('usermod -p '. escapeshellarg($account[1]) . ' ' . escapeshellarg($account[0]));
-	$del->execute([$account[2]]);
+while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
+	update_system_user_password($account['system_account'], $account['password']);
+	$del->execute([$account['id']]);
 }
 
 //update quotas

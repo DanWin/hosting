@@ -944,3 +944,29 @@ function setup_chroot($system_account){
 		chgrp("/home/$system_account/$file", 'www-data');
 	}
 }
+
+function update_system_user_password($user, $password){
+	$fp = fopen("/etc/shadow", "r+");
+	$locked = false;
+	do{
+		$locked = flock($fp, LOCK_EX);
+		if(!$locked){
+			sleep(1);
+		}
+	}while(!$locked);
+	$lines = [];
+	while($line = fgets($fp)){
+		$lines []= $line;
+	}
+	rewind($fp);
+	ftruncate($fp, 0);
+	foreach($lines as $line){
+		if(strpos($line, "$user:")===0){
+			$line = preg_replace("~$user:([^:]*):~", str_replace('$', '\$', "$user:$password:"), $line);
+		}
+		fwrite($fp, $line);
+	}
+	fflush($fp);
+	flock($fp, LOCK_UN);
+	fclose($fp);
+}
