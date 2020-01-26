@@ -67,7 +67,7 @@ foreach($onions as $onion){
 		}
 		rmdir("/var/lib/tor-instances/$onion[instance]/hidden_service_$onion[onion].onion/");
 	}
-	$del_onions->execute([$onion[0]]);
+	$del_onions->execute([$onion['onion']]);
 }
 
 //reload services
