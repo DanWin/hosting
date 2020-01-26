@@ -360,5 +360,6 @@ exec('chown root:www-data -R /var/www/html/');
 exec('find /var/www/html/ -type f -exec chmod 640 {} \;');
 exec('find /var/www/html/ -type d -exec chmod 750 {} \;');
 exec('chown root:www-data /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup_chroot.sh /var/www/setup.php');
-exec('chmod 640 /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup_chroot.sh /var/www/setup.php');
+exec('chmod 640 /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup.php');
+exec('chmod 700 /var/www/setup_chroot.sh');
 echo "Done - Database and files have been updated to the latest version :)\n";
