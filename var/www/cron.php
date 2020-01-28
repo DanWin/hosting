@@ -11,9 +11,15 @@ while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 $db->query('UPDATE service_instances SET reload=0 WHERE reload=1;');
 
 //add new accounts
+$newest_account=$db->query('SELECT system_account FROM users WHERE id NOT IN (SELECT user_id FROM new_account) AND todelete!=1 ORDER BY id DESC LIMIT 1;');
+$last_account = $newest_account->fetch(PDO::FETCH_NUM);
+if(is_array($last_account)){
+	$last_account = $last_account[0];
+}
 $del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
 $approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
 $stmt=$db->query("SELECT users.system_account, new_account.password, users.id, users.instance FROM new_account INNER JOIN users ON (users.id=new_account.user_id) $approval LIMIT 100;");
+
 while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$system_account = basename($account['system_account']);
 	if($system_account !== $account['system_account']){
@@ -29,7 +35,8 @@ while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	exec('useradd -l -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
 	update_system_user_password($system_account, $account['password']);
-	setup_chroot($system_account);
+	setup_chroot($system_account, $last_account);
+	$last_account = $system_account;
 	//remove from to-add queue
 	$del->execute([$account['id']]);
 }

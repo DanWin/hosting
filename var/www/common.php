@@ -941,17 +941,25 @@ function bytes_to_human_readable(int $bytes) : string {
 	}
 }
 
-function setup_chroot(string $account){
+function setup_chroot(string $account, string $last_account){
 	$system_account = sanitize_system_account($account);
 	if($system_account === false){
 		echo "ERROR: Account $account looks strange\n";
 		return;
 	}
+	$last_account = sanitize_system_account($last_account);
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	$user = posix_getpwnam($system_account);
 	$passwd_line = "$user[name]:$user[passwd]:$user[uid]:$user[gid]:$user[gecos]:/:$user[shell]";
 	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
 	file_put_contents("/home/$system_account/etc/passwd", $passwd_line, FILE_APPEND);
+	if($last_account !== false){
+		exec('hardlink -c ' . escapeshellarg("/home/$system_account/bin") . ' ' . escapeshellarg("/home/$last_account/bin"));
+		exec('hardlink -c ' . escapeshellarg("/home/$system_account/etc") . ' ' . escapeshellarg("/home/$last_account/etc"));
+		exec('hardlink -c ' . escapeshellarg("/home/$system_account/lib") . ' ' . escapeshellarg("/home/$last_account/lib"));
+		exec('hardlink -c ' . escapeshellarg("/home/$system_account/lib64") . ' ' . escapeshellarg("/home/$last_account/lib64"));
+		exec('hardlink -c ' . escapeshellarg("/home/$system_account/usr") . ' ' . escapeshellarg("/home/$last_account/usr"));
+	}
 	foreach(['.cache', '.composer', '.config', '.gnupg', '.local', '.ssh', 'data', 'Maildir'] as $dir){
 		if(!is_dir("/home/$system_account/$dir")){
 			mkdir("/home/$system_account/$dir", 0700);
@@ -1010,7 +1018,7 @@ function update_system_user_password(string $user, string $password){
 function sanitize_system_account(string $system_account){
 	$account = basename($system_account);
 	$user = posix_getpwnam($account);
-	if($account !== $system_account || $user === false || $user['gid'] !== 33 || $user['uid'] < 1000){
+	if(empty($system_account) || $account !== $system_account || $user === false || $user['gid'] !== 33 || $user['uid'] < 1000){
 		return false;
 	}
 	return $account;
