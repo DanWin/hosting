@@ -729,16 +729,22 @@ function del_user_db(int $user_id, string $mysql_db) {
 	}
 }
 
-function get_new_tor_instance(){
+function get_new_tor_instance(string $type = 'onion') : string {
 	$db = get_db_instance();
-	$stmt = $db->query('SELECT s.ID FROM service_instances AS s LEFT JOIN onions AS o ON (s.ID = o.instance) GROUP BY s.ID ORDER BY count(s.ID) LIMIT 1;');
+	if($type === 'onion'){
+		$stmt = $db->query('SELECT s.ID FROM service_instances AS s LEFT JOIN onions AS o ON (s.ID = o.instance) GROUP BY s.ID ORDER BY count(s.ID) LIMIT 1;');
+	} else {
+		$stmt = $db->query('SELECT s.ID FROM service_instances AS s LEFT JOIN users AS u ON (s.ID = u.instance) GROUP BY s.ID ORDER BY count(s.ID) LIMIT 1;');
+	}
 	return $stmt->fetch(PDO::FETCH_NUM)[0];
 }
 
 function add_user_onion(int $user_id, string $onion, string $priv_key, int $onion_version) {
 	$db = get_db_instance();
 	$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, enable_smtp, instance) VALUES (?, ?, ?, ?, 1, 0, ?);');
-	$stmt->execute([$user_id, $onion, $priv_key, $onion_version, get_new_tor_instance()]);
+	$instance = get_new_tor_instance();
+	$stmt->execute([$user_id, $onion, $priv_key, $onion_version, $instance]);
+	enqueue_instance_reload($instance);
 }
 
 function del_user_onion(int $user_id, string $onion) {
@@ -776,6 +782,7 @@ function add_user_domain(int $user_id, string $domain) : string {
 	}
 	$stmt = $db->prepare("INSERT INTO domains (user_id, domain, enabled) VALUES (?, ?, 1);");
 	$stmt->execute([$user_id, $domain]);
+	enqueue_instance_reload();
 	return '';
 }
 
@@ -786,6 +793,7 @@ function del_user_domain(int $user_id, string $domain) {
 	if($stmt->fetch()){
 		$stmt = $db->prepare("DELETE FROM domains WHERE user_id = ? AND domain = ?;");
 		$stmt->execute([$user_id, $domain]);
+		enqueue_instance_reload();
 	}
 }
 

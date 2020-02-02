@@ -104,7 +104,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}elseif($ok){
 		$mysql_user = add_mysql_user($_POST['pass']);
 		$stmt=$db->prepare('INSERT INTO users (username, system_account, password, dateadded, public, php, autoindex, mysql_user, instance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);');
-		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, get_new_tor_instance()]);
+		$stmt->execute([$_POST['username'], substr("$onion.onion", 0, 32), $hash, time(), $public_list, $php, $autoindex, $mysql_user, get_new_tor_instance('system')]);
 		$user_id = $db->lastInsertId();
 		$stmt = $db->prepare('INSERT INTO disk_quota (user_id, quota_size, quota_files) VALUES (?, ?, ?);');
 		$stmt->execute([$user_id, DEFAULT_QUOTA_SIZE, DEFAULT_QUOTA_FILES]);

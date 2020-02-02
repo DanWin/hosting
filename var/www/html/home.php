@@ -114,8 +114,6 @@ if(isset($_POST['action']) && $_POST['action']==='add_domain' && !empty($_POST['
 	$error = add_user_domain($user['id'], $_POST['domain']);
 	if(!empty($error)){
 		$msg = "<p style=\"color:red;\">$error</p>";
-	}else{
-		enqueue_instance_reload();
 	}
 }
 if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['domain'])){
@@ -143,22 +141,21 @@ if(isset($_POST['action']) && $_POST['action']==='del_domain_2' && !empty($_POST
 		die($error);
 	}
 	del_user_domain($user['id'], $_POST['domain']);
-	enqueue_instance_reload();
 }
 if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action']==='edit_onion'){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$stmt=$db->prepare('SELECT onions.version FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
+	$stmt=$db->prepare('SELECT onions.version, onions.instance FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
 	$stmt->execute([$_REQUEST['onion'], $user['id']]);
-	if($onion=$stmt->fetch(PDO::FETCH_NUM)){
+	if($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion = ?;');
 		$enabled = isset($_REQUEST['enabled']) ? 1 : 0;
 		$enable_smtp = isset($_REQUEST['enable_smtp']) ? 1 : 0;
 		$num_intros = intval($_REQUEST['num_intros']);
 		if($num_intros<3){
 				$num_intros = 3;
-		}elseif($onion[0]==2 && $num_intros>10){
+		}elseif($onion['version']==2 && $num_intros>10){
 			$num_intros = 10;
 		}elseif($num_intros>20){
 			$num_intros = 20;
@@ -170,7 +167,7 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 			$max_streams = 65535;
 		}
 		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
-		enqueue_instance_reload(substr($_REQUEST['onion'], 0, 1));
+		enqueue_instance_reload($onion['instance']);
 	}
 }
 if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='edit_domain'){
