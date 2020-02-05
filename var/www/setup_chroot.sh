@@ -64,7 +64,6 @@ CHROOT_DIRECTORY_STRUCTURE=(
     '/var/run/mysqld'
 )
 BINARIES_GENERAL=(
-    '/usr/lib/openssh/sftp-server'
     '/bin/bash'
     '/bin/sh'
     '/usr/bin/env'
@@ -107,7 +106,6 @@ BINARIES_GENERAL=(
     '/usr/bin/sftp'
     '/usr/bin/ssh'
     '/usr/bin/wget'
-    '/usr/bin/php7.2'
     '/usr/bin/php7.3'
     '/usr/bin/php7.4'
     '/usr/bin/mysql'
