@@ -669,6 +669,9 @@ php_admin_value[sendmail_path] = '/usr/bin/php -r eval\(base64_decode\(\\\"JGM9Y
 env[HOME]=/
 ";
 		}
+		if(!file_exists("/etc/php/$version/fpm/pool.d/$key/")){
+			mkdir("/etc/php/$version/fpm/pool.d/$key/", 0755, true);
+		}
 		file_put_contents("/etc/php/$version/fpm/pool.d/$key/www.conf", $php);
 		exec('systemctl restart '.escapeshellarg("php$version-fpm@$key"));
 	}
