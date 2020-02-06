@@ -100,6 +100,7 @@ BINARIES_GENERAL=(
     '/bin/gunzip'
     '/usr/bin/zip'
     '/usr/bin/unzip'
+    '/usr/bin/brotli'
     '/usr/bin/curl'
     '/usr/bin/rsync'
     '/usr/bin/scp'
