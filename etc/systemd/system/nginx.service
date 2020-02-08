@@ -25,6 +25,7 @@ SystemCallArchitectures=native
 ReadWritePaths=-/var/log/nginx/
 ReadWritePaths=-/var/lib/nginx/
 ReadWritePaths=-/var/www/var/run/
+ReadWritePaths=-/var/spool/postfix/
 ReadWritePaths=-/run/
 InaccessiblePaths=-/root/
 RuntimeDirectory=nginx
