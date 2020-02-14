@@ -12,14 +12,14 @@ header('X-Accel-Expires: 60');
 </head><body>
 <h1>Hosting - Info</h1>
 <p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
-<p>Here you can get yourself a hosting account on my server.</p>
-<p>What you will get:</p>
+<p>Here you can get yourself a free web hosting account on my server.</p>
+<h2>What you get:</h2>
 <ul>
-<li>Completely free anonymous Tor and clearnet webhosting</li>
+<li>Completely free anonymous Tor and clearnet web hosting</li>
 <li>Choose between PHP <?php echo implode(', ', PHP_VERSIONS); ?> or no PHP support</li>
 <li>Nginx Webserver</li>
 <li>SQLite support</li>
-<li>MariaDB (MySQL) database support</li>
+<li>Up to <?php echo MAX_NUM_USER_DBS; ?> MariaDB (MySQL) databases</li>
 <li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
 <li>Web-based file manager</li>
 <li>FTP and SFTP access</li>
@@ -27,7 +27,6 @@ header('X-Accel-Expires: 60');
 <li>1GB disk quota and a maximum of 100.000 files<?php echo ENABLE_UPGRADES ? ' - upgradable' : ''; ?></li>
 <li>mail() can send e-mails from your_system_account@<?php echo ADDRESS; ?> (your_system_account@hosting.danwin1210.me for clearnet)</li>
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
-<li>Mail sent to anything@your.onion gets automatically redirected to your inbox</li>
 <li>Your own .onion domains</li>
 <li>Clearnet domains or a free subdomain of danwin1210.me</li>
 <li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>

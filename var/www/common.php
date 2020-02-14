@@ -964,13 +964,6 @@ function setup_chroot(string $account, string $last_account){
 	$passwd_line = "$user[name]:$user[passwd]:$user[uid]:$user[gid]:$user[gecos]:/:$user[shell]";
 	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
 	file_put_contents("/home/$system_account/etc/passwd", $passwd_line, FILE_APPEND);
-	if($last_account !== false){
-		exec('hardlink -c ' . escapeshellarg("/home/$system_account/bin") . ' ' . escapeshellarg("/home/$last_account/bin"));
-		exec('hardlink -c ' . escapeshellarg("/home/$system_account/etc") . ' ' . escapeshellarg("/home/$last_account/etc"));
-		exec('hardlink -c ' . escapeshellarg("/home/$system_account/lib") . ' ' . escapeshellarg("/home/$last_account/lib"));
-		exec('hardlink -c ' . escapeshellarg("/home/$system_account/lib64") . ' ' . escapeshellarg("/home/$last_account/lib64"));
-		exec('hardlink -c ' . escapeshellarg("/home/$system_account/usr") . ' ' . escapeshellarg("/home/$last_account/usr"));
-	}
 	foreach(['.cache', '.composer', '.config', '.gnupg', '.local', '.ssh', 'data', 'Maildir'] as $dir){
 		if(!is_dir("/home/$system_account/$dir")){
 			mkdir("/home/$system_account/$dir", 0700);
@@ -992,6 +985,13 @@ function setup_chroot(string $account, string $last_account){
 		chmod("/home/$system_account/$file", 0600);
 		chown("/home/$system_account/$file", $system_account);
 		chgrp("/home/$system_account/$file", 'www-data');
+	}
+	if($last_account !== false){
+		exec('hardlink -t -s 0 -m ' . escapeshellarg("/home/$system_account/bin") . ' ' . escapeshellarg("/home/$last_account/bin"));
+		exec('hardlink -t -s 0 -m ' . escapeshellarg("/home/$system_account/etc") . ' ' . escapeshellarg("/home/$last_account/etc"));
+		exec('hardlink -t -s 0 -m ' . escapeshellarg("/home/$system_account/lib") . ' ' . escapeshellarg("/home/$last_account/lib"));
+		exec('hardlink -t -s 0 -m ' . escapeshellarg("/home/$system_account/lib64") . ' ' . escapeshellarg("/home/$last_account/lib64"));
+		exec('hardlink -t -s 0 -m ' . escapeshellarg("/home/$system_account/usr") . ' ' . escapeshellarg("/home/$last_account/usr"));
 	}
 }
 

@@ -11,7 +11,7 @@ $db = get_db_instance();
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <style>td{padding:5px;}</style>
-<base target="_blank">
+<base rel="noopener" target="_blank">
 </head><body>
 <h1>Hosting - List of hosted sites</h1>
 <p><a href="index.php" target="_self">Info</a> | <a href="register.php" target="_self">Register</a> | <a href="login.php" target="_self">Login</a> | List of hosted sites | <a href="faq.php" target="_self">FAQ</a></p>

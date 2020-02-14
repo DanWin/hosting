@@ -292,10 +292,12 @@ exec('/var/www/setup_chroot.sh /var/www');
 if(!SKIP_USER_CHROOT_UPDATE){
 	$stmt=$db->query('SELECT system_account FROM users;');
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
+	$last_account = '';
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		echo "Updating chroot for user $tmp[system_account]…\n";
 		exec('usermod -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($tmp['system_account']));
-		setup_chroot($tmp['system_account']);
+		setup_chroot($tmp['system_account'], $last_account);
+		$last_account = $tmp['system_account'];
 	}
 }
 if(!file_exists("/etc/nginx/sites-enabled/")){

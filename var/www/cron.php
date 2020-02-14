@@ -15,6 +15,8 @@ $newest_account=$db->query('SELECT system_account FROM users WHERE id NOT IN (SE
 $last_account = $newest_account->fetch(PDO::FETCH_NUM);
 if(is_array($last_account)){
 	$last_account = $last_account[0];
+} else {
+	$last_account = '';
 }
 $del=$db->prepare("DELETE FROM new_account WHERE user_id=?;");
 $approval = REQUIRE_APPROVAL ? 'WHERE new_account.approved=1': '';
@@ -144,7 +146,7 @@ while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 		echo "ERROR: Account $account[system_account] looks strange\n";
 		continue;
 	}
-	exec('quotatool -u '. escapeshellarg($system_account) . ' -i -q ' . escapeshellarg($account['quota_files']) . ' -l ' . escapeshellarg($account['quota_size']) . ' ' . HOME_MOUNT_PATH);
-	exec('quotatool -u '. escapeshellarg($system_account) . ' -b -q ' . escapeshellarg($account['quota_files']) . ' -l ' . escapeshellarg($account['quota_size']) . ' ' . HOME_MOUNT_PATH);
+	exec('quotatool -u '. escapeshellarg($system_account) . ' -i -q ' . escapeshellarg($account['quota_files']) . ' -l ' . escapeshellarg($account['quota_files']) . ' ' . HOME_MOUNT_PATH);
+	exec('quotatool -u '. escapeshellarg($system_account) . ' -b -q ' . escapeshellarg($account['quota_size']) . ' -l ' . escapeshellarg($account['quota_size']) . ' ' . HOME_MOUNT_PATH);
 	$updated->execute([$account['id']]);
 }
