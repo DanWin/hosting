@@ -36,13 +36,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 }
 header('Content-Type: text/html; charset=UTF-8');
-echo '<!DOCTYPE html><html><head>';
-echo '<title>' . htmlspecialchars(SITE_NAME) . ' - Change password</title>';
-echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-echo '<meta name="author" content="Daniel Winzen">';
-echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-echo '<link rel="canonical" href="' . CANONICAL_URL . $_SERVER['SCRIPT_NAME'] . '">';
-echo '</head><body>';
+print_header('Change password');
 echo $msg;
 echo '<form method="POST" action="password.php"><input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'"><table>';
 echo '<tr><td>Reset type:</td><td><select name="type">';

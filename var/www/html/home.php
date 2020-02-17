@@ -12,14 +12,9 @@ if(isset($_POST['action']) && $_POST['action']==='add_db'){
 if(isset($_POST['action']) && $_POST['action']==='del_db' && !empty($_POST['db'])){
 	if($error=check_csrf_error()){
 		die($error);
-	} ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Delete database</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
+	}
+	print_header('Delete database');
+?>
 <p>This will delete your database <?php echo htmlspecialchars($_POST['db']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <input type="hidden" name="db" value="<?php echo htmlspecialchars($_POST['db']); ?>">
@@ -38,14 +33,9 @@ if(isset($_POST['action']) && $_POST['action']==='del_db_2' && !empty($_POST['db
 if(isset($_POST['action']) && $_POST['action']==='del_onion' && !empty($_POST['onion'])){
 	if($error=check_csrf_error()){
 		die($error);
-	} ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Delete onion domain</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
+	}
+	print_header('Delete onion domain');
+?>
 <p>This will delete your onion domain <?php echo htmlspecialchars($_POST['onion']); ?>.onion and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <input type="hidden" name="onion" value="<?php echo htmlspecialchars($_POST['onion']); ?>">
@@ -119,14 +109,9 @@ if(isset($_POST['action']) && $_POST['action']==='add_domain' && !empty($_POST['
 if(isset($_POST['action']) && $_POST['action']==='del_domain' && !empty($_POST['domain'])){
 	if($error=check_csrf_error()){
 		die($error);
-	} ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Delete domain</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
+	}
+	print_header('Delete domain');
+?>
 <p>This will delete your domain <?php echo htmlspecialchars($_POST['domain']); ?> and all data asociated with it. It can't be un-done. Are you sure?</p>
 <form method="post" action="home.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <input type="hidden" name="domain" value="<?php echo htmlspecialchars($_POST['domain']); ?>">
@@ -183,18 +168,8 @@ if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='
 		enqueue_instance_reload();
 	}
 }
-?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Dashboard</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
-<style>td{padding:5px}meter{width:200px}</style>
-</head><body>
-<p>Logged in as <?php echo htmlspecialchars($user['username']); ?> <a href="logout.php">Logout</a> | <a href="password.php">Change passwords</a> | <a target="_blank" href="files.php">FileManager</a> | <a href="delete.php">Delete account</a></p>
-<?php
+print_header('Dashboard', '#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}td{padding:5px}meter{width:200px}');
+dashboard_menu($user, 'home.php');
 if(!empty($msg)){
 	echo $msg;
 }

@@ -5,7 +5,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=17; //database layout version
+const DBVERSION=18; //database layout version
 const CAPTCHA=1; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
@@ -1033,4 +1033,71 @@ function sanitize_system_account(string $system_account){
 		return false;
 	}
 	return $account;
+}
+
+function main_menu(string $current_site){
+	echo '<p>';
+	$sites = [
+		'index.php' => 'Info',
+		'register.php' => 'Register',
+		'login.php' => 'Login',
+		'list.php' => 'List of hosted sites',
+		'faq.php' => 'FAQ',
+	];
+	$first = true;
+	foreach($sites as $link => $name){
+		if($first){
+			$first = false;
+			if($link===$current_site){
+				echo $name;
+			} else {
+				echo "<a href=\"$link\" target=\"_self\">$name</a>";
+			}
+		} else {
+			if($link===$current_site){
+				echo " | $name";
+			} else {
+				echo " | <a href=\"$link\" target=\"_self\">$name</a>";
+			}
+		}
+	}
+	echo '</p>';
+}
+
+function dashboard_menu(array $user, string $current_site){
+	echo '<p>Logged in as ' . htmlspecialchars($user['username']);
+	$sites = [
+		'logout.php' => 'Logout',
+		'home.php' => 'Dashboard',
+		'pgp.php' => 'PGP 2FA',
+		'password.php' => 'Change password',
+		'files.php' => 'FileManager',
+		'delete.php' => 'Delete account',
+	];
+	foreach($sites as $link => $name){
+		if($link===$current_site){
+			echo " | $name";
+		} else {
+			echo " | <a href=\"$link\" target=\"_self\">$name</a>";
+		}
+	}
+	echo '</p>';
+}
+
+function print_header(string $sub_title, string $style = '', string $base_target = '_self'){
+?>
+<!DOCTYPE html><html><head>
+<title><?php echo htmlspecialchars(SITE_NAME) . ' - ' . htmlspecialchars($sub_title); ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="author" content="Daniel Winzen">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
+<?php
+	if(!empty($style)){
+		echo "<style type=\"text/css\">$style</style>";
+	}
+	echo "<base rel=\"noopener\" target=\"$base_target\">";
+?>
+</head><body>
+<?php
 }

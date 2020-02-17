@@ -17,14 +17,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 }
 header('Content-Type: text/html; charset=UTF-8');
+print_header('Delete account');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Delete account</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
 <p>This will delete your account and all data asociated with it. It can't be un-done. Are you sure?</p>
 <?php echo $msg; ?>
 <form method="POST" action="delete.php"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>"><table>

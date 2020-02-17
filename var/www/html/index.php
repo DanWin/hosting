@@ -2,16 +2,10 @@
 require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Accel-Expires: 60');
+print_header('Info');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
 <h1>Hosting - Info</h1>
-<p>Info | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
+<?php main_menu('index.php'); ?>
 <p>Here you can get yourself a free web hosting account on my server.</p>
 <h2>What you get:</h2>
 <ul>
@@ -29,8 +23,9 @@ header('X-Accel-Expires: 60');
 <li>Webmail and IMAP, POP3 and SMTP access to your mail account</li>
 <li>Your own .onion domains</li>
 <li>Clearnet domains or a free subdomain of danwin1210.me</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
+<li>PGP based Two Factor Authentication (2FA)</li>
+<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
 <li>More to come…</li>
 </ul>
 <h2>Rules</h2>

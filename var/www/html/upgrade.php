@@ -8,15 +8,8 @@ $user=check_login();
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 header('Content-Type: text/html; charset=UTF-8');
+print_header('Upgrade account', 'td{padding:5px;}');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Upgrade account</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<style>td{padding:5px;}</style>
-</head><body>
 <h1>Hosting - Upgrade account</h1>
 <?php
 $rates = coinpayments_get_rates();

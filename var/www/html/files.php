@@ -274,17 +274,7 @@ if($sort==='M'){
 if($order==='D'){
 	$list=array_reverse($list);
 }
-
-$dir=htmlspecialchars($dir);
-?>
-<!DOCTYPE html>
-<html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - FileManager - Index of <?php echo $dir; ?></title>
-<style type="text/css">.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){text-align:right;} .list tr{height:28px;}
+$style = '.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){text-align:right;} .list tr{height:28px;}
 .back{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM2ZmZpmZmSH5BAUAAAQALAAAAAAUABYAAANLSLrc/oKE8CoZM1O7os7c9WmcN04WdoKQdBIANypAHG5YbS/7kus1RlDxA+p4xqSRpmwCKE7nINqMwKi6wEAY1VaS3tBV/OiRz4sEADs=);}
 .dir{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5lmM//MmSH5BAUAAAQALAAAAAAUABYAAANUSLrc/jDKSRm4+E4wuu9AxH1kpimAQHpqiQ5CLMcrHI71GgdXngs8nI8F7A1JReFxZzyygk4iNNpJUmFWmFbF3cJ4hNRsPA6Aw+a0es0LLEzwjDsBADs=);}
 .img{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPMLAAAAADMzM2YAAAAzZmZmZv8zMwCZMwCZzJmZmczMzP///wAAAAAAAAAAAAAAAAAAACH5BAUAAAsALAAAAAAUABYAAASQMMhJ57p4BcW730F2bV5JhhlZdio6KkUsF4mi2tg2y4ICBL/gaxfrAY5IwJDY4yCeCKUGNjNYDTUFVKqTGTgJa1bLVSRi3/CVlIi+EgIB9mrdJAbuaYe+ThzwZSx8BAEHf3k3CQFXhIaHgR2KE46PLytmlJV6JX6ZgJYedwOjpJ+blyWIAVCsrU9AGUmys1IRADs=);}
@@ -295,9 +285,10 @@ $dir=htmlspecialchars($dir);
 .bin{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPIFAAAAADMzM5mZmczMzP///wAAAAAAAAAAACH5BAUAAAUALAAAAAAUABYAAANpGLq89bAEQqudIb4JABkdMBATqXFeR6ilCaFr6rWuFN8qEOj8doOdUWjosxgpgqQA4AOKbhUl05aTHZe+KtSCpVpVxu7EKfSEp7TjOeshX9E469obf7Prc5g7r+6LA0qBgkk7EUOHiFMJADs=);}
 .doc{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPL/AAAAADMzM/8zM5lmM//MM2bM/5mZmf///yH5BAUAAAgALAAAAAAUABYAAARvMMhJJ7oYhcO730F2bV5JhtlZceSBjixBFDT7YedMFxwQ+ECYa1c7AI5IgDAwaDY9hqhBqWE5n9AotVXqHqZCbxdcNSbPHTJXnN72zsl2mC0vcwTmOEdNL/E7eHB1a3R/fXtbAVKLjFE/GXCRSBcRADs=);}
 .txt{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5mZmf///yH5BAUAAAQALAAAAAAUABYAAANYGLq89JCEQaudIb5pO88R11UiuI3XBXFA61JAEM8nCrtujbeW4AuAmq3yC0puuxcFKBwSjaykcsA8OntQpPTZvFZF2un3iu1ul1kyuuv8Bn7wuE8WkdqNCQA7);}
-.sh{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5mZmf///yH5BAUAAAQALAAAAAAUABYAAANgGLq89JCEQaudIb5pO88R11UiuFXAkJIXxAEwjAYATZ9UuuZxjPc7imAoAOBUyBHRKBk5hUzR01L8AXuVanPa0b6usWyU2x2rwDLokTzw8tDiNdnNVksCxLx+eIOg0Q8JADs=);}
-</style>
-</head><body>
+.sh{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5mZmf///yH5BAUAAAQALAAAAAAUABYAAANgGLq89JCEQaudIb5pO88R11UiuFXAkJIXxAEwjAYATZ9UuuZxjPc7imAoAOBUyBHRKBk5hUzR01L8AXuVanPa0b6usWyU2x2rwDLokTzw8tDiNdnNVksCxLx+eIOg0Q8JADs=);}';
+print_header('FileManager - Index of '.$dir, $style);
+$dir=htmlspecialchars($dir);
+?>
 <h1>Index of <?php echo $dir; ?></h1>
 <?php if($dir!=='/'){ ?>
 <p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
@@ -376,24 +367,15 @@ function get_properties($name, &$icon, &$size){
 
 function send_not_found(){
 	header("HTTP/1.1 404 Not Found");
-	echo '<!DOCTYPE html><html><head>';
-	echo '<title>404 Not Found</title>';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-	echo '<link rel="canonical" href="'.CANONICAL_URL . $_SERVER['SCRIPT_NAME'].'">';
-	echo '</head><body>';
+	print_header('FileManager - 404 Not Found');
 	echo '<p>The requested file '.htmlspecialchars($_REQUEST['path']).' was not found on your account.</p>';
 	echo '<p><a href="files.php">Go back to home directory</a>.</p>';
 	echo '</body></html>';
 }
 
 function send_login(){
+	print_header('FileManager - Login');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - FileManager - Login</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name=viewport content="width=device-width, initial-scale=1">
-</head><body>
 <p>Please type in your system account password: <form action="files.php" method="post"><input name="ftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
 <p><a href="home.php">Go back to dashboard</a>.</p>
 </body></html>
@@ -437,11 +419,7 @@ function ftp_recursive_delete($ftp, $file){
 }
 
 function send_rename($dir){
-	echo '<!DOCTYPE html><html><head>';
-	echo '<title>' . htmlspecialchars(SITE_NAME) . ' - FileManager - Rename file</title>';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-	echo '</head><body>';
+	print_header('FileManager - Rename file');
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
@@ -456,11 +434,7 @@ function send_rename($dir){
 }
 
 function send_edit($ftp, $dir){
-	echo '<!DOCTYPE html><html><head>';
-	echo '<title>' . htmlspecialchars(SITE_NAME) . ' - FileManager - Edit file</title>';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
-	echo '<meta name=viewport content="width=device-width, initial-scale=1">';
-	echo '</head><body>';
+	print_header('FileManager - Edit file');
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';

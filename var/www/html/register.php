@@ -6,18 +6,11 @@ if(!empty($_SESSION['hosting_username'])){
 	header('Location: home.php');
 	exit;
 }
+print_header('Register', '#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Register</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-<style type="text/css">#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}</style>
-</head><body>
 <h1>Hosting - Register</h1>
-<p><a href="index.php">Info</a> | Register | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | <a href="faq.php">FAQ</a></p>
 <?php
+main_menu('register.php');
 if($_SERVER['REQUEST_METHOD']==='POST'){
 	$db = get_db_instance();
 	$ok=true;

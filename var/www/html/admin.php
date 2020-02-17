@@ -6,16 +6,8 @@ session_start(['name'=>'hosting_admin']);
 if($_SERVER['REQUEST_METHOD']==='HEAD'){
 	exit; // headers sent, no further processing needed
 }
+print_header('Admin panel', 'td{padding:5px;}', '_blank');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - Admin panel</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="'.CANONICAL_URL. $_SERVER['SCRIPT_NAME'] .'">
-<style>td{padding:5px;}</style>
-<base target="_blank">
-</head><body>
 <h1>Hosting - Admin panel</h1>
 <?php
 $error=false;

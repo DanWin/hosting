@@ -2,16 +2,10 @@
 require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Accel-Expires: 60');
+print_header('FAQ');
 ?>
-<!DOCTYPE html><html><head>
-<title><?php echo htmlspecialchars(SITE_NAME); ?> - FAQ</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Daniel Winzen">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
-</head><body>
-<h1>Hosting - Info</h1>
-<p><a href="index.php">Info</a> | <a href="register.php">Register</a> | <a href="login.php">Login</a> | <a href="list.php">List of hosted sites</a> | FAQ</p>
+<h1>Hosting - FAQ</h1>
+<?php main_menu('faq.php'); ?>
 <table border="1">
 <tr><th>Question</th><th>Answer</th></tr>
 <tr><td>Your rules are so strict. Can't you make an exception for my site?</td><td>No, I will not make exceptions for any site and neither am I corruptible by offering me money. Once I start making an exception for your site, I would have to for every other site as well which is the same as if the rules didn't exist.</td></tr>
