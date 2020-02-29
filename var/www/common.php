@@ -407,6 +407,7 @@ HiddenServiceEnableIntroDoSBurstPerSec 100
 		}
 	}
 	file_put_contents("/etc/tor/instances/$instance/torrc", $torrc);
+	chmod("/etc/tor/instances/$instance/torrc", 0644);
 	exec('systemctl reload '.escapeshellarg("tor@$instance"));
 }
 

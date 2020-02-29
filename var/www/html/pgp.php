@@ -55,7 +55,7 @@ if(!empty($user['pgp_key'])){
 			$_SESSION['enable_2fa_code'] = bin2hex(random_bytes(3));
 			if($encrypted = gnupg_encrypt($gpg, "To enable 2FA, please enter the following code to confirm ownership of your key:\n\n$_SESSION[enable_2fa_code]\n")){
 				echo "<p>To enable 2FA using your PGP key, please decrypt the following PGP encrypted message and confirm the code:</p>";
-				echo "<pre>$encrypted</pre>";
+				echo "<textarea readonly=\"readonly\" onclick=\"this.select()\" rows=\"10\" cols=\"70\">$encrypted</textarea>";
 				?>
 				<form action="pgp.php" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 				<table border="1">
@@ -72,7 +72,7 @@ if(!empty($user['pgp_key'])){
 <form action="pgp.php" method="post">
 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 <table border="1">
-<tr><td><textarea name="pgp_key" rows="10" cols="50"><?php echo $user['pgp_key']; ?></textarea></td></tr>
+<tr><td><textarea name="pgp_key" rows="10" cols="70"><?php echo $user['pgp_key']; ?></textarea></td></tr>
 <tr><td><button type="submit">Update PGP key</button></td></tr>
 </table>
 </form>

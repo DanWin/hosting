@@ -101,7 +101,7 @@ if($tfa){
 		$encrypted = gnupg_encrypt($gpg, "To login, please enter the following code to confirm ownership of your key:\n\n".$_SESSION['2fa_code']."\n");
 		echo $msg;
 		echo "<p>To login, please decrypt the following PGP encrypted message and confirm the code:</p>";
-		echo "<pre>$encrypted</pre>";
+		echo "<textarea readonly=\"readonly\" onclick=\"this.select()\" rows=\"10\" cols=\"70\">$encrypted</textarea>";
 		?>
 		<form action="login.php" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 		<table border="1">

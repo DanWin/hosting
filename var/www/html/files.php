@@ -441,7 +441,7 @@ function send_edit($ftp, $dir){
 	echo '<table>';
 	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $file){
-		echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="10" cols="30">';
+		echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="20" cols="70">';
 		if(ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
 			echo htmlspecialchars(file_get_contents($tmpfile));
 		}
