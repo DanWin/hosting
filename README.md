@@ -21,8 +21,8 @@ curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list
-echo "deb https://deb.nodesource.com/node_11.x sid main" >> /etc/apt/sources.list
-echo "deb https://deb.torproject.org/torproject.org sid main" >> /etc/apt/sources.list
+echo "deb https://deb.nodesource.com/node_11.x `lsb_release -cs` main" >> /etc/apt/sources.list
+echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list
 ```
 
 The following command will install all required packages:
@@ -36,8 +36,8 @@ apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gn
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
 ```
-deb tor://vwakviie2ienjx6t.onion/debian sid main
-deb tor://sdscoq7snqtznauu.onion/torproject.org sid main
+deb tor://vwakviie2ienjx6t.onion/debian `lsb_release -cs` main
+deb tor://sdscoq7snqtznauu.onion/torproject.org `lsb_release -cs` main
 ```
 
 Copy (and modify according to your needs) the site files in `var/www` to `/var/www` and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
