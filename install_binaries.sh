@@ -5,14 +5,14 @@ git clone https://github.com/google/ngx_brotli
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
 cat <<EOF | git apply -
 diff --git a/auto/modules b/auto/modules
-index d78e2823..ec8a4653 100644
+index d78e2823..0309d8e8 100644
 --- a/auto/modules
 +++ b/auto/modules
-@@ -423,6 +423,10 @@ if [ $HTTP = YES ]; then
+@@ -423,6 +423,10 @@ if [ \$HTTP = YES ]; then
          . auto/module
      fi
  
-+    if [ $HTTP_V2_HPACK_ENC = YES ]; then
++    if [ \$HTTP_V2_HPACK_ENC = YES ]; then
 +        have=NGX_HTTP_V2_HPACK_ENC . auto/have
 +    fi
 +
@@ -31,7 +31,7 @@ index 521c9768..b30770de 100644
  HTTP_SSI=YES
  HTTP_REALIP=NO
  HTTP_XSLT=NO
-@@ -224,6 +225,7 @@ $0: warning: the \"--with-ipv6\" option is deprecated"
+@@ -224,6 +225,7 @@ \$0: warning: the \"--with-ipv6\" option is deprecated"
  
          --with-http_ssl_module)          HTTP_SSL=YES               ;;
          --with-http_v2_module)           HTTP_V2=YES                ;;
@@ -128,10 +128,10 @@ index 54e867d3..322b3df9 100644
  
  #endif /* _NGX_MURMURHASH_H_INCLUDED_ */
 diff --git a/src/event/ngx_event_openssl.c b/src/event/ngx_event_openssl.c
-index 91b415ca..44b3158c 100644
+index 264d4e7a..b24f6742 100644
 --- a/src/event/ngx_event_openssl.c
 +++ b/src/event/ngx_event_openssl.c
-@@ -1507,6 +1507,7 @@ ngx_ssl_create_connection(ngx_ssl_t *ssl, ngx_connection_t *c, ngx_uint_t flags)
+@@ -1515,6 +1515,7 @@ ngx_ssl_create_connection(ngx_ssl_t *ssl, ngx_connection_t *c, ngx_uint_t flags)
  
      sc->buffer = ((flags & NGX_SSL_BUFFER) != 0);
      sc->buffer_size = ssl->buffer_size;
@@ -139,7 +139,7 @@ index 91b415ca..44b3158c 100644
  
      sc->session_ctx = ssl->ctx;
  
-@@ -2404,6 +2405,41 @@ ngx_ssl_send_chain(ngx_connection_t *c, ngx_chain_t *in, off_t limit)
+@@ -2443,6 +2444,41 @@ ngx_ssl_send_chain(ngx_connection_t *c, ngx_chain_t *in, off_t limit)
  
      for ( ;; ) {
  
@@ -181,7 +181,7 @@ index 91b415ca..44b3158c 100644
          while (in && buf->last < buf->end && send < limit) {
              if (in->buf->last_buf || in->buf->flush) {
                  flush = 1;
-@@ -2511,6 +2547,9 @@ ngx_ssl_write(ngx_connection_t *c, u_char *data, size_t size)
+@@ -2550,6 +2586,9 @@ ngx_ssl_write(ngx_connection_t *c, u_char *data, size_t size)
  
      if (n > 0) {
  
@@ -192,11 +192,11 @@ index 91b415ca..44b3158c 100644
  
              c->read->handler = c->ssl->saved_read_handler;
 diff --git a/src/event/ngx_event_openssl.h b/src/event/ngx_event_openssl.h
-index 61da0c5d..ae293d63 100644
+index 4909f021..aed3b5ab 100644
 --- a/src/event/ngx_event_openssl.h
 +++ b/src/event/ngx_event_openssl.h
-@@ -64,10 +64,19 @@
- #endif
+@@ -67,10 +67,19 @@
+ typedef struct ngx_ssl_ocsp_s  ngx_ssl_ocsp_t;
  
  
 +typedef struct {
@@ -215,7 +215,7 @@ index 61da0c5d..ae293d63 100644
  };
  
  
-@@ -95,6 +104,11 @@ struct ngx_ssl_connection_s {
+@@ -100,6 +109,11 @@ struct ngx_ssl_connection_s {
      unsigned                    no_wait_shutdown:1;
      unsigned                    no_send_shutdown:1;
      unsigned                    handshake_buffer_set:1;
@@ -226,8 +226,8 @@ index 61da0c5d..ae293d63 100644
 +
      unsigned                    try_early_data:1;
      unsigned                    in_early:1;
-     unsigned                    early_preread:1;
-@@ -108,7 +122,7 @@ struct ngx_ssl_connection_s {
+     unsigned                    in_ocsp:1;
+@@ -114,7 +128,7 @@ struct ngx_ssl_connection_s {
  #define NGX_SSL_DFLT_BUILTIN_SCACHE  -5
  
  
@@ -237,10 +237,10 @@ index 61da0c5d..ae293d63 100644
  typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
  
 diff --git a/src/http/modules/ngx_http_ssl_module.c b/src/http/modules/ngx_http_ssl_module.c
-index 495e628d..9480b73a 100644
+index d7072a62..96295d8c 100644
 --- a/src/http/modules/ngx_http_ssl_module.c
 +++ b/src/http/modules/ngx_http_ssl_module.c
-@@ -249,6 +249,41 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
+@@ -280,6 +280,41 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
        offsetof(ngx_http_ssl_srv_conf_t, early_data),
        NULL },
  
@@ -282,8 +282,8 @@ index 495e628d..9480b73a 100644
        ngx_null_command
  };
  
-@@ -580,6 +615,11 @@ ngx_http_ssl_create_srv_conf(ngx_conf_t *cf)
-     sscf->session_ticket_keys = NGX_CONF_UNSET_PTR;
+@@ -614,6 +649,11 @@ ngx_http_ssl_create_srv_conf(ngx_conf_t *cf)
+     sscf->ocsp_cache_zone = NGX_CONF_UNSET_PTR;
      sscf->stapling = NGX_CONF_UNSET;
      sscf->stapling_verify = NGX_CONF_UNSET;
 +    sscf->dyn_rec_enable = NGX_CONF_UNSET;
@@ -294,7 +294,7 @@ index 495e628d..9480b73a 100644
  
      return sscf;
  }
-@@ -647,6 +687,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+@@ -686,6 +726,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
      ngx_conf_merge_str_value(conf->stapling_responder,
                           prev->stapling_responder, "");
  
@@ -315,7 +315,7 @@ index 495e628d..9480b73a 100644
      conf->ssl.log = cf->log;
  
      if (conf->enable) {
-@@ -857,6 +911,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+@@ -913,6 +967,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
          return NGX_CONF_ERROR;
      }
  
@@ -345,10 +345,10 @@ index 495e628d..9480b73a 100644
  }
  
 diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_ssl_module.h
-index 26fdccfe..b14b52ad 100644
+index 98aa1be4..189d86b7 100644
 --- a/src/http/modules/ngx_http_ssl_module.h
 +++ b/src/http/modules/ngx_http_ssl_module.h
-@@ -61,6 +61,12 @@ typedef struct {
+@@ -65,6 +65,12 @@ typedef struct {
  
      u_char                         *file;
      ngx_uint_t                      line;
@@ -362,7 +362,7 @@ index 26fdccfe..b14b52ad 100644
  
  
 diff --git a/src/http/v2/ngx_http_v2.c b/src/http/v2/ngx_http_v2.c
-index 9b5a0cd5..ce28c64b 100644
+index 08d66c97..db733d98 100644
 --- a/src/http/v2/ngx_http_v2.c
 +++ b/src/http/v2/ngx_http_v2.c
 @@ -271,6 +271,8 @@ ngx_http_v2_init(ngx_event_t *rev)
@@ -374,7 +374,7 @@ index 9b5a0cd5..ce28c64b 100644
      h2scf = ngx_http_get_module_srv_conf(hc->conf_ctx, ngx_http_v2_module);
  
      h2c->concurrent_pushes = h2scf->concurrent_pushes;
-@@ -2092,6 +2094,13 @@ ngx_http_v2_state_settings_params(ngx_http_v2_connection_t *h2c, u_char *pos,
+@@ -2095,6 +2097,13 @@ ngx_http_v2_state_settings_params(ngx_http_v2_connection_t *h2c, u_char *pos,
  
          case NGX_HTTP_V2_HEADER_TABLE_SIZE_SETTING:
  
