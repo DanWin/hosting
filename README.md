@@ -115,7 +115,8 @@ Install custom optimized binaries
 
 Install composer and sodium_compat for v3 hidden_service support
 ```
-curl -sSL https://github.com/composer/composer/releases/download/1.10.8/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/1.10.9/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
+composer self-update
 cd /var/www && composer install
 ```
 
@@ -133,6 +134,7 @@ CREATE DATABASE phpmyadmin;
 GRANT ALL PRIVILEGES ON phpmyadmin.* TO 'phpmyadmin'@'%';
 FLUSH PRIVILEGES;
 quit
+mysql phpmyadmin < /var/www/html/phpmyadmin/sql/create_tables.sql
 ```
 
 For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
