@@ -104,7 +104,7 @@ systemctl enable nginx
 Edit `/etc/fstab` and add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` option to the `/home` mountpoint and `noatime`to `/`. Then initialize quota:
 ```
 mount -o remount /home
-quotacheck -cu /home
+quotacheck -cMu /home
 quotaon /home
 ```
 
