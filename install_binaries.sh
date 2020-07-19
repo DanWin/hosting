@@ -8,11 +8,16 @@ git clone https://github.com/openresty/lua-resty-core
 git clone https://github.com/openresty/lua-resty-lrucache
 git clone https://github.com/openresty/lua-nginx-module
 git clone https://github.com/openresty/stream-lua-nginx-module
+git clone https://github.com/openresty/lua-resty-mysql
+git clone https://github.com/openresty/rds-json-nginx-module
+git clone https://github.com/openresty/set-misc-nginx-module
 cd luajit2
 XCFLAGS="-O3 -march=native -mtune=native" make -j $(nproc) install
 cd ../lua-resty-core
 make -j $(nproc) install
 cd ../lua-resty-lrucache
+make -j $(nproc) install
+cd ../lua-resty-mysql
 make -j $(nproc) install
 cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
@@ -1239,7 +1244,7 @@ index 7d49803f..b9ee2048 100644
 +#endif
 EOF
 
-LUAJIT_LIB="/usr/local/lib" LUAJIT_INC="/usr/local/include/luajit-2.1/" ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-libatomic --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --add-module=ngx_devel_kit --add-module=lua-nginx-module --add-module=stream-lua-nginx-module
+LUAJIT_LIB="/usr/local/lib" LUAJIT_INC="/usr/local/include/luajit-2.1/" ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_access_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_limit_conn_module --without-http_limit_req_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_limit_conn_module --without-stream_access_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-libatomic --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --add-module=ngx_devel_kit --add-module=lua-nginx-module --add-module=stream-lua-nginx-module --add-module=rds-json-nginx-module --add-module=set-misc-nginx-module
 make -j $(nproc) install
 make clean
 git reset --hard
