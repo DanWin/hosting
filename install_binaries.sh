@@ -1,22 +1,34 @@
 #!/bin/sh
 git clone https://github.com/libssh2/libssh2
 cd libssh2
+git pull
 autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $(nproc) install
 cd ..
 git clone https://github.com/nginx/nginx
 cd nginx
+git pull
 git clone https://github.com/google/ngx_brotli
+cd ngx_brotli && git pull && cd ..
 git clone https://github.com/vision5/ngx_devel_kit
+cd ngx_devel_kit && git pull && cd ..
 git clone https://github.com/openresty/luajit2
+cd luajit2 && git pull && cd ..
 git clone https://github.com/openresty/lua-resty-core
+cd lua-resty-core && git pull && cd ..
 git clone https://github.com/openresty/lua-resty-lrucache
+cd lua-resty-lrucache && git pull && cd ..
 git clone https://github.com/openresty/lua-nginx-module
+cd lua-nginx-module && git pull && cd ..
 git clone https://github.com/openresty/stream-lua-nginx-module
+cd stream-lua-nginx-module && git pull && cd ..
 git clone https://github.com/openresty/lua-resty-mysql
+cd lua-resty-mysql && git pull && cd ..
 git clone https://github.com/openresty/rds-json-nginx-module
+cd rds-json-nginx-module && git pull && cd ..
 git clone https://github.com/openresty/set-misc-nginx-module
+cd set-misc-nginx-module && git pull && cd ..
 cd luajit2
 XCFLAGS="-O3 -march=native -mtune=native" make -j $(nproc) install
 cd ../lua-resty-core
@@ -1259,12 +1271,19 @@ ln -fs /usr/include/qdbm/depot.h /usr/include/depot.h
 git clone https://github.com/php/php-src
 cd php-src
 git checkout PHP-7.4
+git pull
 cd ext
 git clone https://github.com/krakjoe/apcu
+cd apcu && git pull && cd ..
 git clone https://github.com/kjdev/php-ext-brotli
+cd php-ext-brotli && git pull && cd ..
 git clone https://github.com/Imagick/imagick
+cd imagick && git pull && cd ..
 git clone https://github.com/php-gnupg/php-gnupg && cd php-gnupg && git submodule update --init && cd ..
+cd php-gnupg && git pull && cd ..
 git clone https://github.com/cataphract/php-rar
+cd php-rar && git pull && cd ..
+rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 ./buildconf
@@ -1273,6 +1292,7 @@ make -j $(nproc) install
 make distclean
 git reset --hard
 git checkout PHP-7.3
+git pull
 cat <<EOF | git apply -
 From: =?utf-8?b?T25kxZllaiBTdXLDvQ==?= <ondrej@sury.org>
 Date: Mon, 22 Oct 2018 06:54:31 +0000
@@ -1335,6 +1355,7 @@ make -j $(nproc) install
 make distclean
 git reset --hard
 git checkout PHP-7.2
+git pull
 cat <<EOF | git apply -
 From: =?utf-8?b?T25kxZllaiBTdXLDvQ==?= <ondrej@sury.org>
 Date: Mon, 22 Oct 2018 06:54:31 +0000
