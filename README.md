@@ -15,19 +15,25 @@ apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.s
 
 To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
 
-Add yarn + nodejs + torproject to our repositories:
+Install nodejs + yarn
 ```
-curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
-curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm nstall node
+npm i -g yarn
+```
+
+Add torproject to our repositories:
+```
 curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" >> /etc/apt/sources.list
-echo "deb https://deb.nodesource.com/node_11.x `lsb_release -cs` main" >> /etc/apt/sources.list
 echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list
 ```
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim vsftpd wget xz-utils yarn zip zopfli
+apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim vsftpd wget xz-utils zip zopfli
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
@@ -91,8 +97,6 @@ As time syncronisation is important, you should configure ntp servers in `/etc/s
 
 Enable the PHP-FPM default instances and nginx:
 ```
-systemctl enable php7.2-fpm@default
-systemctl enable php7.3-fpm@default
 systemctl enable php7.4-fpm@default
 systemctl enable nginx
 ```
