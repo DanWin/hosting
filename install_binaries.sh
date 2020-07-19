@@ -1,4 +1,10 @@
 #!/bin/sh
+git clone https://github.com/libssh2/libssh2
+cd libssh2
+autoreconf -fi
+CFLAGS="-O3 -march=native -mtune=native" ./configure
+make -j $(nproc) install
+cd ..
 git clone https://github.com/nginx/nginx
 cd nginx
 git clone https://github.com/google/ngx_brotli
