@@ -9,11 +9,12 @@ if(empty($_SESSION['ftp_pass'])){
 	send_login();
 	exit;
 }
-$ftp=ftp_connect('127.0.0.1') or die ('No Connection to FTP server!');
-if(@!ftp_login($ftp, $user[system_account], $_SESSION['ftp_pass'])){
+$ssh=ssh2_connect('127.0.0.1') or die ('No Connection to SFTP server!');
+if(@!ssh2_auth_password($ssh, $user[system_account], $_SESSION['ftp_pass'])){
 	send_login();
 	exit;
 }
+$sftp = ssh2_sftp($ssh);
 //prepare reusable data
 const TYPES=[
 'jpg'=>'img',
@@ -97,9 +98,9 @@ if(!empty($_REQUEST['path'])){
 }else{
 	$dir='/www/';
 }
-if(@!ftp_chdir($ftp, $dir)){
+if(!is_dir("ssh2.sftp://$sftp$dir")){
 	$dir=rtrim($dir, '/');
-	if(@ftp_fget($ftp, $tmpfile=tmpfile(), $dir, FTP_BINARY)){
+	if($tmpfile = @fopen("ssh2.sftp://$sftp$dir", 'r')){
 		//output file
 		header('Content-Type: ' . mime_content_type($tmpfile));
 		header('Content-Disposition: filename="'.basename($dir).'"');
@@ -111,6 +112,7 @@ if(@!ftp_chdir($ftp, $dir)){
 		while (($buffer = fgets($tmpfile, 4096)) !== false) {
 			echo $buffer;
 		}
+		fclose($tmpfile);
 	}else{
 		send_not_found();
 	}
@@ -122,17 +124,14 @@ if(!empty($_POST['mkdir']) && !empty($_POST['name'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	ftp_mkdir($ftp, $_POST['name']);
+	ssh2_sftp_mkdir($sftp, "$dir/$_POST[name]", 0750);
 }
 
 if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$tmpfile='/tmp/'.uniqid();
-	touch($tmpfile);
-	@ftp_put($ftp, $_POST['name'], $tmpfile, FTP_BINARY);
-	unlink($tmpfile);
+	file_put_contents("ssh2.sftp://$sftp$dir$_POST[name]", '');
 }
 
 if(!empty($_POST['delete']) && !empty($_POST['files'])){
@@ -140,7 +139,7 @@ if(!empty($_POST['delete']) && !empty($_POST['files'])){
 		die($error);
 	}
 	foreach($_POST['files'] as $file){
-		ftp_recursive_delete($ftp, $file);
+		sftp_recursive_delete($sftp, $dir, $file);
 	}
 }
 
@@ -149,7 +148,7 @@ if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
 		die($error);
 	}
 	foreach($_POST['files'] as $old=>$new){
-		@ftp_rename($ftp, $old, $new);
+		@ssh2_sftp_rename($sftp, "$dir/$old", "$dir/$new");
 	}
 }
 
@@ -165,19 +164,16 @@ if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $name=>$content){
-		file_put_contents($tmpfile, $content);
-		@ftp_put($ftp, $name, $tmpfile, FTP_BINARY);
+		file_put_contents("ssh2.sftp://$sftp$dir/$name", $content);
 	}
-	unlink($tmpfile);
 }
 
 if(!empty($_POST['edit']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	send_edit($ftp, $dir);
+	send_edit($sftp, $dir);
 	exit;
 }
 
@@ -185,36 +181,11 @@ if(!empty($_POST['unzip']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$zip = new ZipArchive();
 	foreach($_POST['files'] as $file){
 		if(!preg_match('/\.zip$/', $file)){
 			continue;
 		}
-		$tmpfile='/tmp/'.uniqid().'.zip';
-		if(@!ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
-			continue;
-		}
-		//prevent zip-bombs
-		$size=0;
-		$resource=zip_open($tmpfile);
-		if(!is_resource($resource)){
-			unlink($tmpfile);
-			continue;
-		}
-		while($dir_resource=zip_read($resource)) {
-			$size+=zip_entry_filesize($dir_resource);
-		}
-		zip_close($resource);
-		if($size<=1073741824){ //1GB limit
-			$zip->open($tmpfile);
-			$tmpdir='/tmp/'.uniqid().'/';
-			mkdir($tmpdir);
-			$zip->extractTo($tmpdir);
-			ftp_recursive_upload($ftp, $tmpdir);
-			rmdir($tmpdir);
-			$zip->close();
-		}
-		unlink($tmpfile);
+		ssh2_exec($ssh, 'cd '. escapeshellarg($dir) . ' && /usr/bin/unzip -qo ' . escapeshellarg($file));
 	}
 }
 
@@ -226,7 +197,13 @@ if(!empty($_FILES['files'])){
 	$c=count($_FILES['files']['name']);
 	for($i=0; $i<$c; ++$i){
 		if($_FILES['files']['error'][$i]===UPLOAD_ERR_OK){
-			@ftp_put($ftp, $dir.$_FILES['files']['name'][$i], $_FILES['files']['tmp_name'][$i], FTP_BINARY);
+			$tmpfile = fopen($_FILES['files']['tmp_name'][$i], 'r');
+			$upload = @fopen("ssh2.sftp://$sftp$dir/".$_FILES['files']['name'][$i], 'w');
+			while($buffer=fread($tmpfile, 4096)){
+				fwrite($upload, $buffer);
+			}
+			fclose($upload);
+			fclose($tmpfile);
 			unlink($_FILES['files']['tmp_name'][$i]);
 		}
 	}
@@ -235,17 +212,19 @@ if(!empty($_FILES['files'])){
 
 
 $files=$dirs=[];
-$list=ftp_rawlist($ftp, '.');
-if(is_array($list)){
-	foreach($list as $file){
-		preg_match('/^([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+([^\s]*)\s+(.*)$/', $file, $match);
-		if($match[0][0]==='d'){
-			$dirs[$match[9]]=['name'=>"$match[9]/", 'mtime'=>strtotime("$match[6] $match[7] $match[8]"), 'size'=>'-'];
-		}else{
-			$files[$match[9]]=['name'=>$match[9], 'mtime'=>ftp_mdtm($ftp, $match[9]), 'size'=>$match[5]];
-		}
+$dir_handle = opendir("ssh2.sftp://$sftp$dir");
+while(($file = readdir($dir_handle)) !== false){
+	if(in_array($file, ['.', '..'], true)){
+		continue;
+	}
+	$stat = stat("ssh2.sftp://$sftp$dir/$file");
+	if(is_dir("ssh2.sftp://$sftp$dir/$file")){
+		$dirs[$file]=['name'=>"$file/", 'mtime' => $stat['mtime'], 'size'=>'-'];
+	}else{
+		$files[$file]=['name'=>$file, 'mtime' => $stat['mtime'], 'size' => $stat['size']];
 	}
 }
+closedir($dir_handle);
 
 //sort our files
 if($sort==='M'){
@@ -382,39 +361,19 @@ function send_login(){
 <?php
 }
 
-function ftp_recursive_upload($ftp, $path){
-	$dir = dir($path);
-	while(($file = $dir->read()) !== false) {
-		if(is_dir($dir->path.$file)) {
-			if($file === '.' || $file === '..'){
+function sftp_recursive_delete($sftp, $dir, $file){
+	if(is_dir("ssh2.sftp://$sftp$dir/$file")){
+		$dir_handle = opendir("ssh2.sftp://$sftp$dir/$file");
+		while(($list = readdir($dir_handle)) !== false){
+			if(in_array($list, ['.', '..'], true)){
 				continue;
 			}
-			if(@!ftp_chdir($ftp, $file)){
-				ftp_mkdir($ftp, $file);
-				ftp_chdir($ftp, $file);
-			}
-			ftp_recursive_upload($ftp, $dir->path.$file.'/');
-			ftp_chdir($ftp, '..');
-			rmdir($dir->path.$file);
-		}else{
-			@ftp_put($ftp, $file, $dir->path.$file, FTP_BINARY);
-			unlink($dir->path.$file);
+			sftp_recursive_delete($sftp, "$dir/$file", $list);
 		}
-	}
-	$dir->close();
-}
-
-function ftp_recursive_delete($ftp, $file){
-	if(@ftp_chdir($ftp, $file)){
-		if($list = ftp_nlist($ftp, '.')){
-			foreach($list as $tmp){
-				ftp_recursive_delete($ftp, $tmp);
-			}
-		}
-		ftp_chdir($ftp, '..');
-		@ftp_rmdir($ftp, $file);
+		closedir($dir_handle);
+		rmdir("ssh2.sftp://$sftp$dir/$file");
 	}else{
-		@ftp_delete($ftp, $file);
+		unlink("ssh2.sftp://$sftp$dir/$file");
 	}
 }
 
@@ -433,22 +392,18 @@ function send_rename($dir){
 	echo '</body></html>';
 }
 
-function send_edit($ftp, $dir){
+function send_edit($sftp, $dir){
 	print_header('FileManager - Edit file');
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
 	echo '<table>';
-	$tmpfile='/tmp/'.uniqid();
 	foreach($_POST['files'] as $file){
-		echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="20" cols="70">';
-		if(ftp_get($ftp, $tmpfile, $file, FTP_BINARY)){
-			echo htmlspecialchars(file_get_contents($tmpfile));
+		if(is_file("ssh2.sftp://$sftp$dir/$file")){
+			echo '<tr><td>'.htmlspecialchars($file).'</td><td><textarea name="files['.htmlspecialchars($file).']" rows="20" cols="70">';
+			echo htmlspecialchars(file_get_contents("ssh2.sftp://$sftp$dir/$file"));
+			echo '</textarea></td></tr>';
 		}
-		echo '</textarea></td></tr>';
-	}
-	if(file_exists($tmpfile)){
-		unlink($tmpfile);
 	}
 	echo '</table>';
 	echo '<input type="submit" name="edit_2" value="Save"></form>';
