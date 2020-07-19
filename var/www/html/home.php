@@ -278,10 +278,10 @@ if($count_dbs<MAX_NUM_USER_DBS){
 <p>You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/?username=<?php echo rawurlencode($user['mysql_user']); ?>" target="_blank">Adminer</a> for web based database administration.</p>
 <h3>System Account</h3>
 <table border="1">
-<tr><th>Username</th><th>Host</th><th>FTP Port</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>
+<tr><th>Username</th><th>Host</th><th>SFTP Port</th><th>POP3 Port</th><th>IMAP Port</th><th>SMTP port</th></tr>
 <?php
 foreach(SERVERS as $server=>$tmp){
-	echo "<tr><td>$user[system_account]</td><td>$server</td><td>$tmp[ftp]</td><td>$tmp[sftp]</td><td>$tmp[pop3]</td><td>$tmp[imap]</td><td>$tmp[smtp]</td></tr>";
+	echo "<tr><td>$user[system_account]</td><td>$server</td><td>$tmp[sftp]</td><td>$tmp[pop3]</td><td>$tmp[imap]</td><td>$tmp[smtp]</td></tr>";
 }
 ?>
 </table>

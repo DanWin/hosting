@@ -2,15 +2,15 @@
 require('../common.php');
 $db = get_db_instance();
 $user=check_login();
-if(!empty($_POST['ftp_pass'])){
-	$_SESSION['ftp_pass']=$_POST['ftp_pass'];
+if(!empty($_POST['sftp_pass'])){
+	$_SESSION['sftp_pass']=$_POST['sftp_pass'];
 }
-if(empty($_SESSION['ftp_pass'])){
+if(empty($_SESSION['sftp_pass'])){
 	send_login();
 	exit;
 }
 $ssh=ssh2_connect('127.0.0.1') or die ('No Connection to SFTP server!');
-if(@!ssh2_auth_password($ssh, $user[system_account], $_SESSION['ftp_pass'])){
+if(@!ssh2_auth_password($ssh, $user[system_account], $_SESSION['sftp_pass'])){
 	send_login();
 	exit;
 }
@@ -116,7 +116,6 @@ if(!is_dir("ssh2.sftp://$sftp$dir")){
 	}else{
 		send_not_found();
 	}
-	fclose($tmpfile);
 	exit;
 }
 
@@ -355,7 +354,7 @@ function send_not_found(){
 function send_login(){
 	print_header('FileManager - Login');
 ?>
-<p>Please type in your system account password: <form action="files.php" method="post"><input name="ftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
+<p>Please type in your system account password: <form action="files.php" method="post"><input name="sftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
 <p><a href="home.php">Go back to dashboard</a>.</p>
 </body></html>
 <?php

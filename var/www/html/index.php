@@ -16,7 +16,7 @@ print_header('Info');
 <li>Up to <?php echo MAX_NUM_USER_DBS; ?> MariaDB (MySQL) databases</li>
 <li><a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/" target="_blank">Adminer</a> for web based database administration</li>
 <li>Web-based file manager</li>
-<li>FTP and SFTP access</li>
+<li>SFTP access</li>
 <li>command line access to shell via SSH</li>
 <li>1GB disk quota and a maximum of 100.000 files<?php echo ENABLE_UPGRADES ? ' - upgradable' : ''; ?></li>
 <li>mail() can send e-mails from your_system_account@<?php echo ADDRESS; ?> (your_system_account@hosting.danwin1210.me for clearnet)</li>

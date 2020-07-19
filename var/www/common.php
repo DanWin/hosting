@@ -10,8 +10,8 @@ const CAPTCHA=1; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
 const SERVERS=[ //servers and ports we are running on
-'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
-'hosting.danwin1210.me'=>['sftp'=>22, 'ftp'=>21, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
+'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
+'hosting.danwin1210.me'=>['sftp'=>22, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
@@ -22,7 +22,7 @@ const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considd
 '31ff0d6a1d280d610a700f3c1ec6d857', //MyHacker test page
 ];
 const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
-const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only (s)ftp is allowed - run setup.php to migrate existing accounts
+const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only sftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. If tor starts using 100% cpu and failing circuits every few hours after a restart, add more instances. In my experience this happens around 250 hidden services per instance - run setup.php after change
 const DISABLED_PHP_VERSIONS=[3 => '7.2']; //php versions still installed on the system but no longer offered for new accounts
@@ -128,7 +128,7 @@ const ACCOUNT_UPGRADES = [
 	'20g_quota' => ['name' => '+20GB disk Quota', 'usd_price' => 40],
 	'100k_files_quota' => ['name' => '+100k files Quota', 'usd_price' => 10],
 ];
-const COINPAYMENTS_ENABLED = true; //enable CoinPayments as payment processor true/false
+const COINPAYMENTS_ENABLED = false; //enable CoinPayments as payment processor true/false
 const COINPAYMENTS_PRIVATE = 'COINPAYMENTS_PRIVATE'; //Coinpayments private API key
 const COINPAYMENTS_PUBLIC = 'COINPAYMENTS_PUBLIC'; //Coinpayments public API key
 const COINPAYMENTS_MERCHANT_ID = 'COINPAYMENTS_MERCHANT_ID'; //Coinpayments merchant ID
