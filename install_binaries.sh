@@ -1425,3 +1425,4 @@ make distclean
 git reset --hard
 ln -fs /usr/bin/php7.4 /usr/bin/php
 cd ..
+ldconfig
