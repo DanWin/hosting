@@ -10,7 +10,7 @@ The configuration was tested with a standard Debian buster and Ubuntu 18.04 LTS 
 
 Uninstall packages that may interfere with this setup:
 ```
-apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.service
+DEBIAN_FRONTEND=noninteractive apt-get purge apache2* resolvconf exim4* && systemctl disable systemd-resolved.service
 ```
 
 To get the latest mariadb version, you should follow these instructions to add the official tor repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
@@ -33,11 +33,11 @@ echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
-apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gnupg libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gnupg libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
 ```
 
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
