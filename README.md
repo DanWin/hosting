@@ -33,7 +33,7 @@ echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /
 
 The following command will install all required packages:
 ```
-apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano nodejs postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
+apt-get --no-install-recommends install apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
