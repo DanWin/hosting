@@ -15,7 +15,7 @@ DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* resolvconf exim4* nginx
 
 The following command will install all required packages:
 ```
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor brotli bzip2 clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
