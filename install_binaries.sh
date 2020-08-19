@@ -6,6 +6,13 @@ autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $(nproc) install
 cd ..
+git clone https://github.com/ImageMagick/ImageMagick
+cd ImageMagick
+git pull
+CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes
+make -j $(nproc) install
+cd ..
+ldconfig
 git clone https://github.com/nginx/nginx
 cd nginx
 git pull

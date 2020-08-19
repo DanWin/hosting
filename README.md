@@ -1,7 +1,7 @@
 General Information:
 --------------------
 
-This is a setup for a TOR based shared hosting server. It is provided as is and before putting it into production you should make changes according to your needs. This is a work in progress and you should carefully check the commit history for changes before updating.
+This is a setup for a Tor based shared hosting server. It is provided as is and before putting it into production you should make changes according to your needs. This is a work in progress and you should carefully check the commit history for changes before updating.
 
 Installation Instructions:
 --------------------------
@@ -10,7 +10,7 @@ The configuration was tested with a standard Debian buster and Ubuntu 18.04 LTS 
 
 Uninstall packages that may interfere with this setup:
 ```
-DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* resolvconf eatmydata exim4* nginx* libnginx-mod* php7* && systemctl disable systemd-resolved.service
+DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* resolvconf eatmydata exim4* imagemagick-6-common nginx* libnginx-mod* php7* && systemctl disable systemd-resolved.service
 ```
 
 The following command will install all required packages:
@@ -19,7 +19,7 @@ DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-tr
 ```
 The following command will install all required build dependencies for nginx and php:
 ```
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gnupg libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libedit-dev libenchant-dev libffi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libkrb5-dev libldap2-dev liblmdb-dev libmagickwand-dev libmariadb-dev libonig-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libreadline-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev make poppler-utils re2c zlib1g-dev
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf bison g++ gcc ghostscript gnupg libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libdjvulibre-dev libedit-dev libenchant-dev libffi-dev libfreetype-dev libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libheif-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c zlib1g-dev
 ```
 
 To get the latest mariadb version, you should follow these instructions to add the official repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
@@ -181,4 +181,4 @@ Final step is to reboot wait about 5 minutes for all services to start and check
 Live demo:
 ----------
 
-If you want to see the setup in action or create your own site on my server, you can visit my [TOR hidden service](http://dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion) or via [my clearnet proxy](https://hosting.danwin1210.me) if you don't have TOR installed.
+If you want to see the setup in action or create your own site on my server, you can visit my [Tor hidden service](http://dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion) or via [my clearnet proxy](https://hosting.danwin1210.me) if you don't have Tor installed.
