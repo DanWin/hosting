@@ -6,7 +6,7 @@ This is a setup for a Tor based shared hosting server. It is provided as is and 
 Installation Instructions:
 --------------------------
 
-The configuration was tested with a standard Debian buster and Ubuntu 18.04 LTS installation. It's recommended you install Debian buster (or newer) on your server, but with a little tweaking you may also get this working on other distributions and/or versions.
+The configuration was tested with a standard Debian buster and Ubuntu 18.04 LTS installation. It's recommended you install Debian buster (or newer) on your server, but with a little tweaking you may also get this working on other distributions and/or versions. If you want to build it on a raspberry pi, please do not use the raspbian images as several things will break. Download an image for your pi model from [https://raspi.debian.net/daily-images/](https://raspi.debian.net/daily-images/) instead.
 
 Uninstall packages that may interfere with this setup:
 ```
