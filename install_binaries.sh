@@ -5,6 +5,9 @@ set -e
 if [ ! -e libssh2 ]; then
 	git clone https://github.com/libssh2/libssh2
 fi
+if [ ! -e aom ]; then
+	git clone https://aomedia.googlesource.com/aom
+fi
 if [ ! -e libheif ]; then
 	git clone https://github.com/strukturag/libheif
 fi
@@ -77,17 +80,27 @@ git pull
 autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
+make distclean
 cd ..
+mkdir -p aom_build
+cd aom_build
+cmake ../aom -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0 -DENABLE_DOCS=0
+make -j $PROC_LIMIT install
+cd ..
+rm -r aom_build
+ldconfig
 cd libheif
 ./autogen.sh
-./configure
-CFLAGS="-O3 -march=native -mtune=native" CXXFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT install
+CFLAGS="-O3 -march=native -mtune=native" CXXFLAGS="-O3 -march=native -mtune=native" ./configure
+make -j $PROC_LIMIT install
+make distclean
 cd ..
 ldconfig
 cd ImageMagick
 git pull
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes
 make -j $PROC_LIMIT install
+make distclean
 cd ..
 ldconfig
 cd nginx
