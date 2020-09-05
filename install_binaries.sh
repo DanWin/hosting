@@ -5,6 +5,9 @@ set -e
 if [ ! -e libssh2 ]; then
 	git clone https://github.com/libssh2/libssh2
 fi
+if [ ! -e libheif ]; then
+	git clone https://github.com/strukturag/libheif
+fi
 if [ ! -e ImageMagick ]; then
 	git clone https://github.com/ImageMagick/ImageMagick
 fi
@@ -75,6 +78,12 @@ autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
 cd ..
+cd libheif
+./autogen.sh
+./configure
+CFLAGS="-O3 -march=native -mtune=native" CXXFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT install
+cd ..
+ldconfig
 cd ImageMagick
 git pull
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes
