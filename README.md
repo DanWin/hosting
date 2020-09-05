@@ -22,7 +22,7 @@ The following command will install all required build dependencies for nginx and
 DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison g++ gcc ghostscript gnupg libargon2-dev libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libdjvulibre-dev libedit-dev libenchant-dev libffi-dev libfreetype-dev libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libheif-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c zlib1g-dev
 ```
 
-If you are running a distribution that is older than debian `bullseye` or ubuntu `focal`, you may encounter an error that `libargon2-dev` and/or `librfeetype-dev` were not found. Try these alternative names: `libfreetype6-dev` and `libargon2-0-dev`
+If you are running a distribution that is older than debian `bullseye` or ubuntu `focal`, you may encounter an error that `libargon2-dev` and/or `libfreetype-dev` were not found. Try these alternative names: `libfreetype6-dev` and `libargon2-0-dev`
 
 To get the latest mariadb version, you should follow these instructions to add the official repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
 
