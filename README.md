@@ -30,6 +30,7 @@ Add torproject to our repositories:
 ```
 curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
 echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list
+apt-get update && apt-get upgrade
 ```
 
 Install nodejs + yarn
