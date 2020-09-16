@@ -811,7 +811,7 @@ function check_csrf_error(){
 function enqueue_instance_reload($instance = null){
 	$db = get_db_instance();
 	if($instance === null){
-		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 LIMIT 1;');
+		$db->exec('UPDATE service_instances SET reload = 1 LIMIT 1;');
 	}else{
 		$stmt=$db->prepare('UPDATE service_instances SET reload = 1 WHERE id = ?;');
 		$stmt->execute([$instance]);
