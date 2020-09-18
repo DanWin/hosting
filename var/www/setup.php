@@ -362,7 +362,7 @@ while($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 }
 $db->exec('UPDATE service_instances SET reload=1;');
 //set safe file permissions
-exec('chown root:www-data -R /var/www/html/');
+exec('chown root:www-data -R /var/www/html/ /var/www/vendor/');
 exec('find /var/www/html/ -type f -exec chmod 640 {} \;');
 exec('find /var/www/html/ -type d -exec chmod 750 {} \;');
 exec('chown root:www-data /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup_chroot.sh /var/www/setup.php');
