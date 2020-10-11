@@ -55,6 +55,7 @@ opcache.save_comments = 1
 opcache.optimization_level = 0x7fffffff
 opcache.validate_permission = 1
 opcache.validate_root = 1
+session.use_strict_mode = 1
 ';
 const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=2048;
