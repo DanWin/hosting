@@ -107,6 +107,7 @@ As time syncronisation is important, you should configure ntp servers in `/etc/s
 Enable the PHP-FPM default instances and nginx:
 ```
 systemctl enable php7.4-fpm@default
+systemctl enable php8.0-fpm@default
 systemctl enable nginx
 ```
 
