@@ -2,8 +2,8 @@
 # but we are using a service since targets cannot be reloaded.
 
 [Unit]
-Description=The PHP 7.2 FastCGI Process Manager (multi instance master)
-Documentation=man:php-fpm7.2(8)
+Description=The PHP 8.0 FastCGI Process Manager (multi instance master)
+Documentation=man:php-fpm8.0(8)
 After=network.target
 
 [Service]

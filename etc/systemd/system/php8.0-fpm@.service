@@ -1,14 +1,14 @@
 [Unit]
-Description=The PHP 7.2 FastCGI Process Manager (instance %i)
-Documentation=man:php-fpm7.2(8)
+Description=The PHP 8.0 FastCGI Process Manager (instance %i)
+Documentation=man:php-fpm8.0(8)
 After=network.target
-PartOf=php7.2-fpm.service
-ReloadPropagatedFrom=php7.2-fpm.service
+PartOf=php8.0-fpm.service
+ReloadPropagatedFrom=php8.0-fpm.service
 
 [Service] 
 Type=notify
-PIDFile=/run/php/php7.2-fpm-%i.pid
-ExecStart=/usr/sbin/php-fpm7.2 --nodaemonize --fpm-config /etc/php/7.2/fpm/php-fpm-%i.conf
+PIDFile=/run/php/php8.0-fpm-%i.pid
+ExecStart=/usr/sbin/php-fpm8.0 --nodaemonize --fpm-config /etc/php/8.0/fpm/php-fpm-%i.conf
 ExecReload=/bin/kill -USR2 $MAINPID
 LimitNOFILE=100000
 TimeoutStartSec=300

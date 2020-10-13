@@ -25,8 +25,8 @@ const REQUIRE_APPROVAL=false; //require admin approval of new sites? true/false
 const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled only sftp is allowed - run setup.php to migrate existing accounts
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. If tor starts using 100% cpu and failing circuits every few hours after a restart, add more instances. In my experience this happens around 250 hidden services per instance - run setup.php after change
-const DISABLED_PHP_VERSIONS=[3 => '7.2']; //php versions still installed on the system but no longer offered for new accounts
-const PHP_VERSIONS=[4 => '7.3', 5 => '7.4']; //currently active php versions
+const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
+const PHP_VERSIONS=[4 => '7.3', 5 => '7.4', 6 => '8.0']; //currently active php versions
 const DEFAULT_PHP_VERSION='7.4'; //default php version
 const PHP_CONFIG='zend_extension=opcache.so
 memory_limit = 256M
@@ -55,6 +55,7 @@ opcache.save_comments = 1
 opcache.optimization_level = 0x7fffffff
 opcache.validate_permission = 1
 opcache.validate_root = 1
+opcache.jit_buffer_size = 64M
 session.use_strict_mode = 1
 ';
 const NGINX_DEFAULT = 'server {
@@ -76,7 +77,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/7.4-hosting;
+			fastcgi_pass unix:/var/run/php/8.0-hosting;
 		}
 	}
 	location /squirrelmail {
@@ -92,7 +93,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/7.4-phpmyadmin;
+			fastcgi_pass unix:/run/php/8.0-phpmyadmin;
 		}
 	}
 	location /adminer {
@@ -101,7 +102,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html/adminer;
 			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/7.4-adminer;
+			fastcgi_pass unix:/run/php/8.0-adminer;
 		}
 	}
 	location /externals/jush/ {
