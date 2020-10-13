@@ -122,6 +122,7 @@ ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
 cd ..
 cd luajit2
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT install
+ldconfig
 cd ../lua-resty-core
 make -j $PROC_LIMIT install
 cd ../lua-resty-lrucache
