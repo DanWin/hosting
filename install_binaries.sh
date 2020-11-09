@@ -365,7 +365,7 @@ index 329760d0..2c72f932 100644
  typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
  
 diff --git a/src/http/modules/ngx_http_ssl_module.c b/src/http/modules/ngx_http_ssl_module.c
-index e062b03a..fe8ed2eb 100644
+index e062b03a..2dae17d4 100644
 --- a/src/http/modules/ngx_http_ssl_module.c
 +++ b/src/http/modules/ngx_http_ssl_module.c
 @@ -301,6 +301,41 @@ static ngx_command_t  ngx_http_ssl_commands[] = {
@@ -443,11 +443,10 @@ index e062b03a..fe8ed2eb 100644
      conf->ssl.log = cf->log;
  
      if (conf->enable) {
-@@ -941,6 +995,27 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
- 
-     if (ngx_ssl_conf_commands(cf, &conf->ssl, conf->conf_commands) != NGX_OK) {
+@@ -943,6 +997,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
          return NGX_CONF_ERROR;
-+
+     }
+ 
 +    if (conf->dyn_rec_enable) {
 +        conf->ssl.dyn_rec.timeout = conf->dyn_rec_timeout;
 +        conf->ssl.dyn_rec.threshold = conf->dyn_rec_threshold;
@@ -468,9 +467,11 @@ index e062b03a..fe8ed2eb 100644
 +
 +    } else {
 +        conf->ssl.dyn_rec.timeout = 0;
-     }
- 
++    }
++
      return NGX_CONF_OK;
+ }
+ 
 diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_ssl_module.h
 index 7ab0f7ea..4485a8b8 100644
 --- a/src/http/modules/ngx_http_ssl_module.h
