@@ -121,7 +121,8 @@ git pull
 ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
 cd ..
 cd luajit2
-XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT install
+XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
+make install
 ldconfig
 cd ../lua-resty-core
 make -j $PROC_LIMIT install
@@ -1370,6 +1371,7 @@ cd php-rar && git pull && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
+git pull
 git checkout PHP-8.0
 git pull
 ./buildconf
