@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# install composer
+curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
+composer self-update
+
 # initial repository clones
 if [ ! -e libssh2 ]; then
 	git clone https://github.com/libssh2/libssh2

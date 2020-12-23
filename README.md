@@ -123,10 +123,8 @@ Install custom optimized binaries
 ./install_binaries.sh
 ```
 
-Install composer and sodium_compat for v3 hidden_service support
+Install sodium_compat for v3 hidden_service support
 ```
-curl -sSL https://github.com/composer/composer/releases/download/1.10.9/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
-composer self-update
 cd /var/www && composer install
 ```
 
