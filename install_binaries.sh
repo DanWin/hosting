@@ -6,6 +6,18 @@ curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.
 chmod +x /usr/bin/composer
 composer self-update
 
+# install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# install nodejs
+nvm install node
+
+#install yarn
+npm i -g yarn
+
 # initial repository clones
 if [ ! -e libssh2 ]; then
 	git clone https://github.com/libssh2/libssh2

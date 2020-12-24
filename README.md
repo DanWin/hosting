@@ -39,16 +39,6 @@ echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /
 apt-get update && apt-get upgrade
 ```
 
-Install nodejs + yarn
-```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm install node
-npm i -g yarn
-```
-
 Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
 ```
 deb tor://vwakviie2ienjx6t.onion/debian `lsb_release -cs` main
