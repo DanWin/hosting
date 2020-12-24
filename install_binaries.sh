@@ -2,7 +2,8 @@
 set -e
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer && chmod +x /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer
+chmod +x /usr/bin/composer
 composer self-update
 
 # initial repository clones
@@ -115,7 +116,7 @@ make distclean
 cd ..
 cd secp256k1
 ./autogen.sh
-CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-{ecdh,recovery}
+CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
 cd ..
 ldconfig
