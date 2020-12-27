@@ -1,11 +1,6 @@
 #!/bin/sh
 set -e
 
-# install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer
-chmod +x /usr/bin/composer
-composer self-update
-
 # install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
@@ -1482,3 +1477,8 @@ git reset --hard
 ln -fs /usr/bin/php8.0 /usr/bin/php
 cd ..
 ldconfig
+
+# install composer
+curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer
+chmod +x /usr/bin/composer
+composer self-update
