@@ -129,6 +129,8 @@ BINARIES_GENERAL=(
     '/usr/bin/awk'
     '/usr/bin/composer'
     '/usr/bin/gpg'
+    '/usr/bin/cut'
+    '/usr/bin/uniq'
 )
 FILES_GENERAL=(
     '/etc/hosts'
