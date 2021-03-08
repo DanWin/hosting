@@ -19,13 +19,9 @@ If you have problems resolving hostnames after this step, temporarily switch to 
 rm /etc/resolv.conf && echo "nameserver 1.1.1.1" > /etc/resolv.conf
 ```
 
-The following command will install all required packages:
+Install custom optimized binaries
 ```
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
-```
-The following command will install all required build dependencies for nginx and php:
-```
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev libenchant-dev libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c yasm zlib1g-dev
+./install_binaries.sh
 ```
 
 To get the latest mariadb version, you should follow these instructions to add the official repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
@@ -104,11 +100,6 @@ Edit `/etc/fstab` and add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` option
 mount -o remount /home
 quotacheck -cMu /home
 quotaon /home
-```
-
-Install custom optimized binaries
-```
-./install_binaries.sh
 ```
 
 Install sodium_compat for v3 hidden_service support
