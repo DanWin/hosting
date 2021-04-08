@@ -1396,7 +1396,7 @@ cd ext
 cd apcu && git pull && cd ..
 cd php-ext-brotli && git pull && cd ..
 cd imagick && git pull && cd ..
-cd php-gnupg && git pull && cd ..
+cd php-gnupg && git pull --recurse-submodules && cd ..
 cd php-rar && git pull && cd ..
 cd secp256k1-php && git pull && cd ..
 rm -rf ssh2-*
