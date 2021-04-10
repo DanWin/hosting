@@ -143,8 +143,8 @@ BINARIES_GENERAL=(
     '/usr/bin/od'
     '/usr/bin/openssl'
     '/usr/bin/paste'
-    '/usr/bin/php7.3'
     '/usr/bin/php7.4'
+    '/usr/bin/php8.0'
     '/usr/bin/pr'
     '/usr/bin/printenv'
     '/usr/bin/printf'
@@ -302,4 +302,4 @@ done
 for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
-ln -f $CHROOT_DIRECTORY/usr/bin/php7.4 $CHROOT_DIRECTORY/usr/bin/php
+ln -f $CHROOT_DIRECTORY/usr/bin/php8.0 $CHROOT_DIRECTORY/usr/bin/php
