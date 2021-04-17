@@ -86,6 +86,11 @@ tmpfs /tmp tmpfs defaults,noatime 0 0
 tmpfs /var/log/nginx tmpfs rw,user,noatime 0 0
 ```
 
+To harden the system and hide pids from non-root users, also add the following:
+```
+proc /proc proc defaults,hidepid=2 0 0
+```
+
 As time syncronisation is important, you should configure ntp servers in `/etc/systemd/timesyncd.conf` and make them match with the entries in `/etc/rc.local` iptables configuration
 
 Enable the PHP-FPM default instances and nginx:
