@@ -4,6 +4,9 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 test "$1" != "" || (echo "Need path to chroot directory" && exit 1)
 
+ALL_LIB_DIRECTORIES=()
+ALL_LIB_FILES=()
+
 ### functions
 function CHROOT_BINARY() {
     BINARY="$1"
@@ -15,31 +18,39 @@ function CHROOT_BINARY() {
     if [ "$LIB_FILES" != "" ]; then
         for LIB_FILE in $LIB_FILES; do
             LIB_DIRECTORY="$(dirname $LIB_FILE)"
-            mkdir -pm 0555 $CHROOT_DIRECTORY$LIB_DIRECTORY
-            cp $LIB_FILE $CHROOT_DIRECTORY$LIB_FILE
-            chmod 0555 $CHROOT_DIRECTORY$LIB_FILE
+            if [[ ! "${ALL_LIB_DIRECTORIES[@]}" =~ "$LIB_DIRECTORY" ]]; then
+                ALL_LIB_DIRECTORIES=(${ALL_LIB_DIRECTORIES[@]} "$LIB_DIRECTORY")
+            fi
+            if [[ ! "${ALL_LIB_FILES[@]}" =~ "$LIB_FILE" ]]; then
+                ALL_LIB_FILES=(${ALL_LIB_FILES[@]} "$LIB_FILE")
+            fi
         done
     fi
     if [ "$LDD_FILES" != "" ]; then
         for LDD_FILE in $LDD_FILES; do
             LDD_DIRECTORY="$(dirname $LDD_FILE)"
-            mkdir -pm 0555 $CHROOT_DIRECTORY${LDD_DIRECTORY}
-            cp $LDD_FILE $CHROOT_DIRECTORY$LDD_FILE
-            chmod 0555 $CHROOT_DIRECTORY$LDD_FILE
+            if [[ ! "${ALL_LIB_DIRECTORIES[@]}" =~ "$LDD_DIRECTORY" ]]; then
+                ALL_LIB_DIRECTORIES=(${ALL_LIB_DIRECTORIES[@]} "$LDD_DIRECTORY")
+            fi
+            if [[ ! "${ALL_LIB_FILES[@]}" =~ "$LDD_DIRECTORY" ]]; then
+                ALL_LIB_FILES=(${ALL_LIB_FILES[@]} "$LDD_FILE")
+            fi
         done
     fi
-    cp $BINARY $CHROOT_DIRECTORY/$BINARY
-    chmod 0555 $CHROOT_DIRECTORY/$BINARY
+    BINARY_DIRECTORY="$(dirname $BINARY)"
+    mkdir -pm 0555 $CHROOT_DIRECTORY$BINARY_DIRECTORY
+    cp $BINARY $CHROOT_DIRECTORY$BINARY
+    chmod 0555 $CHROOT_DIRECTORY$BINARY
 }
 
-function CHROOT_FILE() {
-    cp $1 $CHROOT_DIRECTORY/$1
-}
-
-function CHROOT_DIRECTORY() {
-    mkdir -pm 0555 $CHROOT_DIRECTORY/$1
-    rm -rf $CHROOT_DIRECTORY/$1/ > /dev/null 2>&1
-    cp -Rp $1 $CHROOT_DIRECTORY/$1
+function CHROOT_LIBRARIES() {
+    for DIRECTORY in ${ALL_LIB_DIRECTORIES[@]}; do
+        mkdir -pm 0555 $CHROOT_DIRECTORY$DIRECTORY
+    done
+    for FILE in ${ALL_LIB_FILES[@]}; do
+        cp $FILE $CHROOT_DIRECTORY$FILE
+        chmod 0555 $CHROOT_DIRECTORY$FILE
+    done
 }
 
 ### variables
@@ -62,6 +73,13 @@ CHROOT_DIRECTORY_STRUCTURE=(
     '/var'
     '/var/run'
     '/var/run/mysqld'
+)
+CHROOT_DIRECTORY_TO_CLEAN=(
+    '/bin'
+    '/lib'
+    '/usr/bin'
+    '/usr/lib'
+    '/usr/sbin'
 )
 BINARIES_GENERAL=(
     '/bin/bash'
@@ -250,6 +268,7 @@ test "$CHROOT_DIRECTORY" != ""
 
 if [ "$2" != "" ]; then
     CHROOT_BINARY $2
+    CHROOT_LIBRARIES
     echo "copied extra binary $2";
     exit 0;
 fi
@@ -258,6 +277,9 @@ fi
 mkdir -p $CHROOT_DIRECTORY
 chown root:www-data $CHROOT_DIRECTORY
 chmod 550 $CHROOT_DIRECTORY
+for DIRECTORY in ${CHROOT_DIRECTORY_TO_CLEAN[@]}; do
+    rm -rf $CHROOT_DIRECTORY$DIRECTORY
+done
 for DIRECTORY in ${CHROOT_DIRECTORY_STRUCTURE[@]}; do
     mkdir -pm 0555 $CHROOT_DIRECTORY$DIRECTORY
 done
@@ -276,14 +298,15 @@ test -e $CHROOT_DIRECTORY/dev/random    || mknod -m 644 $CHROOT_DIRECTORY/dev/ra
 test -e $CHROOT_DIRECTORY/dev/urandom	|| mknod -m 644 $CHROOT_DIRECTORY/dev/urandom c 1 9
 # copy general directories
 for DIRECTORY in ${DIRECTORIES_GENERAL[@]}; do
-    CHROOT_DIRECTORY $DIRECTORY
+    rm -rf $CHROOT_DIRECTORY$DIRECTORY
+    cp -Rp $DIRECTORY $CHROOT_DIRECTORY$DIRECTORY
 done
 echo "export HOME=/" > $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 echo "export HISTFILE=/.bash_history" >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 echo 'export PATH="$PATH:/.composer/vendor/bin"' >> $CHROOT_DIRECTORY/etc/profile.d/hosting.sh
 # copy general files
 for FILE in ${FILES_GENERAL[@]}; do
-    CHROOT_FILE $FILE
+    cp $FILE $CHROOT_DIRECTORY$FILE
 done
 ### copy shared libraries and binaries
 # general
@@ -302,4 +325,5 @@ done
 for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
+CHROOT_LIBRARIES
 ln -f $CHROOT_DIRECTORY/usr/bin/php8.0 $CHROOT_DIRECTORY/usr/bin/php
