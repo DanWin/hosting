@@ -28,7 +28,6 @@ To get the latest mariadb version, you should follow these instructions to add t
 
 Add torproject to our repositories:
 ```
-sudo apt install -y apt-transport-tor
 curl --socks5-hostname 127.0.0.1:9050 -sSL http://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc > /etc/apt/trusted.gpg.d/torproject.asc
 echo "deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/ `lsb_release -cs` main" >> /etc/apt/sources.list
 apt-get update && apt-get upgrade
