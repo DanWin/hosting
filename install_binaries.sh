@@ -1412,6 +1412,67 @@ make distclean
 git reset --hard
 git checkout PHP-7.4
 git pull
+cat <<EOF | git apply -
+diff --git a/ext/enchant/config.m4 b/ext/enchant/config.m4
+index 6c8dd726ce..eccaedee14 100644
+--- a/ext/enchant/config.m4
++++ b/ext/enchant/config.m4
+@@ -4,26 +4,36 @@ PHP_ARG_WITH([enchant],
+     [Include Enchant support])])
+ 
+ if test "\$PHP_ENCHANT" != "no"; then
+-  PKG_CHECK_MODULES([ENCHANT], [enchant])
++  PKG_CHECK_MODULES([ENCHANT2], [enchant-2], [found_enchant_2=yes], [found_enchant_2=no])
+ 
+-  PHP_EVAL_INCLINE(\$ENCHANT_CFLAGS)
+-  PHP_EVAL_LIBLINE(\$ENCHANT_LIBS, ENCHANT_SHARED_LIBADD)
++  if test "\$found_enchant_2" = "yes"; then
+ 
+-  AC_DEFINE(HAVE_ENCHANT, 1, [ ])
++  PHP_EVAL_INCLINE(\$ENCHANT2_CFLAGS)
++  PHP_EVAL_LIBLINE(\$ENCHANT2_LIBS, ENCHANT_SHARED_LIBADD)
++
++  else
++    AC_MSG_WARN([libenchant-2 not found trying with old libenchant])
++    PKG_CHECK_MODULES([ENCHANT], [enchant >= 1.4.2])
++
++    PHP_EVAL_INCLINE(\$ENCHANT_CFLAGS)
++    PHP_EVAL_LIBLINE(\$ENCHANT_LIBS, ENCHANT_SHARED_LIBADD)
+ 
+-  PHP_CHECK_LIBRARY(enchant, enchant_get_version,
+-  [
+-    AC_DEFINE(HAVE_ENCHANT_GET_VERSION, 1, [ ])
+-  ], [ ], [
+-    \$ENCHANT_LIBS
+-  ])
+-
+-  PHP_CHECK_LIBRARY(enchant, enchant_broker_set_param,
+-  [
+-    AC_DEFINE(HAVE_ENCHANT_BROKER_SET_PARAM, 1, [ ])
+-  ], [ ], [
+-    \$ENCHANT_LIBS
+-  ])
++    PHP_CHECK_LIBRARY(enchant, enchant_get_version,
++    [
++      AC_DEFINE(HAVE_ENCHANT_GET_VERSION, 1, [ enchant_get_version since 1.6.0 ])
++    ], [ ], [
++      \$ENCHANT_LIBS
++    ])
++
++    PHP_CHECK_LIBRARY(enchant, enchant_broker_set_param,
++    [
++      AC_DEFINE(HAVE_ENCHANT_BROKER_SET_PARAM, 1, [ enchant_broker_set_param since 1.5.0 and removed in 2.x ])
++    ], [ ], [
++      \$ENCHANT_LIBS
++    ])
++  fi
++
++  AC_DEFINE(HAVE_ENCHANT, 1, [ ])
+ 
+   PHP_NEW_EXTENSION(enchant, enchant.c, \$ext_shared)
+   PHP_SUBST(ENCHANT_SHARED_LIBADD)
+EOF
+
 ./buildconf
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/7.4/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/7.4 --program-suffix=7.4 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --with-secp256k1
 make -j $PROC_LIMIT install
