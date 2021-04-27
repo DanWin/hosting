@@ -33,10 +33,9 @@ echo "deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/t
 apt-get update && apt-get upgrade
 ```
 
-Note that both, debian and the torproject have hidden service package archives, so you may want to edit /etc/apt/sources.list to load from those instead:
+Note that debian also has an onion service package archive, so you may want to edit /etc/apt/sources.list to load from there instead:
 ```
 deb tor://vwakviie2ienjx6t.onion/debian `lsb_release -cs` main
-deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org `lsb_release -cs` main
 ```
 
 Copy (and modify according to your needs) the site files in `var/www` to `/var/www` and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
@@ -169,8 +168,3 @@ systemctl enable hosting-del.timer && systemctl enable hosting.timer
 ```
 
 Final step is to reboot wait about 5 minutes for all services to start and check if everything is working by creating a test account.
-
-Live demo:
-----------
-
-If you want to see the setup in action or create your own site on my server, you can visit my [Tor hidden service](http://dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion) or via [my clearnet proxy](https://hosting.danwin1210.me) if you don't have Tor installed.
