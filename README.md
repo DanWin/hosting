@@ -131,7 +131,7 @@ mysql phpmyadmin < /var/www/html/phpmyadmin/sql/create_tables.sql
 
 For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
 ```
-cd /var/www/html/ && svn checkout https://svn.code.sf.net/p/squirrelmail/code/trunk/squirrelmail && cd squirrelmail && ./configure && mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach && chown www-data:www-data -R /var/www/data
+cd /var/www/html/ && git clone https://github.com/RealityRipple/squirrelmail && cd squirrelmail && mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach && chown www-data:www-data -R /var/www/data && ./configure
 ```
 
 Once it is downloaded, it will ask you for configuration. Things to change are:

@@ -85,7 +85,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/7.4-squirrelmail;
+			fastcgi_pass unix:/var/run/php/8.0-squirrelmail;
 		}
 	}
 	location /phpmyadmin {
