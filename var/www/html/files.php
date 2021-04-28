@@ -10,7 +10,7 @@ if(empty($_SESSION['sftp_pass'])){
 	exit;
 }
 $ssh=ssh2_connect('127.0.0.1') or die ('No Connection to SFTP server!');
-if(@!ssh2_auth_password($ssh, $user[system_account], $_SESSION['sftp_pass'])){
+if(@!ssh2_auth_password($ssh, $user['system_account'], $_SESSION['sftp_pass'])){
 	send_login();
 	exit;
 }
