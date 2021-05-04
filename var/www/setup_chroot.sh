@@ -250,6 +250,7 @@ FILES_GENERAL=(
     '/usr/share/bash-completion/completions/tar'
     '/usr/share/bash-completion/completions/typeset'
     '/usr/share/bash-completion/completions/wget'
+    '/etc/ld.so.conf'
 )
 DIRECTORIES_GENERAL=(
     '/usr/lib/git-core'
@@ -265,6 +266,7 @@ DIRECTORIES_GENERAL=(
     '/usr/share/terminfo'
     '/usr/lib/php'
     '/etc/profile.d'
+    '/etc/ld.so.conf.d'
 )
 ### test variables/parameters
 test "$CHROOT_DIRECTORY" != ""
@@ -329,4 +331,5 @@ for BINARY in /usr/lib/php/*/*.so; do
     CHROOT_BINARY $BINARY
 done
 CHROOT_LIBRARIES
+ldconfig -r $CHROOT_DIRECTORY
 ln -f $CHROOT_DIRECTORY/usr/bin/php8.0 $CHROOT_DIRECTORY/usr/bin/php
