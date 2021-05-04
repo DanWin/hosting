@@ -274,6 +274,7 @@ test "$CHROOT_DIRECTORY" != ""
 if [ "$2" != "" ]; then
     CHROOT_BINARY $2
     CHROOT_LIBRARIES
+    ldconfig -r $CHROOT_DIRECTORY
     echo "copied extra binary $2";
     exit 0;
 fi
