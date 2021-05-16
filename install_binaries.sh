@@ -3,9 +3,9 @@ set -e
 
 # install all required packages
 DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool redis rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
 # build dependencies
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbz2-dev libbrotli-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c yasm zlib1g-dev
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
 
 # install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
@@ -35,6 +35,12 @@ fi
 if [ ! -e ImageMagick ]; then
 	git clone https://github.com/ImageMagick/ImageMagick
 fi
+if [ ! -e luajit2 ]; then
+	git clone https://github.com/openresty/luajit2
+fi
+if [ ! -e rspamd ]; then
+	git clone --recurse-submodules https://github.com/rspamd/rspamd.git
+fi
 if [ ! -e nginx ]; then
 	git clone https://github.com/nginx/nginx
 fi
@@ -44,9 +50,6 @@ if [ ! -e ngx_brotli ]; then
 fi
 if [ ! -e ngx_devel_kit ]; then
 	git clone https://github.com/vision5/ngx_devel_kit
-fi
-if [ ! -e luajit2 ]; then
-	git clone https://github.com/openresty/luajit2
 fi
 if [ ! -e lua-resty-core ]; then
 	git clone https://github.com/openresty/lua-resty-core
@@ -106,15 +109,18 @@ autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
 make distclean
+cd ../aom
+git pull
 cd ..
 mkdir -p aom_build
 cd aom_build
-cmake ../aom -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0 -DENABLE_DOCS=0
+cmake ../aom -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0 -DENABLE_DOCS=0 -DCMAKE_BUILD_TYPE=Release
 make -j $PROC_LIMIT install
 cd ..
-rm -r aom_build
+rm -rf aom_build
 ldconfig
 cd libheif
+git pull
 ./autogen.sh
 CFLAGS="-O3 -march=native -mtune=native" CXXFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
@@ -126,18 +132,29 @@ git pull
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
-cd ..
-cd secp256k1
+cd ../secp256k1
 ./autogen.sh
 CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
-cd ..
+cd ../luajit2
+git pull
+XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
+make install
 ldconfig
+cd ../rspamd
+git pull --recurse-submodules
+cd ..
+mkdir -p rspamd_build
+cd rspamd_build
+cmake ../rspamd -DENABLE_LUAJIT=ON -DCMAKE_BUILD_TYPE=Release
+make -j $PROC_LIMIT
+make install
+cd ..
+rm -rf rspamd_build
 cd nginx
 git pull
 cd ngx_brotli && git pull && cd ..
 cd ngx_devel_kit && git pull && cd ..
-cd luajit2 && git pull && cd ..
 cd lua-resty-core && git pull && cd ..
 cd lua-resty-lrucache && git pull && cd ..
 cd lua-nginx-module && git pull && cd ..
@@ -149,11 +166,6 @@ cd libatomic_ops
 git pull
 ./autogen.sh
 ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
-cd ..
-cd luajit2
-XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
-make install
-ldconfig
 cd ../lua-resty-core
 make -j $PROC_LIMIT install
 cd ../lua-resty-lrucache
