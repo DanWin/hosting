@@ -1,0 +1,32 @@
+[Unit]
+Description=Razorfy Service
+Requires=network.target local-fs.target time-sync.target
+
+[Service]
+Type=simple
+User=razorfy
+Group=razorfy
+
+EnvironmentFile=/etc/razorfy.conf
+ExecStart=/usr/local/bin/razorfy.pl
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill $MAINPID
+
+Restart=always
+RestartSec=3
+
+PIDFile=/var/run/razor.pid
+TimeoutStopSec=30
+
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+PrivateUsers=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

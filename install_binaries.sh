@@ -3,7 +3,7 @@ set -e
 
 # install all required packages
 DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool redis rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion bind9 brotli bzip2 ca-certificates clamav-daemon clamav-freshclam clamav-milter curl dovecot-imapd dovecot-pop3d git dnsmasq hardlink haveged iptables libio-socket-ip-perl libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool razor redis rsync ssh subversion tor unzip vim wget xz-utils zip zopfli
 # build dependencies
 DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
 
@@ -1746,6 +1746,15 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.0.8/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.0.13/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
+
+#rspamd user
+id -u _rspamd >/dev/null 2>&1 ||useradd -M -r -s /bin/false -d /var/lib/rspamd _rspamd
+mkdir -p /var/lib/rspamd /var/log/rspamd
+chown _rspamd: /var/lib/rspamd /var/log/rspamd
+
+#razorfy
+id -u razorfy >/dev/null 2>&1 || useradd -M -r -s /bin/false razorfy
+cp razorfy.pl /usr/local/bin/

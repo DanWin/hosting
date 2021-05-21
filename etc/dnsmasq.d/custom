@@ -1,5 +1,6 @@
 interface=lo
-server=127.0.0.1#54
+server=127.0.0.1#55
+server=/.onion/127.0.0.1#54
 no-resolv
 cache-size=10000
-
+dnssec

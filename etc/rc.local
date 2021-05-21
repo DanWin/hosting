@@ -23,15 +23,12 @@ ip6tables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 #allow tor traffic
-for tor in debian-tor _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s; do(
+for tor in bind9 debian-tor _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s; do(
 iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
 ip6tables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
 )done
-#redirect all outgoing DNS querries to our tor
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
-ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
 #allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
 for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
 iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
@@ -58,6 +55,9 @@ for clearnet in ::1; do(
 ip6tables -t nat -A OUTPUT -d $clearnet -j RETURN;
 ip6tables -A OUTPUT -d $clearnet -j ACCEPT;
 ) done
+#redirect all outgoing DNS querries to our tor
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
 #redirect everything else
 iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
 ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
