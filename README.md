@@ -40,7 +40,7 @@ deb tor://vwakviie2ienjx6t.onion/debian `lsb_release -cs` main
 
 Copy (and modify according to your needs) the site files in `var/www` to `/var/www` and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
 ```
-systemctl daemon-reload && service tor restart && service dnsmasq restart
+systemctl daemon-reload && systemctl restart bind9.service && systemctl restart dnsmasq.service && systemctl restart tor@default.service
 ```
 
 Now there should be an onion domain in `/var/lib/tor/hidden_service/hostname`:
