@@ -1757,4 +1757,3 @@ chown _rspamd: /var/lib/rspamd /var/log/rspamd
 
 #razorfy
 id -u razorfy >/dev/null 2>&1 || useradd -M -r -s /bin/false razorfy
-cp razorfy.pl /usr/local/bin/
