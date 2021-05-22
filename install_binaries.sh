@@ -1752,8 +1752,8 @@ composer self-update
 
 #rspamd user
 id -u _rspamd >/dev/null 2>&1 ||useradd -M -r -s /bin/false -d /var/lib/rspamd _rspamd
-mkdir -p /var/lib/rspamd /var/log/rspamd
-chown _rspamd: /var/lib/rspamd /var/log/rspamd
+mkdir -p /var/lib/rspamd
+chown _rspamd: /var/lib/rspamd
 
 #razorfy
 id -u razorfy >/dev/null 2>&1 || useradd -M -r -s /bin/false razorfy
