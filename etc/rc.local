@@ -41,12 +41,9 @@ ip6tables -A OUTPUT -d ::1 -p udp --dport 53 -m owner --gid-owner www-data -j AC
 #reject all other local communication
 iptables -A OUTPUT -d 127.0.0.0/8 -m owner --gid-owner www-data -j REJECT
 ip6tables -A OUTPUT -d ::1 -m owner --gid-owner www-data -j REJECT
-#redirect all outgoing DNS querries to our dns server
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
-ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
-#redirect all other TCP traffic through tor
-iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
-ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+#redirect all hosting user TCP traffic through tor
+iptables -t nat -A OUTPUT -m owner --gid-owner www-data -p tcp --syn -j REDIRECT --to-ports 9040
+ip6tables -t nat -A OUTPUT -m owner --gid-owner www-data -p tcp --syn -j REDIRECT --to-ports 9040
 #reject all other hosting user traffic
 iptables -A OUTPUT -m owner --gid-owner www-data -j REJECT
 ip6tables -A OUTPUT -m owner --gid-owner www-data -j REJECT
@@ -73,6 +70,12 @@ for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
 iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
 iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
 )done
+#redirect all outgoing DNS querries to our dns server
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+#redirect all other TCP traffic through tor
+iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
 #reject everything else
 iptables -A OUTPUT -j REJECT
 ip6tables -A OUTPUT -j REJECT
