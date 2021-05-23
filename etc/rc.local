@@ -29,12 +29,7 @@ ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
 iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
 ip6tables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
 )done
-#allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
-for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
-iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
-iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
-)done
-#restrict local communication for php and webserver
+#restrict local communication for hosting users
 #allowed tcp ports
 for port in 3306 9040 9050 110 143 25 22 53; do(
 iptables -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT;
@@ -43,9 +38,24 @@ ip6tables -A OUTPUT -d ::1 -p tcp --dport $port -m owner --gid-owner www-data -j
 #accept DNS
 iptables -A OUTPUT -d 127.0.0.0/8 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
 ip6tables -A OUTPUT -d ::1 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
-#REJECT all others
+#reject all other local communication
 iptables -A OUTPUT -d 127.0.0.0/8 -m owner --gid-owner www-data -j REJECT
 ip6tables -A OUTPUT -d ::1 -m owner --gid-owner www-data -j REJECT
+#redirect all outgoing DNS querries to our dns server
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+#redirect all other TCP traffic through tor
+iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
+#reject all other hosting user traffic
+iptables -A OUTPUT -m owner --gid-owner www-data -j REJECT
+ip6tables -A OUTPUT -m owner --gid-owner www-data -j REJECT
+
+#allow local communication
+iptables -A OUTPUT -o lo -j ACCEPT
+ip6tables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+ip6tables -A INPUT -i lo -j ACCEPT
 #unrestricted access to these IPs
 for clearnet in 127.0.0.0/8; do(
 iptables -t nat -A OUTPUT -d $clearnet -j RETURN;
@@ -55,17 +65,14 @@ for clearnet in ::1; do(
 ip6tables -t nat -A OUTPUT -d $clearnet -j RETURN;
 ip6tables -A OUTPUT -d $clearnet -j ACCEPT;
 ) done
-#redirect all outgoing DNS querries to our tor
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
-ip6tables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
-#redirect everything else
-iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
-ip6tables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports 9040
-#allow local communication
-iptables -A OUTPUT -o lo -j ACCEPT
-ip6tables -A OUTPUT -o lo -j ACCEPT
-iptables -A INPUT -i lo -j ACCEPT
-ip6tables -A INPUT -i lo -j ACCEPT
+#accet IPv6 ICMP packages required for SLAAC
+ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
+ip6tables -A OUTPUT -p ipv6-icmp -j ACCEPT
+#allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
+for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
+iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
+iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
+)done
 #reject everything else
 iptables -A OUTPUT -j REJECT
 ip6tables -A OUTPUT -j REJECT
