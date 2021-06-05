@@ -104,13 +104,15 @@ cd ../..
 export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) < nproc) ? ($2 + 1) : nproc;}'`
 #start build
 cd libssh2
-git pull
+git fetch --all
+git checkout a88a727c2a1840f979b34f12bcce3d55dcd7ea6e
 autoreconf -fi
 CFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
 make distclean
 cd ../aom
-git pull
+git fetch --all
+git checkout v3.1.0
 cd ..
 mkdir -p aom_build
 cd aom_build
@@ -120,7 +122,8 @@ cd ..
 rm -rf aom_build
 ldconfig
 cd libheif
-git pull
+git fetch --all
+git checkout v1.12.0
 ./autogen.sh
 CFLAGS="-O3 -march=native -mtune=native" CXXFLAGS="-O3 -march=native -mtune=native" ./configure
 make -j $PROC_LIMIT install
@@ -128,21 +131,26 @@ make distclean
 cd ..
 ldconfig
 cd ImageMagick
-git pull
+git fetch --all
+git checkout 7.0.11-14
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
 cd ../secp256k1
+git fetch --all
+git checkout 50f33677122fed79dedb05e8046b2fea93496201
 ./autogen.sh
 CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
 cd ../luajit2
-git pull
+git fetch --all
+git checkout v2.1-20210510
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
 make install
 ldconfig
 cd ../rspamd
-git pull --recurse-submodules
+git fetch --all --recurse-submodules
+git checkout 2.7 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
@@ -152,25 +160,30 @@ make install
 cd ..
 rm -rf rspamd_build
 cd nginx
-git pull
-cd ngx_brotli && git pull && cd ..
-cd ngx_devel_kit && git pull && cd ..
-cd lua-resty-core && git pull && cd ..
-cd lua-resty-lrucache && git pull && cd ..
-cd lua-nginx-module && git pull && cd ..
-cd stream-lua-nginx-module && git pull && cd ..
-cd lua-resty-mysql && git pull && cd ..
-cd rds-json-nginx-module && git pull && cd ..
-cd set-misc-nginx-module && git pull && cd ..
+git fetch --all
+git checkout release-1.21.0
+cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
+cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
+cd lua-nginx-module && git fetch --all && git checkout v0.10.20rc1 && cd ..
+cd stream-lua-nginx-module && git fetch --all && git checkout v0.0.10rc2 && cd ..
+cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
+cd set-misc-nginx-module && git fetch --all && git checkout v0.32 && cd ..
 cd libatomic_ops
-git pull
+git fetch --all
+git checkout v7.6.10
 ./autogen.sh
 ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
 cd ../lua-resty-core
+git fetch --all
+git checkout v0.1.22rc1
 make -j $PROC_LIMIT install
 cd ../lua-resty-lrucache
+git fetch --all
+git checkout v0.11rc1
 make -j $PROC_LIMIT install
 cd ../lua-resty-mysql
+git fetch --all
+git checkout v0.24rc1
 make -j $PROC_LIMIT install
 cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
@@ -1405,25 +1418,23 @@ cd ..
 ln -fs /usr/include/qdbm/depot.h /usr/include/depot.h
 cd php-src
 cd ext
-cd apcu && git pull && cd ..
-cd php-ext-brotli && git pull && cd ..
-cd imagick && git pull && cd ..
-cd php-gnupg && git pull --recurse-submodules && cd ..
-cd php-rar && git pull && cd ..
-cd secp256k1-php && git pull && cd ..
+cd apcu && git fetch --all && git checkout v5.1.20 && cd ..
+cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
+cd imagick && git fetch --all && git checkout 212de567ef514e2a07f0c55502fe7ceb66ece6a7 && cd ..
+cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.0 --recurse-submodules && cd ..
+cd php-rar && git fetch --all && git checkout 488dd3caaa9554b420da8d5ddd7438bb8c475a9c && cd ..
+cd secp256k1-php && git fetch --all && git checkout a1fef29baabc6de9540ada175b967068ada1f48c && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
-git pull
-git checkout PHP-8.0
-git pull
+git fetch --all
+git checkout PHP-8.0.7
 ./buildconf
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.0/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.0 --program-suffix=8.0 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout PHP-7.4
-git pull
+git checkout PHP-7.4.20
 cat <<EOF | git apply -
 diff --git a/ext/enchant/config.m4 b/ext/enchant/config.m4
 index 6c8dd726ce..eccaedee14 100644
@@ -1746,7 +1757,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.0.13/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.1.1/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
