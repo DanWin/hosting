@@ -400,8 +400,8 @@ index 329760d0..2c72f932 100644
  
  
 @@ -101,6 +109,11 @@ struct ngx_ssl_connection_s {
-     unsigned                    no_wait_shutdown:1;
      unsigned                    no_send_shutdown:1;
+     unsigned                    shutdown_without_free:1;
      unsigned                    handshake_buffer_set:1;
 +
 +    ngx_ssl_dyn_rec_t           dyn_rec;
