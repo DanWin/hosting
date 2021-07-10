@@ -112,7 +112,7 @@ make -j $PROC_LIMIT install
 make distclean
 cd ../aom
 git fetch --all
-git checkout v3.1.0
+git checkout v3.1.1
 cd ..
 mkdir -p aom_build
 cd aom_build
@@ -161,7 +161,7 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.21.0
+git checkout release-1.21.1
 cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
 cd lua-nginx-module && git fetch --all && git checkout v0.10.20rc1 && cd ..
@@ -1428,13 +1428,13 @@ rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
-git checkout PHP-8.0.7
+git checkout PHP-8.0.8
 ./buildconf
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.0/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.0 --program-suffix=8.0 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout PHP-7.4.20
+git checkout PHP-7.4.21
 cat <<EOF | git apply -
 diff --git a/ext/enchant/config.m4 b/ext/enchant/config.m4
 index 6c8dd726ce..eccaedee14 100644
