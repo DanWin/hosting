@@ -1420,7 +1420,7 @@ cd php-src
 cd ext
 cd apcu && git fetch --all && git checkout v5.1.20 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
-cd imagick && git fetch --all && git checkout 212de567ef514e2a07f0c55502fe7ceb66ece6a7 && cd ..
+cd imagick && git fetch --all && git checkout 3.5.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.0 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git checkout 488dd3caaa9554b420da8d5ddd7438bb8c475a9c && cd ..
 cd secp256k1-php && git fetch --all && git checkout a1fef29baabc6de9540ada175b967068ada1f48c && cd ..
