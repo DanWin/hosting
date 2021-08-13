@@ -24,18 +24,22 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 #allow tor traffic
 for tor in bind debian-tor _tor-a _tor-b _tor-c _tor-d _tor-e _tor-f _tor-g _tor-h _tor-i _tor-j _tor-k _tor-l _tor-m _tor-n _tor-o _tor-p _tor-q _tor-r _tor-s; do(
-iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
-ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN;
-iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
-ip6tables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT;
+iptables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN
+ip6tables -t nat -A OUTPUT -m owner --uid-owner $tor -j RETURN
+iptables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT
+ip6tables -A OUTPUT -m owner --uid-owner $tor -j ACCEPT
 )done
 #restrict local communication for hosting users
 #allowed tcp ports
 for port in 3306 9040 9050 110 143 25 22 53; do(
-iptables -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT;
+iptables -t nat -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j RETURN
+ip6tables -t nat -A OUTPUT -d ::1 -p tcp --dport $port -m owner --gid-owner www-data -j RETURN
+iptables -A OUTPUT -d 127.0.0.0/8 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT
 ip6tables -A OUTPUT -d ::1 -p tcp --dport $port -m owner --gid-owner www-data -j ACCEPT
 )done
 #accept DNS
+iptables -t nat -A OUTPUT -d 127.0.0.0/8 -p udp --dport 53 -m owner --gid-owner www-data -j RETURN
+ip6tables -t nat -A OUTPUT -d ::1 -p udp --dport 53 -m owner --gid-owner www-data -j RETURN
 iptables -A OUTPUT -d 127.0.0.0/8 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
 ip6tables -A OUTPUT -d ::1 -p udp --dport 53 -m owner --gid-owner www-data -j ACCEPT
 #reject all other local communication
@@ -55,19 +59,19 @@ iptables -A INPUT -i lo -j ACCEPT
 ip6tables -A INPUT -i lo -j ACCEPT
 #unrestricted access to these IPs
 for clearnet in 127.0.0.0/8; do(
-iptables -t nat -A OUTPUT -d $clearnet -j RETURN;
-iptables -A OUTPUT -d $clearnet -j ACCEPT;
+iptables -t nat -A OUTPUT -d $clearnet -j RETURN
+iptables -A OUTPUT -d $clearnet -j ACCEPT
 ) done
 for clearnet in ::1; do(
-ip6tables -t nat -A OUTPUT -d $clearnet -j RETURN;
-ip6tables -A OUTPUT -d $clearnet -j ACCEPT;
+ip6tables -t nat -A OUTPUT -d $clearnet -j RETURN
+ip6tables -A OUTPUT -d $clearnet -j ACCEPT
 ) done
 #accet IPv6 ICMP packages required for SLAAC
 ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
 ip6tables -A OUTPUT -p ipv6-icmp -j ACCEPT
 #allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
 for clearnet in 88.191.68.178 51.15.142.60 51.255.197.148 91.121.181.58; do(
-iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN;
+iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN
 iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
 )done
 #redirect all outgoing DNS querries to our dns server
@@ -82,7 +86,7 @@ ip6tables -A OUTPUT -j REJECT
 
 #uncomment to be able to directly connect with your own IP and allow no one else
 #for clearnet in YOUR_IP_HERE;do(
-#iptables -A INPUT -s $clearnet -j ACCEPT;
+#iptables -A INPUT -s $clearnet -j ACCEPT
 #)done
 #drop everything else (uncomment after adding your own IP above)
 #iptables -A INPUT -j DROP
