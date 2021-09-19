@@ -132,7 +132,7 @@ cd ..
 ldconfig
 cd ImageMagick
 git fetch --all
-git checkout 7.1.0-6
+git checkout 7.1.0-8
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -170,7 +170,7 @@ cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
 cd set-misc-nginx-module && git fetch --all && git checkout v0.32 && cd ..
 cd libatomic_ops
 git fetch --all
-git checkout v7.6.10
+git checkout v7.6.12
 ./autogen.sh
 ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
 cd ../lua-resty-core
@@ -1757,7 +1757,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.1.6/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.1.8/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
