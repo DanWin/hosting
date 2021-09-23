@@ -150,7 +150,9 @@ make install
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 2.7 --recurse-submodules
+git checkout 3.0 --recurse-submodules
+# fix bundled doctest causing compile issues
+git checkout origin/master contrib/doctest/
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
