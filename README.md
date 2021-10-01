@@ -10,7 +10,7 @@ The configuration was tested with a standard Debian buster and Ubuntu 18.04 LTS 
 
 Uninstall packages that may interfere with this setup:
 ```
-DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* resolvconf eatmydata exim4* imagemagick-6-common mysql-client* mysql-server* nginx* libnginx-mod* php7* && systemctl disable systemd-resolved.service && systemctl stop systemd-resolved.service
+DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* dnsmasq* eatmydata exim4* imagemagick-6-common mysql-client* mysql-server* nginx* libnginx-mod* php7* resolvconf && systemctl disable systemd-resolved.service && systemctl stop systemd-resolved.service
 ```
 
 If you have problems resolving hostnames after this step, temporarily switch to a public nameserver like 1.1.1.1 (from CloudFlare) or 8.8.8.8 (from Google)
@@ -40,7 +40,7 @@ deb tor://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian 
 
 Copy (and modify according to your needs) the site files in `var/www` to `/var/www`, `usr/local` to `/usr/local`  and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
 ```
-systemctl daemon-reload && systemctl restart bind9.service && systemctl restart dnsmasq.service && systemctl restart tor@default.service
+systemctl daemon-reload && systemctl restart bind9.service && systemctl restart tor@default.service
 ```
 
 Now there should be an onion domain in `/var/lib/tor/hidden_service/hostname`:
