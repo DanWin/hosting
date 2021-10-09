@@ -11,6 +11,7 @@ HiddenServiceNumIntroductionPoints 5
 HiddenServiceEnableIntroDoSDefense 1
 HiddenServiceEnableIntroDoSRatePerSec 10
 HiddenServiceEnableIntroDoSBurstPerSec 100
+HiddenServiceExportCircuitID haproxy
 
 ClientUseIPv6 1
 ClientUseIPv4 1

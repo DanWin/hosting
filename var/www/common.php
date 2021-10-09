@@ -59,7 +59,7 @@ opcache.jit_buffer_size = 64M
 session.use_strict_mode = 1
 ';
 const NGINX_DEFAULT = 'server {
-	listen unix:/var/run/nginx/suspended backlog=2048;
+	listen unix:/var/run/nginx/suspended backlog=2048 proxy_protocol;
 	add_header Content-Type text/html;
 	location / {
 		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
@@ -67,7 +67,7 @@ const NGINX_DEFAULT = 'server {
 }
 server {
 	listen [::]:80 ipv6only=off fastopen=100 backlog=2048 default_server;
-	listen unix:/var/run/nginx.sock backlog=2048 default_server;
+	listen unix:/var/run/nginx.sock backlog=2048 proxy_protocol default_server;
 	root /var/www/html;
 	index index.php;
 	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
@@ -396,6 +396,7 @@ HiddenServiceNumIntroductionPoints $tmp[num_intros]
 HiddenServiceVersion $tmp[version]
 HiddenServiceMaxStreamsCloseCircuit 1
 HiddenServiceMaxStreams $tmp[max_streams]
+HiddenServiceExportCircuitID haproxy
 ";
 		if($tmp['version']=='3'){
 			$torrc.="HiddenServiceEnableIntroDoSDefense 1
@@ -541,7 +542,7 @@ function rewrite_nginx_config(){
 		}
 		$autoindex = $tmp['autoindex'] ? 'on' : 'off';
 		$nginx.="server {
-	listen unix:/var/run/nginx/$tmp[system_account];
+	listen unix:/var/run/nginx/$tmp[system_account] proxy_protocol;
 	root /home/$tmp[system_account]/www;
 	server_name $tmp[onion].onion *.$tmp[onion].onion;
 	access_log /var/log/nginx/access_$tmp[system_account].log custom buffer=4k flush=1m;
