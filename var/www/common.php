@@ -67,7 +67,7 @@ const NGINX_DEFAULT = 'server {
 }
 server {
 	listen [::]:80 ipv6only=off fastopen=100 backlog=2048 default_server;
-	listen unix:/var/run/nginx.sock backlog=2048 proxy_protocol default_server;
+	listen unix:/var/run/nginx.sock backlog=2048 default_server;
 	root /var/www/html;
 	index index.php;
 	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
@@ -397,9 +397,7 @@ HiddenServiceVersion $tmp[version]
 HiddenServiceMaxStreamsCloseCircuit 1
 HiddenServiceMaxStreams $tmp[max_streams]
 HiddenServiceExportCircuitID haproxy
-";
-		if($tmp['version']=='3'){
-			$torrc.="HiddenServiceEnableIntroDoSDefense 1
+HiddenServiceEnableIntroDoSDefense 1
 HiddenServiceEnableIntroDoSRatePerSec 10
 HiddenServiceEnableIntroDoSBurstPerSec 100
 ";
