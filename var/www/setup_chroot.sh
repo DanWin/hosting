@@ -2,7 +2,7 @@
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-test "$1" != "" || (echo "Need path to chroot directory" && exit 1)
+test "$1" != "" || { echo "Need path to chroot directory"; exit 1; }
 
 ALL_LIB_DIRECTORIES=()
 ALL_LIB_FILES=()
