@@ -401,7 +401,6 @@ HiddenServiceEnableIntroDoSDefense 1
 HiddenServiceEnableIntroDoSRatePerSec 10
 HiddenServiceEnableIntroDoSBurstPerSec 100
 ";
-		}
 		$torrc.="HiddenServicePort 80 unix:/var/run/nginx/$socket\n";
 		if($tmp['enable_smtp']){
 			$torrc.="HiddenServicePort 25\n";
