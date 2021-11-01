@@ -164,8 +164,8 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec('UPDATE disk_quota set updated=1;');
 		$db->exec("ALTER TABLE users ADD pgp_key text COLLATE 'latin1_bin' NULL, ADD pgp_verified tinyint(1) NOT NULL DEFAULT '0', ADD tfa tinyint(1) NOT NULL DEFAULT '0';");
 	}
-	if($version<19){
-		$db->exec("ALTER TABLE onions max_streams tinyint(3) unsigned NOT NULL DEFAULT '6';");
+	if($version<20){
+		$db->exec("ALTER TABLE onions CHANGE max_streams max_streams tinyint(3) unsigned NOT NULL DEFAULT '6';");
 	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
