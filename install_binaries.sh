@@ -164,7 +164,7 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.21.3
+git checkout release-1.21.4
 cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
 cd lua-nginx-module && git fetch --all && git checkout v0.10.20rc1 && cd ..
