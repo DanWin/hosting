@@ -151,9 +151,7 @@ make install
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 3.0 --recurse-submodules
-# fix bundled doctest causing compile issues
-git checkout origin/master contrib/doctest/
+git checkout 3.1 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
@@ -1760,7 +1758,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.1.11/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.1.12/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
