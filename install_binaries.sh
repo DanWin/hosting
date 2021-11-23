@@ -133,7 +133,7 @@ cd ..
 ldconfig
 cd ImageMagick
 git fetch --all
-git checkout 7.1.0-15
+git checkout 7.1.0-16
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
