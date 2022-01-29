@@ -162,13 +162,13 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.21.4
+git checkout release-1.21.6
 cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
 cd lua-nginx-module && git fetch --all && git checkout v0.10.20rc1 && cd ..
-cd stream-lua-nginx-module && git fetch --all && git checkout v0.0.10rc2 && cd ..
+cd stream-lua-nginx-module && git fetch --all && git checkout v0.0.11rc1 && cd ..
 cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
-cd set-misc-nginx-module && git fetch --all && git checkout v0.32 && cd ..
+cd set-misc-nginx-module && git fetch --all && git checkout v0.33 && cd ..
 cd libatomic_ops
 git fetch --all
 git checkout v7.6.12
@@ -176,15 +176,15 @@ git checkout v7.6.12
 ln -sf .libs/libatomic_ops.a src/libatomic_ops.a
 cd ../lua-resty-core
 git fetch --all
-git checkout v0.1.22rc1
+git checkout v0.1.23rc1
 make -j $PROC_LIMIT install
 cd ../lua-resty-lrucache
 git fetch --all
-git checkout v0.11rc1
+git checkout v0.11
 make -j $PROC_LIMIT install
 cd ../lua-resty-mysql
 git fetch --all
-git checkout v0.24rc1
+git checkout v0.25rc1
 make -j $PROC_LIMIT install
 cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
@@ -1421,8 +1421,8 @@ cd php-src
 cd ext
 cd apcu && git fetch --all && git checkout v5.1.21 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
-cd imagick && git fetch --all && git checkout 3.6.0RC1 && cd ..
-cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.0 --recurse-submodules && cd ..
+cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
+cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git checkout ab26d285759e4c917879967b09976a44829ed570 && cd ..
 cd secp256k1-php && git fetch --all && git checkout a1fef29baabc6de9540ada175b967068ada1f48c && cd ..
 rm -rf ssh2-*
