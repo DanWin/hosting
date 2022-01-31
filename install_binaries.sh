@@ -162,7 +162,7 @@ git fetch --all
 git checkout release-1.21.6
 cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
-cd lua-nginx-module && git fetch --all && git checkout v0.10.20rc1 && cd ..
+cd lua-nginx-module && git fetch --all && git checkout v0.10.21rc1 && cd ..
 cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
 cd set-misc-nginx-module && git fetch --all && git checkout v0.33 && cd ..
 cd libatomic_ops
