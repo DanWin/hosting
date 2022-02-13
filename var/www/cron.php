@@ -1,6 +1,7 @@
 <?php
 require('common.php');
 $db = get_db_instance();
+setlocale(LC_CTYPE, 'C.UTF-8'); // make sure to use UTF-8 locale. Non UTF-8 locales can cause serious issues when handling UTF-8 file names
 
 //instances to reload
 $reload=[];
