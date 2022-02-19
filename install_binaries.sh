@@ -110,7 +110,7 @@ make -j $PROC_LIMIT install
 make distclean
 cd ../aom
 git fetch --all
-git checkout v3.2.0
+git checkout v3.3.0
 cd ..
 mkdir -p aom_build
 cd aom_build
