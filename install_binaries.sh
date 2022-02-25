@@ -1760,7 +1760,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.2.6/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.2.7/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
