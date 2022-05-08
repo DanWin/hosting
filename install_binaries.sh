@@ -130,7 +130,7 @@ cd ..
 ldconfig
 cd ImageMagick
 git fetch --all
-git checkout 7.1.0-30
+git checkout 7.1.0-33
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -140,11 +140,13 @@ git checkout 50f33677122fed79dedb05e8046b2fea93496201
 ./autogen.sh
 CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
+make distclean
 cd ../luajit2
 git fetch --all
 git checkout v2.1-20210510
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
 make install
+make clean
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
@@ -1433,6 +1435,34 @@ make -j $PROC_LIMIT install
 make distclean
 git reset --hard
 git checkout PHP-8.0.18
+cat <<EOF | git apply -
+diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
+index 19e7a0d79e..4d159895ac 100644
+--- a/ext/openssl/openssl.c
++++ b/ext/openssl/openssl.c
+@@ -56,6 +56,10 @@
+ #include <openssl/ssl.h>
+ #include <openssl/pkcs12.h>
+ #include <openssl/cms.h>
++#if PHP_OPENSSL_API_VERSION >= 0x30000
++#include <openssl/core_names.h>
++#include <openssl/param_build.h>
++#endif
+ 
+ /* Common */
+ #include <time.h>
+@@ -1221,7 +1225,9 @@ PHP_MINIT_FUNCTION(openssl)
+ 	REGISTER_LONG_CONSTANT("OPENSSL_CMS_NOSIGS", CMS_NOSIGS, CONST_CS|CONST_PERSISTENT);
+ 
+ 	REGISTER_LONG_CONSTANT("OPENSSL_PKCS1_PADDING", RSA_PKCS1_PADDING, CONST_CS|CONST_PERSISTENT);
++#ifdef RSA_SSLV23_PADDING
+ 	REGISTER_LONG_CONSTANT("OPENSSL_SSLV23_PADDING", RSA_SSLV23_PADDING, CONST_CS|CONST_PERSISTENT);
++#endif
+ 	REGISTER_LONG_CONSTANT("OPENSSL_NO_PADDING", RSA_NO_PADDING, CONST_CS|CONST_PERSISTENT);
+ 	REGISTER_LONG_CONSTANT("OPENSSL_PKCS1_OAEP_PADDING", RSA_PKCS1_OAEP_PADDING, CONST_CS|CONST_PERSISTENT);
+ 
+EOF
+
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.0/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.0 --program-suffix=8.0 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar
 make -j $PROC_LIMIT install
@@ -1749,6 +1779,31 @@ index db35288..a072c25 100644
 +
 +Deprecated: Function enchant_broker_get_dict_path() is deprecated in %s
  OK
+ diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
+index aa819be..2fa74f2 100644
+--- a/ext/openssl/openssl.c
++++ b/ext/openssl/openssl.c
+@@ -55,6 +55,10 @@
+ #include <openssl/rand.h>
+ #include <openssl/ssl.h>
+ #include <openssl/pkcs12.h>
++#if PHP_OPENSSL_API_VERSION >= 0x30000
++#include <openssl/core_names.h>
++#include <openssl/param_build.h>
++#endif
+ 
+ /* Common */
+ #include <time.h>
+@@ -1517,7 +1521,9 @@ PHP_MINIT_FUNCTION(openssl)
+ 	REGISTER_LONG_CONSTANT("PKCS7_NOSIGS", PKCS7_NOSIGS, CONST_CS|CONST_PERSISTENT);
+ 
+ 	REGISTER_LONG_CONSTANT("OPENSSL_PKCS1_PADDING", RSA_PKCS1_PADDING, CONST_CS|CONST_PERSISTENT);
++#ifdef RSA_SSLV23_PADDING
+ 	REGISTER_LONG_CONSTANT("OPENSSL_SSLV23_PADDING", RSA_SSLV23_PADDING, CONST_CS|CONST_PERSISTENT);
++#endif
+ 	REGISTER_LONG_CONSTANT("OPENSSL_NO_PADDING", RSA_NO_PADDING, CONST_CS|CONST_PERSISTENT);
+ 	REGISTER_LONG_CONSTANT("OPENSSL_PKCS1_OAEP_PADDING", RSA_PKCS1_OAEP_PADDING, CONST_CS|CONST_PERSISTENT);
+ 
 EOF
 
 ./buildconf -f
