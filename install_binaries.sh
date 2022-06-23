@@ -58,9 +58,6 @@ fi
 if [ ! -e lua-resty-lrucache ]; then
 	git clone https://github.com/openresty/lua-resty-lrucache
 fi
-if [ ! -e lua-nginx-module ]; then
-	git clone https://github.com/openresty/lua-nginx-module
-fi
 if [ ! -e lua-resty-mysql ]; then
 	git clone https://github.com/openresty/lua-resty-mysql
 fi
@@ -97,6 +94,12 @@ if [ ! -e secp256k1-php ]; then
 	git clone https://github.com/Bit-Wasp/secp256k1-php
 fi
 ln -sf secp256k1-php/secp256k1 secp256k1
+if [ ! -e igbinary ]; then
+	git clone https://github.com/igbinary/igbinary
+fi
+if [ ! -e msgpack-php ]; then
+	git clone https://github.com/msgpack/msgpack-php
+fi
 cd ../..
 
 export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) < nproc) ? ($2 + 1) : nproc;}'`
@@ -110,7 +113,7 @@ make -j $PROC_LIMIT install
 make distclean
 cd ../aom
 git fetch --all
-git checkout v3.3.0
+git checkout v3.4.0
 cd ..
 mkdir -p aom_build
 cd aom_build
@@ -130,20 +133,20 @@ cd ..
 ldconfig
 cd ImageMagick
 git fetch --all
-git checkout 7.1.0-35
+git checkout 7.1.0-39
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
 cd ../secp256k1
 git fetch --all
-git checkout 50f33677122fed79dedb05e8046b2fea93496201
+git checkout 44c2452fd387f7ca604ab42d73746e7d3a44d8a2
 ./autogen.sh
 CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
 make distclean
 cd ../luajit2
 git fetch --all
-git checkout v2.1-20210510
+git checkout v2.1-20220411
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
 make install
 make clean
@@ -161,10 +164,9 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.21.6
-cd ngx_brotli && git fetch --all && git checkout v1.0.0rc && cd ..
+git checkout release-1.23.0
+cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
-cd lua-nginx-module && git fetch --all && git checkout v0.10.21rc1 && cd ..
 cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
 cd set-misc-nginx-module && git fetch --all && git checkout v0.33 && cd ..
 cd libatomic_ops
@@ -1409,7 +1411,7 @@ index 7d49803f..b9ee2048 100644
 +#endif
 EOF
 
-LUAJIT_LIB="/usr/local/lib" LUAJIT_INC="/usr/local/include/luajit-2.1/" ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-libatomic=./libatomic_ops --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --add-module=ngx_devel_kit --add-module=lua-nginx-module --add-module=rds-json-nginx-module --add-module=set-misc-nginx-module --without-pcre2
+LUAJIT_LIB="/usr/local/lib" LUAJIT_INC="/usr/local/include/luajit-2.1/" ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-libatomic=./libatomic_ops --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --add-module=ngx_devel_kit --add-module=rds-json-nginx-module --add-module=set-misc-nginx-module --without-pcre2
 make -j $PROC_LIMIT install
 make clean
 git reset --hard
@@ -1423,18 +1425,20 @@ cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git checkout ab26d285759e4c917879967b09976a44829ed570 && cd ..
 cd secp256k1-php && git fetch --all && git checkout a1fef29baabc6de9540ada175b967068ada1f48c && cd ..
+cd igbinary && git fetch --all && git checkout 3.2.7 && cd ..
+cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0RC1 && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.1.6
+git checkout php-8.1.7
 ./buildconf -f
-LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar
+LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.0.19
+git checkout php-8.0.20
 cat <<EOF | git apply -
 diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
 index 19e7a0d79e..4d159895ac 100644
@@ -1464,11 +1468,11 @@ index 19e7a0d79e..4d159895ac 100644
 EOF
 
 ./buildconf -f
-LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.0/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.0 --program-suffix=8.0 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar
+LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.0/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.0 --program-suffix=8.0 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-7.4.29
+git checkout php-7.4.30
 cat <<EOF | git apply -
 diff --git a/ext/enchant/config.m4 b/ext/enchant/config.m4
 index 6c8dd726ce..eccaedee14 100644
@@ -1807,7 +1811,7 @@ index aa819be..2fa74f2 100644
 EOF
 
 ./buildconf -f
-LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/7.4/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/7.4 --program-suffix=7.4 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --with-secp256k1
+LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/7.4/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/7.4 --program-suffix=7.4 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --with-secp256k1 --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
@@ -1816,7 +1820,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.3.5/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.3.7/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 

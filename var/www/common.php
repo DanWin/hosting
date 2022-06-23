@@ -57,6 +57,8 @@ opcache.validate_permission = 1
 opcache.validate_root = 1
 opcache.jit_buffer_size = 64M
 session.use_strict_mode = 1
+session.serialize_handler=igbinary
+apc.serializer=igbinary
 ';
 const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=2048 proxy_protocol;
