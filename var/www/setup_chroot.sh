@@ -59,11 +59,9 @@ function CHROOT_LIBRARIES() {
 ### variables
 CHROOT_DIRECTORY=$1
 CHROOT_DIRECTORY_STRUCTURE=(
-    '/bin'
     '/etc'
     '/etc/default'
     '/dev'
-    '/lib'
     '/tmp'
     '/usr'
     '/usr/share'
@@ -286,6 +284,8 @@ chmod 550 $CHROOT_DIRECTORY
 for DIRECTORY in ${CHROOT_DIRECTORY_TO_CLEAN[@]}; do
     rm -rf $CHROOT_DIRECTORY$DIRECTORY
 done
+ln -s usr/bin $CHROOT_DIRECTORY/bin
+ln -s usr/lib $CHROOT_DIRECTORY/lib
 for DIRECTORY in ${CHROOT_DIRECTORY_STRUCTURE[@]}; do
     mkdir -pm 0555 $CHROOT_DIRECTORY$DIRECTORY
 done
