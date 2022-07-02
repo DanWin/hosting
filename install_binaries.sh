@@ -13,7 +13,6 @@ DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoco
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # install nodejs
 nvm install node
@@ -1835,4 +1834,26 @@ if [ ! -e /etc/mysql/encryption/keyfile.enc ]; then
 	mkdir -p /etc/mysql/encryption/
 	openssl rand -hex 128 > /etc/mysql/encryption/keyfile.key
 	echo "1;"$(openssl rand -hex 32) | openssl enc -aes-256-cbc -md sha1 -pass file:/etc/mysql/encryption/keyfile.key -out /etc/mysql/encryption/keyfile.enc
+fi
+
+# install php applications
+if [ ! -e /var/www/html/phpmyadmin ]; then
+	mkdir -p /var/www/html/phpmyadmin
+	cd /var/www/html/phpmyadmin
+	git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ .
+	composer install --no-dev
+	yarn
+fi
+if [ ! -e /var/www/html/adminer ]; then
+	mkdir -p /var/www/html/adminer
+	cd /var/www/html/adminer
+	git clone https://github.com/vrana/adminer/ .
+	git submodule update --init
+fi
+if [ ! -e /var/www/html/squirrelmail ]; then
+	mkdir -p /var/www/html/squirrelmail
+	cd /var/www/html/squirrelmail
+	git clone https://github.com/RealityRipple/squirrelmail .
+	mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach
+	chown www-data:www-data -R /var/www/data
 fi

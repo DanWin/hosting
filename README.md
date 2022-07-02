@@ -111,13 +111,7 @@ Install sodium_compat for v3 hidden_service support
 cd /var/www && composer install
 ```
 
-For web base database administration, check out the latest phpmyadmin and adminer:
-```
-cd /var/www/html/ && git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ && cd phpmyadmin && composer install --no-dev && yarn
-cd /var/www/html/ && git clone https://github.com/vrana/adminer/ && cd adminer && git submodule update --init
-```
-
-Once installed create a mysql user for phpmyadmin and cofigure it in `/var/www/html/phpmyadmin/config.inc.php` and fill `$cfg['blowfish_secret']` with random characters:
+Create a mysql user for phpmyadmin and cofigure it in `/var/www/html/phpmyadmin/config.inc.php` and fill `$cfg['blowfish_secret']` with random characters:
 ```
 mysql
 CREATE USER 'phpmyadmin'@'%' IDENTIFIED BY 'MY_PASSWORD';
@@ -128,12 +122,12 @@ quit
 mysql phpmyadmin < /var/www/html/phpmyadmin/sql/create_tables.sql
 ```
 
-For web based mail management grab the latest squirrelmail and install it in `/var/www/html/squirrelmail`:
+For web based mail management configure squirrelmail:
 ```
-cd /var/www/html/ && git clone https://github.com/RealityRipple/squirrelmail && cd squirrelmail && mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach && chown www-data:www-data -R /var/www/data && ./configure
+cd /var/www/html/squirrelmail && ./configure
 ```
 
-Once it is downloaded, it will ask you for configuration. Things to change are:
+Configuration options to change are:
 ```
 D. > select dovecot
 2. Server Settings > 1. Domain > Set your own .onion domain here
