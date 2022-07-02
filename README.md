@@ -38,15 +38,6 @@ Note that debian also has an onion service package archive, so you may want to e
 deb tor://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian `lsb_release -cs` main
 ```
 
-Create encryption keys for mariadb
-```
-mkdir -p /etc/mysql/encryption/
-echo "1;"$(openssl rand -hex 32) > /etc/mysql/encryption/keyfile
-openssl rand -hex 128 > /etc/mysql/encryption/keyfile.key
-openssl enc -aes-256-cbc -md sha1 -pass file:/etc/mysql/encryption/keyfile.key -in /etc/mysql/encryption/keyfile -out /etc/mysql/encryption/keyfile.enc
-rm /etc/mysql/encryption/keyfile
-```
-
 Copy (and modify according to your needs) the site files in `var/www` to `/var/www`, `usr/local` to `/usr/local`  and the configuration files in `etc` to `/etc` after installation has finished. Then restart some services:
 ```
 systemctl daemon-reload && systemctl restart bind9.service && systemctl restart tor@default.service

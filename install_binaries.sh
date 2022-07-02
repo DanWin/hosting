@@ -1829,3 +1829,10 @@ composer self-update
 id -u _rspamd >/dev/null 2>&1 ||useradd -M -r -s /bin/false -d /var/lib/rspamd _rspamd
 mkdir -p /var/lib/rspamd
 chown _rspamd: /var/lib/rspamd
+
+# mysql encryption
+if [ ! -e /etc/mysql/encryption/keyfile.enc ]; then
+	mkdir -p /etc/mysql/encryption/
+	openssl rand -hex 128 > /etc/mysql/encryption/keyfile.key
+	echo "1;"$(openssl rand -hex 32) | openssl enc -aes-256-cbc -md sha1 -pass file:/etc/mysql/encryption/keyfile.key -out /etc/mysql/encryption/keyfile.enc
+fi
