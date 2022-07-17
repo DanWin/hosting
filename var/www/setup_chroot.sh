@@ -20,30 +20,28 @@ function CHROOT_BINARY() {
     LDD_FILES="$(ldd $BINARY 2>&1 | grep -v 'not a dynamic executable' | grep 'ld-linux' | awk '{ print $1; }' || echo)"
     if [ "$LIB_FILES" != "" ]; then
         for LIB_FILE in $LIB_FILES; do
-            LIB_DIRECTORY="$(dirname $LIB_FILE)"
-            if [[ ! "${ALL_LIB_DIRECTORIES[@]}" =~ "$LIB_DIRECTORY" ]]; then
-                ALL_LIB_DIRECTORIES=(${ALL_LIB_DIRECTORIES[@]} "$LIB_DIRECTORY")
-            fi
-            if [[ ! "${ALL_LIB_FILES[@]}" =~ "$LIB_FILE" ]]; then
-                ALL_LIB_FILES=(${ALL_LIB_FILES[@]} "$LIB_FILE")
-            fi
+            ADD_LIB $LIB_FILE
         done
     fi
     if [ "$LDD_FILES" != "" ]; then
         for LDD_FILE in $LDD_FILES; do
-            LDD_DIRECTORY="$(dirname $LDD_FILE)"
-            if [[ ! "${ALL_LIB_DIRECTORIES[@]}" =~ "$LDD_DIRECTORY" ]]; then
-                ALL_LIB_DIRECTORIES=(${ALL_LIB_DIRECTORIES[@]} "$LDD_DIRECTORY")
-            fi
-            if [[ ! "${ALL_LIB_FILES[@]}" =~ "$LDD_DIRECTORY" ]]; then
-                ALL_LIB_FILES=(${ALL_LIB_FILES[@]} "$LDD_FILE")
-            fi
+            ADD_LIB $LDD_FILE
         done
     fi
     BINARY_DIRECTORY="$(dirname $BINARY)"
     mkdir -pm 0555 $CHROOT_DIRECTORY$BINARY_DIRECTORY
     cp $BINARY $CHROOT_DIRECTORY$BINARY
     chmod 0555 $CHROOT_DIRECTORY$BINARY
+}
+
+function ADD_LIB() {
+    LIB_DIRECTORY="$(dirname $1)"
+    if [[ ! "${ALL_LIB_DIRECTORIES[@]}" =~ "$LIB_DIRECTORY" ]]; then
+        ALL_LIB_DIRECTORIES=(${ALL_LIB_DIRECTORIES[@]} "$LIB_DIRECTORY")
+    fi
+    if [[ ! "${ALL_LIB_FILES[@]}" =~ "$1" ]]; then
+        ALL_LIB_FILES=(${ALL_LIB_FILES[@]} "$1")
+    fi
 }
 
 function CHROOT_LIBRARIES() {
@@ -324,12 +322,12 @@ for BINARY in `find /usr/lib/git-core -type f`; do
     CHROOT_BINARY $BINARY
 done
 # networking
-for BINARY in /lib/*/libnss_*; do
-    CHROOT_BINARY $BINARY
+for LIB in /lib/*/libnss_*; do
+    ADD_LIB $LIB
 done
 # php
-for BINARY in /usr/lib/php/*/*.so; do
-    CHROOT_BINARY $BINARY
+for LIB in /usr/lib/php/*/*.so; do
+    ADD_LIB $LIB
 done
 CHROOT_LIBRARIES
 ldconfig -r $CHROOT_DIRECTORY
