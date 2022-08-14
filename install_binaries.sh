@@ -133,7 +133,7 @@ cd ..
 ldconfig
 cd ImageMagick
 git fetch --all
-git checkout 7.1.0.43
+git checkout 7.1.0-45
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -1848,6 +1848,34 @@ if [ ! -e /var/www/html/adminer ]; then
 	mkdir -p /var/www/html/adminer
 	cd /var/www/html/adminer
 	git clone https://github.com/vrana/adminer/ .
+	cat <<EOF | git apply -
+From 12196a325f6714bfb94c328e457bd023bfbaa171 Mon Sep 17 00:00:00 2001
+From: Peter Nikolow <peter@mobiliodevelopment.com>
+Date: Tue, 31 May 2022 13:22:14 +0300
+Subject: [PATCH] Update .gitmodules
+
+Fix github recursive clone
+---
+ .gitmodules | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/.gitmodules b/.gitmodules
+index 5810a5e7..7688bddb 100644
+--- a/.gitmodules
++++ b/.gitmodules
+@@ -1,9 +1,9 @@
+ [submodule "jush"]
+ 	path = externals/jush
+-	url = git://github.com/vrana/jush
++	url = https://github.com/vrana/jush
+ [submodule "JsShrink"]
+ 	path = externals/JsShrink
+-	url = git://github.com/vrana/JsShrink
++	url = https://github.com/vrana/JsShrink
+ [submodule "designs/hydra"]
+ 	path = designs/hydra
+ 	url = https://github.com/Niyko/Hydra-Dark-Theme-for-Adminer
+EOF
 	git submodule update --init
 fi
 if [ ! -e /var/www/html/squirrelmail ]; then
