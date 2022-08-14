@@ -49,17 +49,13 @@ Copy (and modify according to your needs) the site files in `var/www` to `/var/w
 systemctl daemon-reload && systemctl restart bind9.service && systemctl restart tor@default.service
 ```
 
-Now there should be an onion domain in `/var/lib/tor/hidden_service/hostname`:
+Replace the default .onion domain with your domain:
 ```
-cat /var/lib/tor/hidden_service/hostname
+sed -i "s/dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion/`cat /var/lib/tor/hidden_service/hostname`/g" /etc/postfix/sql/alias.cf /etc/postfix/sender_login_maps /etc/postfix/main.cf /var/www/skel/www/index.hosting.html /var/www/common.php /etc/postfix/canonical /etc/postfix-clearnet/canonical
 ```
 
-Replace the default domain with your domain in the following files:
+For your clearnet domain, you need to add it to `relay_domains` in `/etc/postfix/main.cf` and edit the default domain in the following files:
 ```
-/etc/postfix/sql/alias.cf
-/etc/postfix/sender_login_maps
-/etc/postfix/main.cf
-/var/www/skel/www/index.hosting.html
 /var/www/common.php
 /etc/postfix/canonical
 /etc/postfix-clearnet/canonical
