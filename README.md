@@ -51,7 +51,7 @@ systemctl daemon-reload && systemctl restart bind9.service && systemctl restart 
 
 Replace the default .onion domain with your domain:
 ```
-sed -i "s/dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion/`cat /var/lib/tor/hidden_service/hostname`/g" /etc/postfix/sql/alias.cf /etc/postfix/sender_login_maps /etc/postfix/main.cf /var/www/skel/www/index.hosting.html /var/www/common.php /etc/postfix/canonical /etc/postfix-clearnet/canonical
+sed -i "s/dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion/`cat /var/lib/tor/hidden_service/hostname`/g" /etc/postfix/sql/alias.cf /etc/postfix/sender_login_maps /etc/postfix/main.cf /var/www/skel/www/index.hosting.html /var/www/common.php /etc/postfix/canonical /etc/postfix-clearnet/canonical /var/www/html/squirrelmail/config/config.php
 ```
 
 For your clearnet domain, you need to add it to `relay_domains` in `/etc/postfix/main.cf` and edit the default domain in the following files:
@@ -120,24 +120,6 @@ GRANT ALL PRIVILEGES ON phpmyadmin.* TO 'phpmyadmin'@'%';
 FLUSH PRIVILEGES;
 quit
 mysql phpmyadmin < /var/www/html/phpmyadmin/sql/create_tables.sql
-```
-
-For web based mail management configure squirrelmail:
-```
-cd /var/www/html/squirrelmail && ./configure
-```
-
-Configuration options to change are:
-```
-D. > select dovecot
-2. Server Settings > 1. Domain > Set your own .onion domain here
-2. Server Settings > B. Update SMTP settings > 7. SMTP Authentication -> y -> plain -> n User are authenticated using their username + password
-4. General Options > 1. Data Directory > /data/squirrelmail/data/
-4. General Options > 2. Attachment Directory > /data/squirrelmail/attach/
-4. General Options > 9. Allow editing of identity > n Users should not be able to fake email addresses > y They should be able to change display name > y They should be able to set a reply to mail > y additional headers are not required
-10. Language settings > 4. Enable aggressive decoding
-11. Tweaks > 2. Ask user info on first login > n (commonly confuses users)
-11. Tweaks > 5. Use php iconv functions > y
 ```
 
 Create a mysql user with all permissions for our hosting management:
