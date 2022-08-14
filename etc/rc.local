@@ -69,7 +69,7 @@ ip6tables -A OUTPUT -d $clearnet -j ACCEPT
 #accet IPv6 ICMP packages required for SLAAC
 ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
 ip6tables -A OUTPUT -p ipv6-icmp -j ACCEPT
-#allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf
+#allow querriying ntp servers (must mach /etc/systemd/timesyncd.conf)
 for clearnet in 164.68.124.74 185.244.195.159 78.46.53.2 88.99.86.9; do(
 iptables -t nat -A OUTPUT -p udp --dport 123 -d $clearnet -j RETURN
 iptables -A OUTPUT -p udp --dport 123 -d $clearnet -j ACCEPT
