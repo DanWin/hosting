@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 
+export COMPOSER_ALLOW_SUPERUSER=1
 export LANG=C.UTF-8
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # install all required packages
@@ -105,7 +106,7 @@ make distclean
 ldconfig
 cd ../ImageMagick
 git fetch --all
-git checkout 7.1.0-47
+git checkout 7.1.0-48
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -136,7 +137,7 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.23.0
+git checkout release-1.23.1
 cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
 cd ngx_devel_kit && git fetch --all && git checkout v0.3.1 && cd ..
 cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
@@ -1399,13 +1400,13 @@ curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.1.9
+git checkout php-8.1.10
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.0.22
+git checkout php-8.0.23
 cat <<EOF | git apply -
 diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
 index 19e7a0d79e..4d159895ac 100644
@@ -1787,7 +1788,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.4.1/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.4.2/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
