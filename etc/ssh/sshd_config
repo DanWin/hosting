@@ -88,7 +88,8 @@ UseDNS no
 #VersionAddendum none
 
 # no default banner path
-#Banner none
+Banner none
+DebianBanner no
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
