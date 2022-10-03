@@ -126,7 +126,7 @@ make clean
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 3.2 --recurse-submodules
+git checkout 3.3 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
