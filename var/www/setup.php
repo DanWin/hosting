@@ -75,7 +75,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		while($id=$stmt->fetch(PDO::FETCH_NUM)){
 			$system_account=$id[0];
 			$onion=substr($id[0], 0, 16);
-			$replace=preg_replace("~listen\sunix:/var/run/nginx(/[a-z2-7]{16}|\.sock)(\sbacklog=2048)?;~", "listen unix:/var/run/nginx/$system_account backlog=2048;", file_get_contents("/etc/nginx/sites-enabled/$system_account"));
+			$replace=preg_replace("~listen\sunix:/var/run/nginx(/[a-z2-7]{16}|\.sock)(\sbacklog=4096)?;~", "listen unix:/var/run/nginx/$system_account backlog=4096;", file_get_contents("/etc/nginx/sites-enabled/$system_account"));
 			file_put_contents("/etc/nginx/sites-enabled/$system_account", $replace);
 		}
 	}
@@ -102,7 +102,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec('ALTER TABLE onions DROP FOREIGN KEY onions_ibfk_1;');
 		$db->exec('ALTER TABLE onions ADD CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;');
 		$nginx_default = 'server {
-	listen unix:/var/run/nginx/suspended backlog=2048;
+	listen unix:/var/run/nginx/suspended backlog=4096;
 	add_header Content-Type text/html;
 	location / {
 		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';

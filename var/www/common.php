@@ -61,15 +61,15 @@ session.serialize_handler=igbinary
 apc.serializer=igbinary
 ';
 const NGINX_DEFAULT = 'server {
-	listen unix:/var/run/nginx/suspended backlog=2048 proxy_protocol;
+	listen unix:/var/run/nginx/suspended backlog=4096 proxy_protocol;
 	add_header Content-Type text/html;
 	location / {
 		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
 	}
 }
 server {
-	listen [::]:80 ipv6only=off fastopen=100 backlog=2048 default_server;
-	listen unix:/var/run/nginx.sock backlog=2048 default_server;
+	listen [::]:80 ipv6only=off fastopen=100 backlog=4096 default_server;
+	listen unix:/var/run/nginx.sock backlog=4096 default_server;
 	root /var/www/html;
 	index index.php;
 	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
