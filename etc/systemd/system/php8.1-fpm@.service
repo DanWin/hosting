@@ -1,0 +1,35 @@
+[Unit]
+Description=The PHP 8.1 FastCGI Process Manager (instance %i)
+Documentation=man:php-fpm8.1(8)
+After=network.target
+PartOf=php8.1-fpm.service
+ReloadPropagatedFrom=php8.1-fpm.service
+
+[Service] 
+Type=notify
+PIDFile=/run/php/php8.1-fpm-%i.pid
+ExecStart=/usr/sbin/php-fpm8.1 --nodaemonize --fpm-config /etc/php/8.1/fpm/php-fpm-%i.conf
+ExecReload=/bin/kill -USR2 $MAINPID
+LimitNOFILE=100000
+TimeoutStartSec=300
+ProtectSystem=strict
+PrivateTmp=true
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+SystemCallArchitectures=native
+ReadWritePaths=-/var/log/
+ReadWritePaths=-/var/run/
+ReadWritePaths=-/run/
+InaccessiblePaths=-/root/
+CPUQuota=100%
+MemoryHigh=25%
+MemoryMax=35%
+RuntimeDirectory=php
+RuntimeDirectoryPreserve=yes
+
+[Install]
+WantedBy=multi-user.target
