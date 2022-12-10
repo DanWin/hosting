@@ -149,6 +149,7 @@ BINARIES_GENERAL=(
     'paste'
     'php8.0'
     'php8.1'
+    'php8.2'
     'pr'
     'printenv'
     'printf'

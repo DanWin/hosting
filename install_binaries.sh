@@ -25,9 +25,6 @@ npm i -g yarn
 if [ ! -e libssh2 ]; then
 	git clone https://github.com/libssh2/libssh2
 fi
-if [ ! -e secp256k1 ]; then
-	git clone https://github.com/bitcoin-core/secp256k1
-fi
 if [ ! -e ImageMagick ]; then
 	git clone https://github.com/ImageMagick/ImageMagick
 fi
@@ -82,10 +79,6 @@ fi
 if [ ! -e php-rar ]; then
 	git clone https://github.com/cataphract/php-rar
 fi
-if [ ! -e secp256k1-php ]; then
-	git clone https://github.com/Bit-Wasp/secp256k1-php
-fi
-ln -sf secp256k1-php/secp256k1 secp256k1
 if [ ! -e igbinary ]; then
 	git clone https://github.com/igbinary/igbinary
 fi
@@ -106,15 +99,8 @@ make distclean
 ldconfig
 cd ../ImageMagick
 git fetch --all
-git checkout 7.1.0-51
+git checkout 7.1.0-53
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
-make -j $PROC_LIMIT install
-make distclean
-cd ../secp256k1
-git fetch --all
-git checkout 44c2452fd387f7ca604ab42d73746e7d3a44d8a2
-./autogen.sh
-CFLAGS='-O3 -mtune=native -march=native' ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery
 make -j $PROC_LIMIT install
 make distclean
 cd ../luajit2
@@ -1392,7 +1378,6 @@ cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
 cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git checkout ab26d285759e4c917879967b09976a44829ed570 && cd ..
-cd secp256k1-php && git fetch --all && git checkout a1fef29baabc6de9540ada175b967068ada1f48c && cd ..
 cd igbinary && git fetch --all && git checkout 3.2.7 && cd ..
 cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0RC1 && cd ..
 rm -rf ssh2-*
@@ -1400,13 +1385,19 @@ curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.1.12
+git checkout php-8.2.0
+./buildconf -f
+LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.2/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.2 --program-suffix=8.2 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
+make -j $PROC_LIMIT install
+make distclean
+git reset --hard
+git checkout php-8.1.13
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.0.25
+git checkout php-8.0.26
 cat <<EOF | git apply -
 diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
 index 19e7a0d79e..4d159895ac 100644

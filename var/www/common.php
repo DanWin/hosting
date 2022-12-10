@@ -26,7 +26,7 @@ const ENABLE_SHELL_ACCESS=true; //allows users to login via ssh, when disabled o
 const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. If tor starts using 100% cpu and failing circuits every few hours after a restart, add more instances. In my experience this happens around 250 hidden services per instance - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
-const PHP_VERSIONS=[6 => '8.0', 7 => '8.1']; //currently active php versions
+const PHP_VERSIONS=[6 => '8.0', 7 => '8.1', 8 => '8.2']; //currently active php versions
 const DEFAULT_PHP_VERSION='8.1'; //default php version
 const PHP_CONFIG='zend_extension=opcache.so
 memory_limit = 256M
