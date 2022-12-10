@@ -99,13 +99,6 @@ quotaon /home
 
 In some cases, you might get an error, that quota is not supported. This is usually the case in virtual environments. Make sure you have the full kernel installed, not one with a `-virtual` package. They usually are `linux-image-amd64`, `linux-image-arm64` or `linux-image-generic`, depending on your distribution. Also make sure, you are running a real virtual machine (e.g. KVM). Some providers sell containerized VPSes (e.g. OpenVZ), which means you don't run your own kernel...
 
-Enable the PHP-FPM default instances and nginx:
-```
-systemctl enable php7.4-fpm@default
-systemctl enable php8.0-fpm@default
-systemctl enable nginx
-```
-
 Install sodium_compat for v3 hidden_service support
 ```
 cd /var/www && composer install

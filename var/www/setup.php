@@ -292,7 +292,8 @@ env[HOME]=/
 		mkdir("/etc/php/$version/fpm/pool.d/", 0755, true);
 	}
 	file_put_contents("/etc/php/$version/fpm/pool.d/www.conf", $pool_config);
-	exec('systemctl reload '.escapeshellarg("php$version-fpm@default"));
+	exec("systemctl enable ".escapeshellarg("php$version-fpm@default"));
+	exec("systemctl restart ".escapeshellarg("php$version-fpm@default"));
 }
 echo "Updating chroots, this might take a while…\n";
 exec('/var/www/setup_chroot.sh /var/www');
@@ -318,7 +319,8 @@ file_put_contents('/etc/nginx/streams-enabled/default', "server {
 	listen unix:/var/www/var/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
-exec('systemctl reload nginx');
+exec('systemctl enable nginx');
+exec('systemctl restart nginx');
 // add new php/tor instances if not yet existing
 $check=$db->prepare('SELECT null FROM service_instances WHERE id = ?;');
 $stmt=$db->prepare('INSERT INTO service_instances (id) VALUES (?);');
