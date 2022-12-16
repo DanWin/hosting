@@ -81,7 +81,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.0-hosting;
+			fastcgi_pass unix:/var/run/php/8.1-hosting;
 		}
 	}
 	location /squirrelmail {
@@ -89,7 +89,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.0-squirrelmail;
+			fastcgi_pass unix:/var/run/php/8.1-squirrelmail;
 		}
 	}
 	location /phpmyadmin {
@@ -97,7 +97,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.0-phpmyadmin;
+			fastcgi_pass unix:/run/php/8.1-phpmyadmin;
 		}
 	}
 	location /adminer {
@@ -106,7 +106,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html/adminer;
 			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.0-adminer;
+			fastcgi_pass unix:/run/php/8.1-adminer;
 		}
 	}
 	location /externals/jush/ {
@@ -624,7 +624,7 @@ function rewrite_nginx_config(){
 		fastcgi_param MAIL_USER $tmp[system_account];
 		fastcgi_param DOCUMENT_ROOT /var/www/mail;
 		fastcgi_param SCRIPT_FILENAME /var/www/mail\$fastcgi_script_name;
-		fastcgi_pass unix:/var/run/php/8.0-mail;
+		fastcgi_pass unix:/var/run/php/8.1-mail;
 	}
 }
 ";
