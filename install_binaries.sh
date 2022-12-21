@@ -99,7 +99,7 @@ make distclean
 ldconfig
 cd ../ImageMagick
 git fetch --all
-git checkout 7.1.0-53
+git checkout 7.1.0-55
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -1436,7 +1436,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.4.4/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.5.0/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
