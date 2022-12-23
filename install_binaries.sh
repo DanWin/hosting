@@ -11,12 +11,14 @@ DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-tr
 DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libheif-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
 
 # install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # install nodejs
-nvm install node
+nvm install node --latest-npm --default
+for old_version in `nvm ls --no-alias --no-colors | grep -v '\->' | awk '{print $1;}'`; do nvm uninstall $old_version; done
+nvm cache clear
 
 #install yarn
 npm i -g yarn
