@@ -11,7 +11,7 @@ DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-tr
 DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libheif-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libsqlite3-dev libssl-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
 
 # install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
@@ -101,13 +101,13 @@ make distclean
 ldconfig
 cd ../ImageMagick
 git fetch --all
-git checkout 7.1.0-55
+git checkout 7.1.0-57
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
 cd ../luajit2
 git fetch --all
-git checkout v2.1-20220411
+git checkout v2.1-20220915
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
 make install
 make clean
@@ -132,15 +132,15 @@ cd rds-json-nginx-module && git fetch --all && git checkout v0.15 && cd ..
 cd set-misc-nginx-module && git fetch --all && git checkout v0.33 && cd ..
 cd lua-resty-core
 git fetch --all
-git checkout v0.1.23rc1
+git checkout v0.1.24
 make -j $PROC_LIMIT install
 cd ../lua-resty-lrucache
 git fetch --all
-git checkout v0.11
+git checkout v0.13
 make -j $PROC_LIMIT install
 cd ../lua-resty-mysql
 git fetch --all
-git checkout v0.25rc1
+git checkout v0.25
 make -j $PROC_LIMIT install
 cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
@@ -1379,27 +1379,125 @@ cd apcu && git fetch --all && git checkout v5.1.22 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
 cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
-cd php-rar && git fetch --all && git checkout ab26d285759e4c917879967b09976a44829ed570 && cd ..
-cd igbinary && git fetch --all && git checkout 3.2.7 && cd ..
-cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0RC1 && cd ..
+cd php-rar && git fetch --all && git reset --hard && git checkout ab26d285759e4c917879967b09976a44829ed570
+cat <<EOF | git apply -
+From 9be22919015ec050678917aadacb28904317ea46 Mon Sep 17 00:00:00 2001
+From: Remi Collet <remi@remirepo.net>
+Date: Thu, 15 Sep 2022 10:28:06 +0200
+Subject: [PATCH 1/2] ignore more build artefacts
+
+---
+ .gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 86886db..288c25b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,6 +11,7 @@
+ /modules
+ /missing
+ /.deps
++*.dep
+ /.libs
+ /Makefile
+ /Makefile.fragments
+@@ -36,6 +37,7 @@
+ /libtool
+ /mkinstalldirs
+ /ltmain.sh
++/ltmain.sh.backup
+ /.cproject
+ /.project
+ /.settings
+
+From 02331ca1cc1e8638c34e024566f4b391a6c863c5 Mon Sep 17 00:00:00 2001
+From: Remi Collet <remi@remirepo.net>
+Date: Thu, 15 Sep 2022 10:28:23 +0200
+Subject: [PATCH 2/2] fix __toString prototype for PHP 8.2
+
+---
+ rararch.c  | 9 ++++++++-
+ rarentry.c | 9 ++++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/rararch.c b/rararch.c
+index 7cbfa26..9cad093 100644
+--- a/rararch.c
++++ b/rararch.c
+@@ -970,6 +970,13 @@ ZEND_END_ARG_INFO()
+ 
+ ZEND_BEGIN_ARG_INFO(arginfo_rararchive_void, 0)
+ ZEND_END_ARG_INFO()
++
++#if PHP_VERSION_ID >= 80200
++ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_rararchive_tostring, 0, 0, IS_STRING, 0)
++ZEND_END_ARG_INFO()
++#else
++#define arginfo_rararchive_tostring arginfo_rararchive_void
++#endif
+ /* }}} */
+ 
+ static zend_function_entry php_rararch_class_functions[] = {
+@@ -984,7 +991,7 @@ static zend_function_entry php_rararch_class_functions[] = {
+ 	PHP_ME_MAPPING(isBroken,		rar_broken_is,			arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(setAllowBroken,	rar_allow_broken_set,	arginfo_rararchive_setallowbroken, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(close,			rar_close,				arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
+-	PHP_ME(rararch,					__toString,				arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
++	PHP_ME(rararch,					__toString,				arginfo_rararchive_tostring,	ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(__construct,		rar_bogus_ctor,			arginfo_rararchive_void,		ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
+ #if PHP_MAJOR_VERSION >= 8
+ 	PHP_ME(rararch,					getIterator,			arginfo_rararchive_getiterator,	ZEND_ACC_PUBLIC)
+diff --git a/rarentry.c b/rarentry.c
+index 5e680f6..cb5bdaa 100644
+--- a/rarentry.c
++++ b/rarentry.c
+@@ -735,6 +735,13 @@ ZEND_END_ARG_INFO()
+ 
+ ZEND_BEGIN_ARG_INFO(arginfo_rar_void, 0)
+ ZEND_END_ARG_INFO()
++
++#if PHP_VERSION_ID >= 80200
++ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_rar_tostring, 0, 0, IS_STRING, 0)
++ZEND_END_ARG_INFO()
++#else
++#define arginfo_rar_tostring arginfo_rar_void
++#endif
+ /* }}} */
+ 
+ static zend_function_entry php_rar_class_functions[] = {
+@@ -755,7 +762,7 @@ static zend_function_entry php_rar_class_functions[] = {
+ 	PHP_ME(rarentry,		getRedirType,		arginfo_rar_void,	ZEND_ACC_PUBLIC)
+ 	PHP_ME(rarentry,		isRedirectToDirectory,	arginfo_rar_void,	ZEND_ACC_PUBLIC)
+ 	PHP_ME(rarentry,		getRedirTarget,	arginfo_rar_void,	ZEND_ACC_PUBLIC)
+-	PHP_ME(rarentry,		__toString,			arginfo_rar_void,	ZEND_ACC_PUBLIC)
++	PHP_ME(rarentry,		__toString,			arginfo_rar_tostring,	ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(__construct,	rar_bogus_ctor,	arginfo_rar_void,	ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
+ 	{NULL, NULL, NULL}
+ };
+EOF
+
+cd ..
+cd igbinary && git fetch --all && git checkout 3.2.12 && cd ..
+cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0RC2 && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.2.0
+git checkout php-8.2.1
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.2/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.2 --program-suffix=8.2 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.1.13
+git checkout php-8.1.14
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.0.26
+git checkout php-8.0.27
 cat <<EOF | git apply -
 diff --git a/ext/openssl/openssl.c b/ext/openssl/openssl.c
 index 19e7a0d79e..4d159895ac 100644
@@ -1438,7 +1536,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.5.0/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.5.1/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
@@ -1459,7 +1557,7 @@ if [ ! -e /var/www/html/phpmyadmin ]; then
 	mkdir -p /var/www/html/phpmyadmin
 	cd /var/www/html/phpmyadmin
 	git clone -b STABLE https://github.com/phpmyadmin/phpmyadmin/ .
-	composer install --no-dev
+	composer install --no-dev --no-interaction --optimize-autoloader
 	yarn
 fi
 if [ ! -e /var/www/html/adminer ]; then
