@@ -105,7 +105,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	listen unix:/var/run/nginx/suspended backlog=4096;
 	add_header Content-Type text/html;
 	location / {
-		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
+		return 200 \'<html lang="en" dir="ltr"><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
 	}
 }
 ';

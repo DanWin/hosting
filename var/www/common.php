@@ -14,10 +14,11 @@ const SERVERS=[ //servers and ports we are running on
 'hosting.danwin1210.me'=>['sftp'=>22, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
 ];
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
-const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considdered as unchanged for deletion
+const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considered as unchanged for deletion
 'd41d8cd98f00b204e9800998ecf8427e', //empty file
-'7ae7e9bac6be76f00e0d95347111f037', //default file
-'703fac6634bf637f942db8906092d0ab', //new default file
+'7ae7e9bac6be76f00e0d95347111f037', //old default file
+'703fac6634bf637f942db8906092d0ab', //old default file
+'3cf6df544184b2b1831de38fa31f813f', //new default file
 'e109a5a44969c2a109aee0ea3565529e', //TOR HTML Site
 '31ff0d6a1d280d610a700f3c1ec6d857', //MyHacker test page
 ];
@@ -66,7 +67,7 @@ const NGINX_DEFAULT = 'server {
 	listen unix:/var/run/nginx/suspended backlog=4096 proxy_protocol;
 	add_header Content-Type text/html;
 	location / {
-		return 200 \'<html><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
+		return 200 \'<html lang="en" dir="ltr"><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
 	}
 }
 server {
@@ -188,7 +189,8 @@ function base32_encode(string $input) : string {
 	return $base32;
 }
 
-function send_captcha() {
+function send_captcha(): void
+{
 	if(!CAPTCHA || !extension_loaded('gd')){
 		return;
 	}
@@ -286,7 +288,7 @@ function send_captcha() {
 	echo "<td><input type=\"hidden\" name=\"challenge\" value=\"$randid\"><input type=\"text\" name=\"captcha\" autocomplete=\"off\"></td></tr>";
 }
 
-function check_login(){
+function check_login() : array {
 	session_start();
 	if(empty($_SESSION['csrf_token'])){
 		$_SESSION['csrf_token']=sha1(uniqid());
@@ -308,7 +310,8 @@ function check_login(){
 	return $user;
 }
 
-function get_system_hash($pass) {
+function get_system_hash($pass): string
+{
 	$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
 	$salt = '';
 	for($i = 0; $i < 16; ++$i){
@@ -317,7 +320,8 @@ function get_system_hash($pass) {
 	return crypt($pass, '$6$' . $salt . '$');
 }
 
-function check_captcha_error() {
+function check_captcha_error(): false|string
+{
 	if(CAPTCHA){
 		if(!isset($_REQUEST['challenge'])){
 			return 'Error: Wrong Captcha';
@@ -343,7 +347,8 @@ function check_captcha_error() {
 	return false;
 }
 
-function rewrite_torrc(string $instance){
+function rewrite_torrc(string $instance): void
+{
 	$db = get_db_instance();
 	$update_onion=$db->prepare('UPDATE onions SET private_key=? WHERE onion=?;');
 	$torrc='ClientUseIPv6 1
@@ -367,7 +372,6 @@ NumPrimaryGuards '.NUM_GUARDS.'
 				//php openssl implementation has some issues, re-export using native openssl
 				$pkey=openssl_pkey_get_private($tmp['private_key']);
 				openssl_pkey_export($pkey, $exported);
-				openssl_pkey_free($pkey);
 				$priv_key=shell_exec('echo ' . escapeshellarg($exported) . ' | openssl rsa');
 				//save hidden service
 				mkdir("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion", 0700);
@@ -455,16 +459,15 @@ function private_key_to_onion(string $priv_key) : array {
 			$message = 'Error: dmq1 invalid';
 			$ok = false;
 		}elseif(gmp_cmp($iqmp, gmp_invert($q, $p) ) !==0 ){
-			$sessage = 'Error: iqmp not inverse of q';
+			$message = 'Error: iqmp not inverse of q';
 			$ok = false;
 		}else{
 			$onion = get_onion_v2($pkey);
 		}
-		openssl_pkey_free($pkey);
 		return ['ok' => $ok, 'message' => $message, 'onion' => $onion, 'version' => $version];
 	} elseif(($priv = base64_decode($priv_key, true)) !== false){
 		$version = 3;
-		if(strpos($priv, '== ed25519v1-secret: type0 ==' . hex2bin('000000')) !== 0 || strlen($priv) !== 96){
+		if( ! str_starts_with( $priv, '== ed25519v1-secret: type0 ==' . hex2bin( '000000' ) ) || strlen($priv) !== 96){
 			$message = 'Error: v3 secret key invalid.';
 			$ok = false;
 		} else {
@@ -484,7 +487,6 @@ function generate_new_onion(int $version = 3) : array {
 		$pkey = openssl_pkey_new(['private_key_bits' => 1024, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
 		openssl_pkey_export($pkey, $priv_key);
 		$onion = get_onion_v2($pkey);
-		openssl_pkey_free($pkey);
 	} else {
 		$seed = random_bytes(32);
 		$sk = ed25519_seckey_expand($seed);
@@ -502,7 +504,8 @@ function ed25519_seckey_expand(string $seed) : string {
 	return $sk;
 }
 
-function rewrite_nginx_config(){
+function rewrite_nginx_config(): void
+{
 	$db = get_db_instance();
 	$nginx='';
 	$rewrites = [];
@@ -634,7 +637,8 @@ function rewrite_nginx_config(){
 	exec('systemctl reload nginx');
 }
 
-function rewrite_php_config(string $key){
+function rewrite_php_config(string $key): void
+{
 	$db = get_db_instance();
 	$stmt=$db->prepare("SELECT system_account FROM users WHERE instance = ? AND php=? AND todelete!=1 AND id NOT IN (SELECT user_id FROM new_account);");
 	foreach(array_replace(PHP_VERSIONS, DISABLED_PHP_VERSIONS) as $php_key => $version){
@@ -721,7 +725,8 @@ function add_user_db(int $user_id) : ?string {
 	return $mysql_db;
 }
 
-function del_user_db(int $user_id, string $mysql_db) {
+function del_user_db(int $user_id, string $mysql_db): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT mysql_user FROM users WHERE id = ?;');
 	$stmt->execute([$user_id]);
@@ -747,7 +752,8 @@ function get_new_tor_instance(string $type = 'onion') : string {
 	return $stmt->fetch(PDO::FETCH_NUM)[0];
 }
 
-function add_user_onion(int $user_id, string $onion, string $priv_key, int $onion_version) {
+function add_user_onion(int $user_id, string $onion, string $priv_key, int $onion_version): void
+{
 	$db = get_db_instance();
 	$stmt=$db->prepare('INSERT INTO onions (user_id, onion, private_key, version, enabled, enable_smtp, instance) VALUES (?, ?, ?, ?, 1, 0, ?);');
 	$instance = get_new_tor_instance();
@@ -755,7 +761,8 @@ function add_user_onion(int $user_id, string $onion, string $priv_key, int $onio
 	enqueue_instance_reload($instance);
 }
 
-function del_user_onion(int $user_id, string $onion) {
+function del_user_onion(int $user_id, string $onion): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT null FROM onions WHERE user_id = ? AND onion = ? AND enabled IN (0, 1);');
 	$stmt->execute([$user_id, $onion]);
@@ -794,7 +801,8 @@ function add_user_domain(int $user_id, string $domain) : string {
 	return '';
 }
 
-function del_user_domain(int $user_id, string $domain) {
+function del_user_domain(int $user_id, string $domain): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT null FROM domains WHERE user_id = ? AND domain = ? AND enabled IN (0, 1);');
 	$stmt->execute([$user_id, $domain]);
@@ -805,14 +813,16 @@ function del_user_domain(int $user_id, string $domain) {
 	}
 }
 
-function check_csrf_error(){
+function check_csrf_error(): false|string
+{
 	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
 		return 'Invalid CSRF token, please try again.';
 	}
 	return false;
 }
 
-function enqueue_instance_reload($instance = null){
+function enqueue_instance_reload($instance = null): void
+{
 	$db = get_db_instance();
 	if($instance === null){
 		$db->exec('UPDATE service_instances SET reload = 1 LIMIT 1;');
@@ -822,20 +832,19 @@ function enqueue_instance_reload($instance = null){
 	}
 }
 
-function get_db_instance(){
+function get_db_instance() : PDO {
 	static $db = null;
-	if($db !== null){
-		return $db;
-	}
-	try{
-		$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
-	}catch(PDOException $e){
-		die('No Connection to MySQL database!');
+	if($db === null){
+		try{
+			$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
+		}catch(PDOException $e){
+			die('No Connection to MySQL database!');
+		}
 	}
 	return $db;
 }
 
-function coinpayments_create_transaction(string $currency, int $price, string $payment_for, $user_id = null){
+function coinpayments_create_transaction(string $currency, int $price, string $payment_for, $user_id = null) : false|array {
 	$query=[];
 	$query['currency1'] = 'USD';
 	$query['currency2'] = $currency;
@@ -870,7 +879,7 @@ function coinpayments_create_transaction(string $currency, int $price, string $p
 	return $json['result'];
 }
 
-function coinpayments_get_rates(){
+function coinpayments_get_rates() : false|array {
 	$query=[];
 	$query['accepted'] = '1';
 	$query['short'] = '0';
@@ -900,7 +909,8 @@ function coinpayments_get_rates(){
 	return $json['result'];
 }
 
-function payment_status_update(string $txid){
+function payment_status_update(string $txid): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT * FROM payments WHERE txn_id = ?;');
 	$stmt->execute([$txid]);
@@ -929,7 +939,8 @@ function payment_status_update(string $txid){
 	}
 }
 
-function add_disk_quota(int $user_id, int $kb){
+function add_disk_quota(int $user_id, int $kb): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT quota_size FROM disk_quota WHERE user_id = ?;');
 	$stmt->execute([$user_id]);
@@ -938,7 +949,8 @@ function add_disk_quota(int $user_id, int $kb){
 	$stmt->execute([$tmp['quota_size'] + $kb, $user_id]);
 }
 
-function add_files_quota(int $user_id, int $number){
+function add_files_quota(int $user_id, int $number): void
+{
 	$db = get_db_instance();
 	$stmt = $db->prepare('SELECT quota_files FROM disk_quota WHERE user_id = ?;');
 	$stmt->execute([$user_id]);
@@ -957,14 +969,14 @@ function bytes_to_human_readable(int $bytes) : string {
 	}
 }
 
-function setup_chroot(string $account, string $last_account){
+function setup_chroot(string $account, string $last_account): void
+{
 	$system_account = sanitize_system_account($account);
 	if($system_account === false){
 		echo "ERROR: Account $account looks strange\n";
 		return;
 	}
 	$last_account = sanitize_system_account($last_account);
-	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
 	$user = posix_getpwnam($system_account);
 	$passwd_line = "$user[name]:$user[passwd]:$user[uid]:$user[gid]:$user[gecos]:/:$user[shell]";
 	exec('/var/www/setup_chroot.sh  ' . escapeshellarg("/home/$system_account"));
@@ -1000,7 +1012,8 @@ function setup_chroot(string $account, string $last_account){
 	}
 }
 
-function update_system_user_password(string $user, string $password){
+function update_system_user_password(string $user, string $password): void
+{
 	$system_account = sanitize_system_account($user);
 	if($system_account === false){
 		echo "ERROR: Account $user looks strange\n";
@@ -1021,7 +1034,7 @@ function update_system_user_password(string $user, string $password){
 	rewind($fp);
 	ftruncate($fp, 0);
 	foreach($lines as $line){
-		if(strpos($line, "$user:")===0){
+		if( str_starts_with( $line, "$user:" ) ){
 			$line = preg_replace("~$user:([^:]*):~", str_replace('$', '\$', "$user:$password:"), $line);
 		}
 		fwrite($fp, $line);
@@ -1031,7 +1044,8 @@ function update_system_user_password(string $user, string $password){
 	fclose($fp);
 }
 
-function sanitize_system_account(string $system_account){
+function sanitize_system_account(string $system_account): false|string
+{
 	$account = basename($system_account);
 	$user = posix_getpwnam($account);
 	if(empty($system_account) || $account !== $system_account || $user === false || $user['gid'] !== 33 || $user['uid'] < 1000){
@@ -1040,7 +1054,8 @@ function sanitize_system_account(string $system_account){
 	return $account;
 }
 
-function main_menu(string $current_site){
+function main_menu(string $current_site): void
+{
 	echo '<p>';
 	$sites = [
 		'index.php' => 'Info',
@@ -1069,7 +1084,8 @@ function main_menu(string $current_site){
 	echo '</p>';
 }
 
-function dashboard_menu(array $user, string $current_site){
+function dashboard_menu(array $user, string $current_site): void
+{
 	echo '<p>Logged in as ' . htmlspecialchars($user['username']);
 	$sites = [
 		'logout.php' => 'Logout',
@@ -1089,7 +1105,8 @@ function dashboard_menu(array $user, string $current_site){
 	echo '</p>';
 }
 
-function print_header(string $sub_title, string $style = '', string $base_target = '_self'){
+function print_header(string $sub_title, string $style = '', string $base_target = '_self'): void
+{
 ?>
 <!DOCTYPE html><html><head>
 <title><?php echo htmlspecialchars(SITE_NAME) . ' - ' . htmlspecialchars($sub_title); ?></title>
@@ -1099,7 +1116,7 @@ function print_header(string $sub_title, string $style = '', string $base_target
 <link rel="canonical" href="<?php echo CANONICAL_URL . $_SERVER['SCRIPT_NAME']; ?>">
 <?php
 	if(!empty($style)){
-		echo "<style type=\"text/css\">$style</style>";
+		echo "<style>$style</style>";
 	}
 	echo "<base rel=\"noopener\" target=\"$base_target\">";
 ?>

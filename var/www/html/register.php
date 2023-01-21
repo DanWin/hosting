@@ -147,7 +147,7 @@ foreach(PHP_VERSIONS as $key => $version){
 <tr><td colspan=2><label><input type="checkbox" name="public" value="1"<?php echo $public_list; ?>>Publish site on list of hosted sites</label></td></tr>
 <tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"<?php echo $autoindex; ?>>Enable autoindex (listing of files)</label></td></tr>
 <tr><td colspan=2>Type of hidden service:<br>
-<label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || isset($_POST['onion_type']) && $_POST['onion_type']==3) ? ' checked' : ''; ?>>Random v3 Address</label>
+<label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : ''; ?>>Random v3 Address</label>
 <label><input type="radio" name="onion_type" value="2"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : ''; ?>>Random v2 Address</label>
 <label><input id="custom_onion" type="radio" name="onion_type" value="custom"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : ''; ?>>Custom private key
 <textarea id="private_key" name="private_key" rows="5" cols="28">

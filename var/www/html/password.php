@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$stmt=$db->prepare('INSERT INTO pass_change (user_id, password) VALUES (?, ?);');
 			$hash=get_system_hash($_POST['newpass']);
 			$stmt->execute([$user['id'], $hash]);
-			$msg.='<p style="color:green;">Successfully changed system account password, change will take affect within the next minute.</p>';
+			$msg.='<p style="color:green;">Successfully changed system account password, change will take effect within the next minute.</p>';
 		}elseif($_REQUEST['type']==='sql'){
 			$stmt=$db->prepare("SET PASSWORD FOR '$user[mysql_user]'@'%'=PASSWORD(?);");
 			$stmt->execute([$_POST['newpass']]);

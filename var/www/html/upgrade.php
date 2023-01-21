@@ -14,7 +14,7 @@ print_header('Upgrade account', 'td{padding:5px;}');
 <?php
 $rates = coinpayments_get_rates();
 if($rates === false){
-	echo '<p>An error occured talking to coinpayments</p>';
+	echo '<p>An error occurred talking to coinpayments</p>';
 }else{
 ?>
 	<form action="upgrade.php" method="post">
@@ -56,7 +56,7 @@ if(isset($_POST['currency']) && isset($_POST['upgrade'])){
 		$db = get_db_instance();
 		$transaction = coinpayments_create_transaction($_POST['currency'], ACCOUNT_UPGRADES[$_POST['upgrade']]['usd_price'], $_POST['upgrade'], $user['id']);
 		if($transaction === false){
-			echo "<p>An error occured creating the transaction, please try again</p>";
+			echo "<p>An error occurred creating the transaction, please try again</p>";
 		}else{
 			echo "<p>Please pay $transaction[amount] $_POST[currency] to $transaction[address]</p>";
 			echo '<img src="'.(new QRCode(new QROptions(['outputType' => QRCode::OUTPUT_IMAGE_PNG, 'eccLevel' => QRCode::ECC_H])))->render($transaction['address']).'" alt="QR Code">';

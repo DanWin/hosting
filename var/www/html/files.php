@@ -320,8 +320,8 @@ foreach($list as $element){
 <script>
 document.getElementById('checkAllParent').innerHTML = '<input type="checkbox" onclick="toggle(this);">';
 function toggle(source) {
-  checkboxes = document.getElementsByClassName('fileCheck');
-  for(var i=0, n=checkboxes.length;i<n;i++) {
+  let checkboxes = document.getElementsByClassName('fileCheck');
+  for(let i=0, n=checkboxes.length;i<n;i++) {
     checkboxes[i].checked = source.checked;
   }
 }
@@ -329,21 +329,19 @@ function toggle(source) {
 </body></html>
 <?php
 
-function get_properties($name, &$icon, &$size){
-	if(substr($name, -1, 1)==='/'){
+function get_properties($name, &$icon, &$size): void
+{
+	if( str_ends_with( $name, '/' ) ){
 		$icon='dir';
 	}else{
 		$extension=strtolower(substr($name, strrpos($name, '.')+1));
-		if(isset(TYPES[$extension])){
-			$icon=TYPES[$extension];
-		}else{
-			$icon='ukwn';
-		}
+		$icon = TYPES[ $extension ] ?? 'ukwn';
 		$size = bytes_to_human_readable($size);
 	}
 }
 
-function send_not_found(){
+function send_not_found(): void
+{
 	header("HTTP/1.1 404 Not Found");
 	print_header('FileManager - 404 Not Found');
 	echo '<p>The requested file '.htmlspecialchars($_REQUEST['path']).' was not found on your account.</p>';
@@ -351,7 +349,8 @@ function send_not_found(){
 	echo '</body></html>';
 }
 
-function send_login(){
+function send_login(): void
+{
 	print_header('FileManager - Login');
 ?>
 <p>Please type in your system account password: <form action="files.php" method="post"><input name="sftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
@@ -360,7 +359,8 @@ function send_login(){
 <?php
 }
 
-function sftp_recursive_delete($sftp, $dir, $file){
+function sftp_recursive_delete($sftp, $dir, $file): void
+{
 	if(is_dir("ssh2.sftp://$sftp$dir/$file")){
 		$dir_handle = opendir("ssh2.sftp://$sftp$dir/$file");
 		while(($list = readdir($dir_handle)) !== false){
@@ -376,7 +376,8 @@ function sftp_recursive_delete($sftp, $dir, $file){
 	}
 }
 
-function send_rename($dir){
+function send_rename($dir): void
+{
 	print_header('FileManager - Rename file');
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
@@ -391,7 +392,8 @@ function send_rename($dir){
 	echo '</body></html>';
 }
 
-function send_edit($sftp, $dir){
+function send_edit($sftp, $dir): void
+{
 	print_header('FileManager - Edit file');
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';

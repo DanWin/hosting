@@ -24,8 +24,8 @@ print_header('Info');
 <li>Your own .onion domains</li>
 <li>Clearnet domains or a free subdomain of danwin1210.me</li>
 <li>Empty/Unused accounts will be automatically deleted after a month of inactivity</li>
-<li>PGP based Two Factor Authentication (2FA)</li>
-<li>There is a missing feature or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
+<li>PGP based Two-Factor Authentication (2FA)</li>
+<li>There is a missing feature, or you need a special configuration? Just <a href="https://danwin1210.me/contact.php">contact me</a> and I'll see what I can do.</li>
 <li>More to come…</li>
 </ul>
 <h2>Rules</h2>

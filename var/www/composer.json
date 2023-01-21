@@ -1,6 +1,14 @@
 {
     "require": {
-        "paragonie/sodium_compat": "^1.17",
-        "chillerlan/php-qrcode": "^4.3"
+        "paragonie/sodium_compat": "^v1.19",
+        "chillerlan/php-qrcode": "^4.3",
+        "ext-pdo": "*",
+        "ext-openssl": "*",
+        "ext-gmp": "*",
+        "ext-curl": "*",
+        "ext-posix": "*",
+        "ext-gnupg": "*",
+        "ext-ssh2": "*",
+        "ext-fileinfo": "*"
     }
 }

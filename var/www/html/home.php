@@ -208,7 +208,7 @@ if($count_onions<MAX_NUM_USER_ONIONS){
 	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
 	echo '<tr><td colspan="6">Add additional hidden service:<br>';
 	echo '<label><input type="radio" name="onion_type" value="3"';
-	echo (!isset($_POST['onion_type']) || isset($_POST['onion_type']) && $_POST['onion_type']==3) ? ' checked' : '';
+	echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : '';
 	echo '>Random v3 Address</label>';
 	echo '<label><input type="radio" name="onion_type" value="2"';
 	echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : '';
@@ -301,7 +301,7 @@ $usage_files_text = "$quota[quota_files_used]  of $quota[quota_files] - " . roun
 <h3>Logs</h3>
 <table border="1">
 <tr><th>Date</th><th>access.log</th><th>error.log</th></tr>
-<tr><td>Today</td><td><a href="log.php?type=access&amp;old=0" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=0" target="_blank">error.log</a></td></tr>
-<tr><td>Yesterday</td><td><a href="log.php?type=access&amp;old=1" target="_blank">access.log</log></td><td><a href="log.php?type=error&amp;old=1" target="_blank">error.log</a></td></tr>
+<tr><td>Today</td><td><a href="log.php?type=access&amp;old=0" target="_blank">access.log</a></td><td><a href="log.php?type=error&amp;old=0" target="_blank">error.log</a></td></tr>
+<tr><td>Yesterday</td><td><a href="log.php?type=access&amp;old=1" target="_blank">access.log</a></td><td><a href="log.php?type=error&amp;old=1" target="_blank">error.log</a></td></tr>
 </table>
 </body></html>
