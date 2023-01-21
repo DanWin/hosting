@@ -332,4 +332,4 @@ for LIB in /usr/lib/php/*/*.so; do
 done
 CHROOT_LIBRARIES
 ldconfig -r $CHROOT_DIRECTORY
-ln -f $CHROOT_DIRECTORY/usr/bin/php8.0 $CHROOT_DIRECTORY/usr/bin/php
+ln -f $CHROOT_DIRECTORY/usr/bin/php8.2 $CHROOT_DIRECTORY/usr/bin/php

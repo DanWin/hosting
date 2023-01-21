@@ -1531,7 +1531,7 @@ LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-ln -fs /usr/bin/php8.1 /usr/bin/php
+ln -fs /usr/bin/php8.2 /usr/bin/php
 cd ..
 ldconfig
 

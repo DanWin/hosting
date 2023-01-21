@@ -28,7 +28,7 @@ const ADMIN_PASSWORD='MY_PASSWORD'; //password for admin interface
 const SERVICE_INSTANCES=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']; //one character per instance - run multiple tor+php-fpm instances for load balancing, remove all but one instance if you expect less than 200 accounts. If tor starts using 100% cpu and failing circuits every few hours after a restart, add more instances. In my experience this happens around 250 hidden services per instance - run setup.php after change
 const DISABLED_PHP_VERSIONS=[]; //php versions still installed on the system but no longer offered for new accounts
 const PHP_VERSIONS=[6 => '8.0', 7 => '8.1', 8 => '8.2']; //currently active php versions
-const DEFAULT_PHP_VERSION='8.1'; //default php version
+const DEFAULT_PHP_VERSION='8.2'; //default php version
 const PHP_CONFIG='zend_extension=opcache.so
 memory_limit = 256M
 error_reporting = E_ALL
@@ -82,7 +82,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.1-hosting;
+			fastcgi_pass unix:/var/run/php/8.2-hosting;
 		}
 	}
 	location /squirrelmail {
@@ -90,7 +90,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.1-squirrelmail;
+			fastcgi_pass unix:/var/run/php/8.2-squirrelmail;
 		}
 	}
 	location /phpmyadmin {
@@ -98,7 +98,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html;
 			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.1-phpmyadmin;
+			fastcgi_pass unix:/run/php/8.2-phpmyadmin;
 		}
 	}
 	location /adminer {
@@ -107,7 +107,7 @@ server {
 			include snippets/fastcgi-php.conf;
 			fastcgi_param DOCUMENT_ROOT /html/adminer;
 			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.1-adminer;
+			fastcgi_pass unix:/run/php/8.2-adminer;
 		}
 	}
 	location /externals/jush/ {
@@ -627,7 +627,7 @@ function rewrite_nginx_config(): void
 		fastcgi_param MAIL_USER $tmp[system_account];
 		fastcgi_param DOCUMENT_ROOT /var/www/mail;
 		fastcgi_param SCRIPT_FILENAME /var/www/mail\$fastcgi_script_name;
-		fastcgi_pass unix:/var/run/php/8.1-mail;
+		fastcgi_pass unix:/var/run/php/8.2-mail;
 	}
 }
 ";
