@@ -1,0 +1,1194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-22 19:59+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
+#: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
+#: var/www/cron.php:134 var/www/cron.php:147 var/www/common.php:362
+#: var/www/common.php:530 var/www/common.php:568 var/www/common.php:609
+#: var/www/common.php:653 var/www/common.php:971 var/www/common.php:1014
+#, php-format
+msgid "ERROR: Account %s looks strange"
+msgstr ""
+
+#: var/www/cron.php:33
+#, php-format
+msgid "ERROR: Account %s already exists"
+msgstr ""
+
+#: var/www/html/index.php:4 var/www/common.php:1056
+msgid "Info"
+msgstr ""
+
+#: var/www/html/index.php:6
+msgid "Hosting - Info"
+msgstr ""
+
+#: var/www/html/index.php:8
+msgid "Here you can get yourself a free web hosting account on my server."
+msgstr ""
+
+#: var/www/html/index.php:9
+msgid "What you get:"
+msgstr ""
+
+#: var/www/html/index.php:11
+msgid "Completely free anonymous Tor and clearnet web hosting"
+msgstr ""
+
+#: var/www/html/index.php:12
+#, php-format
+msgid "Choose between PHP %s or no PHP support"
+msgstr ""
+
+#: var/www/html/index.php:13
+msgid "Nginx Webserver"
+msgstr ""
+
+#: var/www/html/index.php:14
+msgid "SQLite support"
+msgstr ""
+
+#: var/www/html/index.php:15
+#, php-format
+msgid "Up to %d MariaDB (MySQL) databases"
+msgstr ""
+
+#: var/www/html/index.php:16
+msgid ""
+"<a href=\"/phpmyadmin/\" target=\"_blank\">PHPMyAdmin</a> and <a href=\"/"
+"adminer/\" target=\"_blank\">Adminer</a> for web based database "
+"administration"
+msgstr ""
+
+#: var/www/html/index.php:17
+msgid "Web-based file manager"
+msgstr ""
+
+#: var/www/html/index.php:18
+msgid "SFTP access"
+msgstr ""
+
+#: var/www/html/index.php:19
+msgid "command line access to shell via SSH"
+msgstr ""
+
+#: var/www/html/index.php:20
+msgid "1GB disk quota and a maximum of 100.000 files"
+msgstr ""
+
+#: var/www/html/index.php:20
+msgid " - upgradable"
+msgstr ""
+
+#: var/www/html/index.php:21
+#, php-format
+msgid ""
+"mail() can send e-mails from your_system_account@%1$s "
+"(your_system_account@%2$s for clearnet)"
+msgstr ""
+
+#: var/www/html/index.php:22
+msgid "Webmail and IMAP, POP3 and SMTP access to your mail account"
+msgstr ""
+
+#: var/www/html/index.php:23
+msgid "Your own .onion domains"
+msgstr ""
+
+#: var/www/html/index.php:24
+#, php-format
+msgid "Clearnet domains or a free subdomain of %s"
+msgstr ""
+
+#: var/www/html/index.php:25
+msgid ""
+"Empty/Unused accounts will be automatically deleted after a month of "
+"inactivity"
+msgstr ""
+
+#: var/www/html/index.php:26
+msgid "PGP based Two-Factor Authentication (2FA)"
+msgstr ""
+
+#: var/www/html/index.php:27
+#, php-format
+msgid ""
+"There is a missing feature, or you need a special configuration? Just <a "
+"href=\"%s\">contact me</a> and I'll see what I can do."
+msgstr ""
+
+#: var/www/html/index.php:28
+msgid "More to come…"
+msgstr ""
+
+#: var/www/html/index.php:30
+msgid "Rules"
+msgstr ""
+
+#: var/www/html/index.php:32
+msgid "No child pornography!"
+msgstr ""
+
+#: var/www/html/index.php:33
+msgid "No terroristic propaganda!"
+msgstr ""
+
+#: var/www/html/index.php:34
+msgid "No illegal content according to German law!"
+msgstr ""
+
+#: var/www/html/index.php:35
+msgid "No malware! (e.g. botnets)"
+msgstr ""
+
+#: var/www/html/index.php:36
+msgid "No phishing, scams or spam!"
+msgstr ""
+
+#: var/www/html/index.php:37
+msgid "No mining without explicit user permission! (e.g. using coinhive)"
+msgstr ""
+
+#: var/www/html/index.php:38
+msgid ""
+"No shops, markets or any other sites dedicated to making money! (This is a "
+"FREE hosting!)"
+msgstr ""
+
+#: var/www/html/index.php:39
+msgid ""
+"No proxy scripts! (You are already using Tor and this will just burden the "
+"network)"
+msgstr ""
+
+#: var/www/html/index.php:40
+msgid "No IP logger or similar de-anonymizer sites!"
+msgstr ""
+
+#: var/www/html/index.php:41
+msgid ""
+"I preserve the right to delete any site for violating these rules and adding "
+"new rules at any time."
+msgstr ""
+
+#: var/www/html/index.php:42
+msgid ""
+"Should you not honor these rules, I will (have to) work together with Law "
+"Enforcement!"
+msgstr ""
+
+#: var/www/html/list.php:5 var/www/common.php:1059
+msgid "List of hosted sites"
+msgstr ""
+
+#: var/www/html/list.php:7
+msgid "Hosting - List of hosted sites"
+msgstr ""
+
+#: var/www/html/list.php:14
+#, php-format
+msgid "Here is a list of %d public hosted sites (%d sites hidden):"
+msgstr ""
+
+#: var/www/html/list.php:16 var/www/html/admin.php:50
+msgid "Onion link"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:5
+msgid "Upgrades disabled"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:8
+msgid "CoinPayments disabled"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:11
+msgid "No HMAC signature sent"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:15
+msgid "No Merchant ID passed"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:18
+msgid "Invalid Merchant ID"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:22
+msgid "Error reading POST data"
+msgstr ""
+
+#: var/www/html/coinpayments_ipn.php:26
+msgid "HMAC signature does not match"
+msgstr ""
+
+#: var/www/html/upgrade.php:13
+msgid "Hosting - Upgrade account"
+msgstr ""
+
+#: var/www/html/upgrade.php:17
+msgid "An error occurred talking to coinpayments"
+msgstr ""
+
+#: var/www/html/upgrade.php:22
+msgid "Desired upgrade"
+msgstr ""
+
+#: var/www/html/upgrade.php:34
+msgid "Desired payment currency"
+msgstr ""
+
+#: var/www/html/upgrade.php:45
+msgid "Pay now"
+msgstr ""
+
+#: var/www/html/upgrade.php:52
+msgid "Sorry, looks like you didn't select a valid upgrade."
+msgstr ""
+
+#: var/www/html/upgrade.php:54
+msgid "Sorry, looks like you didn't select a valid payment currency."
+msgstr ""
+
+#: var/www/html/upgrade.php:59
+msgid "An error occurred creating the transaction, please try again"
+msgstr ""
+
+#: var/www/html/upgrade.php:61
+#, php-format
+msgid "Please pay %1$s to %2$s"
+msgstr ""
+
+#: var/www/html/upgrade.php:62
+msgid "QR Code"
+msgstr ""
+
+#: var/www/html/upgrade.php:63
+msgid ""
+"Once paid, it can take a while until the upgrade is applied to your account. "
+"Usually within an hour."
+msgstr ""
+
+#: var/www/html/upgrade.php:68 var/www/html/files.php:357
+#: var/www/html/password.php:64 var/www/html/pgp.php:79
+msgid "Go back to dashboard"
+msgstr ""
+
+#: var/www/html/files.php:12
+msgid "No Connection to SFTP server!"
+msgstr ""
+
+#: var/www/html/files.php:267
+#, php-format
+msgid "FileManager - Index of %s"
+msgstr ""
+
+#: var/www/html/files.php:270
+#, php-format
+msgid "Index of %s"
+msgstr ""
+
+#: var/www/html/files.php:272
+msgid "Upload up to 1GB and up to 100 files at once"
+msgstr ""
+
+#: var/www/html/files.php:272
+msgid "Upload"
+msgstr ""
+
+#: var/www/html/files.php:291
+msgid "Create directory"
+msgstr ""
+
+#: var/www/html/files.php:292
+msgid "Create file"
+msgstr ""
+
+#: var/www/html/files.php:293
+msgid "Filename"
+msgstr ""
+
+#: var/www/html/files.php:295 var/www/html/files.php:315
+#: var/www/html/admin.php:71 var/www/html/admin.php:91
+#: var/www/html/admin.php:102 var/www/html/delete.php:26
+#: var/www/html/home.php:201 var/www/html/home.php:240
+#: var/www/html/home.php:269
+msgid "Delete"
+msgstr ""
+
+#: var/www/html/files.php:296 var/www/html/files.php:316
+#: var/www/html/files.php:390
+msgid "Rename"
+msgstr ""
+
+#: var/www/html/files.php:297 var/www/html/files.php:317
+#: var/www/html/admin.php:71
+msgid "Edit"
+msgstr ""
+
+#: var/www/html/files.php:298 var/www/html/files.php:318
+msgid "Unzip"
+msgstr ""
+
+#: var/www/html/files.php:301
+msgid "File"
+msgstr ""
+
+#: var/www/html/files.php:302
+msgid "Last Modified"
+msgstr ""
+
+#: var/www/html/files.php:303
+msgid "Size"
+msgstr ""
+
+#: var/www/html/files.php:306
+msgid "Parent Directory"
+msgstr ""
+
+#: var/www/html/files.php:346
+msgid "FileManager - 404 Not Found"
+msgstr ""
+
+#: var/www/html/files.php:347
+#, php-format
+msgid "The requested file %s was not found on your account."
+msgstr ""
+
+#: var/www/html/files.php:348
+msgid "Go back to home directory"
+msgstr ""
+
+#: var/www/html/files.php:354
+msgid "FileManager - Login"
+msgstr ""
+
+#: var/www/html/files.php:356
+msgid "Please type in your system account password:"
+msgstr ""
+
+#: var/www/html/files.php:381
+msgid "FileManager - Rename file"
+msgstr ""
+
+#: var/www/html/files.php:391 var/www/html/files.php:411
+msgid "Go back"
+msgstr ""
+
+#: var/www/html/files.php:397
+msgid "FileManager - Edit file"
+msgstr ""
+
+#: var/www/html/files.php:410 var/www/html/admin.php:191
+#: var/www/html/admin.php:201 var/www/html/home.php:200
+#: var/www/html/home.php:239
+msgid "Save"
+msgstr ""
+
+#: var/www/html/login.php:27
+msgid "Wrong 2FA code"
+msgstr ""
+
+#: var/www/html/login.php:36
+msgid "Error: username may not be empty."
+msgstr ""
+
+#: var/www/html/login.php:56
+msgid "Error: Your account is pending admin approval. Please try again later."
+msgstr ""
+
+#: var/www/html/login.php:58
+msgid "Error: Your account is pending creation. Please try again in a minute."
+msgstr ""
+
+#: var/www/html/login.php:62
+msgid "Error: wrong password."
+msgstr ""
+
+#: var/www/html/login.php:66
+msgid ""
+"Error: username was not found. If you forgot it, you can enter youraccount."
+"onion instead."
+msgstr ""
+
+#: var/www/html/login.php:86 var/www/html/login.php:130
+#: var/www/html/admin.php:24 var/www/common.php:1058
+msgid "Login"
+msgstr ""
+
+#: var/www/html/login.php:101
+msgid ""
+"To login, please enter the following code to confirm ownership of your key:"
+msgstr ""
+
+#: var/www/html/login.php:103
+msgid ""
+"To login, please decrypt the following PGP encrypted message and confirm the "
+"code:"
+msgstr ""
+
+#: var/www/html/login.php:108 var/www/html/pgp.php:62
+msgid "Confirm"
+msgstr ""
+
+#: var/www/html/login.php:110
+msgid "Don't have the private key at hand?"
+msgstr ""
+
+#: var/www/html/login.php:110 var/www/html/admin.php:39 var/www/common.php:1086
+msgid "Logout"
+msgstr ""
+
+#: var/www/html/login.php:117
+msgid "Hosting - Login"
+msgstr ""
+
+#: var/www/html/login.php:123 var/www/html/admin.php:50
+#: var/www/html/admin.php:88 var/www/html/home.php:281
+#: var/www/html/register.php:119
+msgid "Username"
+msgstr ""
+
+#: var/www/html/login.php:128 var/www/html/admin.php:22
+#: var/www/html/register.php:122
+msgid "Password"
+msgstr ""
+
+#: var/www/html/login.php:132 var/www/html/admin.php:31
+msgid ""
+"If you disabled cookies, please re-enable them. You can't log in without!"
+msgstr ""
+
+#: var/www/html/password.php:14 var/www/html/password.php:16
+#: var/www/html/admin.php:29 var/www/html/delete.php:10
+msgid "Wrong password!"
+msgstr ""
+
+#: var/www/html/password.php:22
+msgid "Successfully changed account password."
+msgstr ""
+
+#: var/www/html/password.php:27
+msgid ""
+"Successfully changed system account password, change will take effect within "
+"the next minute."
+msgstr ""
+
+#: var/www/html/password.php:32
+msgid "Successfully changed sql password."
+msgstr ""
+
+#: var/www/html/password.php:34
+msgid "Couldn't update password: Unknown reset type."
+msgstr ""
+
+#: var/www/html/password.php:39 var/www/common.php:1089
+msgid "Change password"
+msgstr ""
+
+#: var/www/html/password.php:42
+msgid "Reset type:"
+msgstr ""
+
+#: var/www/html/password.php:47
+msgid "Account"
+msgstr ""
+
+#: var/www/html/password.php:52
+msgid "System account"
+msgstr ""
+
+#: var/www/html/password.php:57
+msgid "MySQL"
+msgstr ""
+
+#: var/www/html/password.php:59
+msgid "Account password:"
+msgstr ""
+
+#: var/www/html/password.php:60
+msgid "New password:"
+msgstr ""
+
+#: var/www/html/password.php:61
+msgid "Confirm password:"
+msgstr ""
+
+#: var/www/html/password.php:62
+msgid "Reset"
+msgstr ""
+
+#: var/www/html/admin.php:9
+msgid "Admin panel"
+msgstr ""
+
+#: var/www/html/admin.php:11
+msgid "Hosting - Admin panel"
+msgstr ""
+
+#: var/www/html/admin.php:37
+#, php-format
+msgid "Approve pending sites (%s)"
+msgstr ""
+
+#: var/www/html/admin.php:39
+msgid "List of accounts"
+msgstr ""
+
+#: var/www/html/admin.php:39
+msgid "Delete accounts"
+msgstr ""
+
+#: var/www/html/admin.php:39
+msgid "Suspend hidden services"
+msgstr ""
+
+#: var/www/html/admin.php:39
+msgid "Edit hidden services"
+msgstr ""
+
+#: var/www/html/admin.php:41
+msgid "Welcome to the admin panel!"
+msgstr ""
+
+#: var/www/html/admin.php:50 var/www/html/admin.php:88
+#: var/www/html/home.php:179 var/www/html/home.php:228
+#: var/www/html/home.php:259
+msgid "Action"
+msgstr ""
+
+#: var/www/html/admin.php:71 var/www/html/admin.php:128
+msgid "Suspend"
+msgstr ""
+
+#: var/www/html/admin.php:82
+msgid "Successfully approved"
+msgstr ""
+
+#: var/www/html/admin.php:88
+msgid "Onion address"
+msgstr ""
+
+#: var/www/html/admin.php:91
+msgid "Approve"
+msgstr ""
+
+#: var/www/html/admin.php:96
+msgid "Delete accounts:"
+msgstr ""
+
+#: var/www/html/admin.php:99 var/www/html/admin.php:125
+#: var/www/html/admin.php:152
+msgid "Onion address:"
+msgstr ""
+
+#: var/www/html/admin.php:112
+msgid "Successfully queued for deletion!"
+msgstr ""
+
+#: var/www/html/admin.php:114 var/www/html/admin.php:141
+#: var/www/html/admin.php:203
+msgid "Onion address not hosted by us!"
+msgstr ""
+
+#: var/www/html/admin.php:117 var/www/html/admin.php:144
+#: var/www/html/admin.php:206
+msgid "Invalid onion address!"
+msgstr ""
+
+#: var/www/html/admin.php:122
+msgid "Suspend hidden service:"
+msgstr ""
+
+#: var/www/html/admin.php:138
+msgid "Successfully queued for suspension!"
+msgstr ""
+
+#: var/www/html/admin.php:149
+msgid "Edit hidden service:"
+msgstr ""
+
+#: var/www/html/admin.php:183
+msgid "Changes successfully saved!"
+msgstr ""
+
+#: var/www/html/admin.php:191 var/www/html/home.php:179
+msgid "Onion"
+msgstr ""
+
+#: var/www/html/admin.php:191 var/www/html/admin.php:195
+#: var/www/html/admin.php:198 var/www/html/home.php:179
+#: var/www/html/home.php:193 var/www/html/home.php:196
+#: var/www/html/home.php:228 var/www/html/home.php:237
+msgid "Enabled"
+msgstr ""
+
+#: var/www/html/admin.php:191 var/www/html/home.php:179
+msgid "SMTP enabled"
+msgstr ""
+
+#: var/www/html/admin.php:191 var/www/html/home.php:179
+msgid "Nr. of intros"
+msgstr ""
+
+#: var/www/html/admin.php:191 var/www/html/home.php:179
+msgid "Max streams per rend circuit"
+msgstr ""
+
+#: var/www/html/faq.php:4 var/www/common.php:1060
+msgid "FAQ"
+msgstr ""
+
+#: var/www/html/faq.php:6
+msgid "Hosting - FAQ"
+msgstr ""
+
+#: var/www/html/faq.php:9
+msgid "Question"
+msgstr ""
+
+#: var/www/html/faq.php:9
+msgid "Answer"
+msgstr ""
+
+#: var/www/html/faq.php:10
+msgid "Your rules are so strict. Can't you make an exception for my site?"
+msgstr ""
+
+#: var/www/html/faq.php:10
+msgid ""
+"No, I will not make exceptions for any site and neither am I corruptible by "
+"offering me money. Once I start making an exception for your site, I would "
+"have to for every other site as well which is the same as if the rules "
+"didn't exist."
+msgstr ""
+
+#: var/www/html/faq.php:11
+msgid "I have an .htaccess file, but it doesn't work. How can I fix it?"
+msgstr ""
+
+#: var/www/html/faq.php:11
+#, php-format
+msgid ""
+".htaccess files are meant for Apache2 webservers. My server is based on "
+"NginX, which is much faster due to using static configuration files and not "
+"reading files like .htaccess at runtime. You can <a href=\"%s\">contact me</"
+"a> and tell me your sites address where the .htaccess file is. I will then "
+"check your .htaccess and convert the rules to NginX rules and apply those."
+msgstr ""
+
+#: var/www/html/faq.php:12
+msgid "I just uploaded my page, but it's broken. HELP!"
+msgstr ""
+
+#: var/www/html/faq.php:12
+#, php-format
+msgid ""
+"Most likely your site makes use of rewriting rules, which are typically "
+"located in an .htaccess file or are mentioned in a README file. Just <a "
+"href=\"%s\">contact me</a> in this case. Also see the previous question."
+msgstr ""
+
+#: var/www/html/faq.php:13
+msgid "Can I host a porn site?"
+msgstr ""
+
+#: var/www/html/faq.php:13
+msgid "Yes as long as your content is legal you may upload adult content."
+msgstr ""
+
+#: var/www/html/faq.php:14
+msgid "What is the directory structure for when I connect via sftp?"
+msgstr ""
+
+#: var/www/html/faq.php:14
+msgid ""
+"There are several directories you on the server for your account:"
+"<br><b>Maildir</b> - used to store your mails in (don't touch "
+"it)<br><b>data</b> - You can store application data here that should not be "
+"accessible via your site. E.g. configuration or database files.<br><b>tmp</"
+"b> - anything saved here will automatically be deleted after about 24 "
+"hours<br><b>www</b> - this is where you upload your website which becomes "
+"then available under your domain.<br><b>logs</b> - you will find webserver "
+"logs here<br><b>.ssh</b> - by uploading your ssh public key as "
+"authorized_keys in this folder, you can authenticate to sftp using your ssh "
+"key, without a password"
+msgstr ""
+
+#: var/www/html/faq.php:15
+msgid ""
+"My application is very ressource intensive, or I want to host a different "
+"service e.g. my own tor relay. Can you get me a VPS?"
+msgstr ""
+
+#: var/www/html/faq.php:15
+#, php-format
+msgid ""
+"Yes, if you have special requirements, want a dedicated VPS for your "
+"application or just want to anonymously support the Tor network (or other "
+"networks) without having to deal with server setup etc. I can offer you a "
+"managed VPS hosting. However, this will not be for free. It depends on which "
+"server you want me to get. For details, <a href=\"%s\">contact me</a>"
+msgstr ""
+
+#: var/www/html/faq.php:16
+msgid ""
+"I want to also publish my site on clearnet. Can you offer a clearnet relay?"
+msgstr ""
+
+#: var/www/html/faq.php:16
+#, php-format
+msgid ""
+"Yes, I can offer you a free subdomain of %1$s, which you can configure in "
+"your dashboard. Or if you have your own domain you can use that one, point "
+"your DNS settings to the IPs given in your dashboard and <a "
+"href=\"%2$s\">contact me</a> for setting up an SSL certificate for your "
+"domain."
+msgstr ""
+
+#: var/www/html/faq.php:17
+msgid ""
+"I'm using CloudFlare, but when I open my site, it shows too many redirects."
+msgstr ""
+
+#: var/www/html/faq.php:17
+msgid ""
+"By default CloudFlare makes unencrypted requests to the backend server, but "
+"my server tells any client that wants an insecure connection to upgrade to a "
+"secure connection and use https:// instead of http://. CloudFlare just "
+"forwards this redirection to the client, which then again asks CloudFlare "
+"for the same thing again, but CloudFlare still connects to my server via an "
+"insecure http:// connection. To fix this, go to your CloudFlare dashboard "
+"and manage your domains settings. Under \"Crypto\" you can find settings for "
+"SSL. Change the setting from Flexible to Full, which makes CloudFlare use a "
+"secure https:// connection when talking to my server."
+msgstr ""
+
+#: var/www/html/pgp.php:4 var/www/common.php:1088
+msgid "PGP 2FA"
+msgstr ""
+
+#: var/www/html/pgp.php:17
+msgid "There was an error importing the key"
+msgstr ""
+
+#: var/www/html/pgp.php:27
+msgid "Sorry, the code was incorrect"
+msgstr ""
+
+#: var/www/html/pgp.php:38
+msgid "Yay, PGP based 2FA is enabled!"
+msgstr ""
+
+#: var/www/html/pgp.php:48
+msgid ""
+"Sorry, this key can't be used to encrypt a message to you. Your key may have "
+"expired or has been revoked."
+msgstr ""
+
+#: var/www/html/pgp.php:56
+msgid ""
+"To enable 2FA, please enter the following code to confirm ownership of your "
+"key:"
+msgstr ""
+
+#: var/www/html/pgp.php:57
+msgid ""
+"To enable 2FA using your PGP key, please decrypt the following PGP encrypted "
+"message and confirm the code:"
+msgstr ""
+
+#: var/www/html/pgp.php:71
+msgid "Add your PGP key for more security features like 2FA:"
+msgstr ""
+
+#: var/www/html/pgp.php:76
+msgid "Update PGP key"
+msgstr ""
+
+#: var/www/html/delete.php:22
+msgid ""
+"This will delete your account and all data associated with it. It can't be "
+"un-done. Are you sure?"
+msgstr ""
+
+#: var/www/html/delete.php:25
+msgid "Enter your account password to confirm"
+msgstr ""
+
+#: var/www/html/delete.php:28
+msgid "No, don't delete."
+msgstr ""
+
+#: var/www/html/home.php:16
+msgid "Delete database"
+msgstr ""
+
+#: var/www/html/home.php:18
+#, php-format
+msgid ""
+"This will delete your database %s and all data associated with it. It can't "
+"be un-done. Are you sure?"
+msgstr ""
+
+#: var/www/html/home.php:21 var/www/html/home.php:42 var/www/html/home.php:118
+msgid "Yes, delete"
+msgstr ""
+
+#: var/www/html/home.php:23 var/www/html/home.php:44 var/www/html/home.php:120
+msgid "No, don't delete"
+msgstr ""
+
+#: var/www/html/home.php:37
+msgid "Delete onion domain"
+msgstr ""
+
+#: var/www/html/home.php:39
+#, php-format
+msgid ""
+"This will delete your onion domain %s and all data asociated with it. It "
+"can't be un-done. Are you sure?"
+msgstr ""
+
+#: var/www/html/home.php:65 var/www/html/register.php:72
+msgid "Error onion already exists."
+msgstr ""
+
+#: var/www/html/home.php:113
+msgid "Delete domain"
+msgstr ""
+
+#: var/www/html/home.php:115
+#, php-format
+msgid ""
+"This will delete your domain %s and all data asociated with it. It can't be "
+"un-done. Are you sure?"
+msgstr ""
+
+#: var/www/html/home.php:171 var/www/common.php:1087
+msgid "Dashboard"
+msgstr ""
+
+#: var/www/html/home.php:176
+#, php-format
+msgid "Enter system account password to check your %s mail:"
+msgstr ""
+
+#: var/www/html/home.php:176
+msgid "Login to webmail"
+msgstr ""
+
+#: var/www/html/home.php:177
+msgid "Onion domains"
+msgstr ""
+
+#: var/www/html/home.php:179
+msgid "Private key"
+msgstr ""
+
+#: var/www/html/home.php:189
+msgid "Show private key"
+msgstr ""
+
+#: var/www/html/home.php:203 var/www/html/home.php:242
+msgid "Unavailable"
+msgstr ""
+
+#: var/www/html/home.php:209
+msgid "Add additional hidden service:"
+msgstr ""
+
+#: var/www/html/home.php:212 var/www/html/register.php:150
+msgid "Random v3 Address"
+msgstr ""
+
+#: var/www/html/home.php:215 var/www/html/register.php:151
+msgid "Random v2 Address"
+msgstr ""
+
+#: var/www/html/home.php:218 var/www/html/register.php:152
+msgid "Custom private key"
+msgstr ""
+
+#: var/www/html/home.php:222
+msgid "Add onion"
+msgstr ""
+
+#: var/www/html/home.php:226
+msgid "Clearnet domains"
+msgstr ""
+
+#: var/www/html/home.php:228
+msgid "Domain"
+msgstr ""
+
+#: var/www/html/home.php:248
+msgid "Add additional domain:"
+msgstr ""
+
+#: var/www/html/home.php:252
+msgid "Add domain"
+msgstr ""
+
+#: var/www/html/home.php:255
+#, php-format
+msgid ""
+"To enable your clearnet domain, edit your DNS settings and enter %1$s as "
+"your A record and %2$s as your AAAA record. Once you have modified your DNS "
+"settings, <a href=\"%3$s\" target=\"_blank\">contact me</a> to configure the "
+"SSL certificate. You may also use any subdomain of %4$s"
+msgstr ""
+
+#: var/www/html/home.php:257
+msgid "MySQL Database<"
+msgstr ""
+
+#: var/www/html/home.php:259
+msgid "Database"
+msgstr ""
+
+#: var/www/html/home.php:259 var/www/html/home.php:281
+msgid "Host"
+msgstr ""
+
+#: var/www/html/home.php:259
+msgid "User"
+msgstr ""
+
+#: var/www/html/home.php:274
+msgid "Add new database"
+msgstr ""
+
+#: var/www/html/home.php:277
+msgid "Change MySQL password"
+msgstr ""
+
+#: var/www/html/home.php:278
+#, php-format
+msgid ""
+"You can use <a href=\"/phpmyadmin/\" target=\"_blank\">PHPMyAdmin</a> and <a "
+"href=\"/adminer/?username=%s\" target=\"_blank\">Adminer</a> for web based "
+"database administration."
+msgstr ""
+
+#: var/www/html/home.php:279
+msgid "System Account"
+msgstr ""
+
+#: var/www/html/home.php:281
+msgid "SFTP Port"
+msgstr ""
+
+#: var/www/html/home.php:281
+msgid "POP3 Port"
+msgstr ""
+
+#: var/www/html/home.php:281
+msgid "IMAP Port"
+msgstr ""
+
+#: var/www/html/home.php:281
+msgid "SMTP port"
+msgstr ""
+
+#: var/www/html/home.php:288
+msgid "Change system account password"
+msgstr ""
+
+#: var/www/html/home.php:289
+msgid ""
+"You can use the <a target=\"_blank\" href=\"files.php\">FileManager</a> for "
+"web based file management."
+msgstr ""
+
+#: var/www/html/home.php:297
+#, php-format
+msgid "%d of %d - %f%%"
+msgstr ""
+
+#: var/www/html/home.php:299
+msgid "Your disk usage:"
+msgstr ""
+
+#: var/www/html/home.php:299 var/www/html/home.php:300
+#, php-format
+msgid "%s (updated hourly)"
+msgstr ""
+
+#: var/www/html/home.php:299 var/www/html/home.php:300
+msgid "Upgrade"
+msgstr ""
+
+#: var/www/html/home.php:300
+msgid "Your file number usage:"
+msgstr ""
+
+#: var/www/html/home.php:301
+msgid "Logs"
+msgstr ""
+
+#: var/www/html/home.php:303
+msgid "Date"
+msgstr ""
+
+#: var/www/html/home.php:304
+msgid "Today"
+msgstr ""
+
+#: var/www/html/home.php:305
+msgid "Yesterday"
+msgstr ""
+
+#: var/www/html/register.php:9 var/www/html/register.php:158
+#: var/www/common.php:1057
+msgid "Register"
+msgstr ""
+
+#: var/www/html/register.php:11
+msgid "Hosting - Register"
+msgstr ""
+
+#: var/www/html/register.php:37
+msgid "Error: password empty."
+msgstr ""
+
+#: var/www/html/register.php:40
+msgid "Error: password confirmation does not match."
+msgstr ""
+
+#: var/www/html/register.php:43
+msgid "Error: username empty."
+msgstr ""
+
+#: var/www/html/register.php:46
+msgid ""
+"Error: username may only contain characters that are in the rage of a-z "
+"(lower case) - . _ and 0-9."
+msgstr ""
+
+#: var/www/html/register.php:49
+msgid "Error: username may not be longer than 50 characters."
+msgstr ""
+
+#: var/www/html/register.php:55
+msgid "Error: this username is already registered."
+msgstr ""
+
+#: var/www/html/register.php:95
+msgid ""
+"To prevent abuse a site can only be registered every 60 seconds, but one has "
+"already been registered within the last 60 seconds. Please try again."
+msgstr ""
+
+#: var/www/html/register.php:114
+#, php-format
+msgid ""
+"Your onion domain %s has successfully been created. Please wait up to one "
+"minute until the changes have been processed. You can then login <a "
+"href=\"login.php\">here</a>."
+msgstr ""
+
+#: var/www/html/register.php:123
+msgid "Confirm password"
+msgstr ""
+
+#: var/www/html/register.php:137
+msgid "PHP version"
+msgstr ""
+
+#: var/www/html/register.php:138
+msgid "None"
+msgstr ""
+
+#: var/www/html/register.php:147
+msgid "Publish site on list of hosted sites"
+msgstr ""
+
+#: var/www/html/register.php:148
+msgid "Enable autoindex (listing of files)"
+msgstr ""
+
+#: var/www/html/register.php:149
+msgid "Type of hidden service:"
+msgstr ""
+
+#: var/www/html/register.php:157
+#, php-format
+msgid ""
+"I have read and agreed to the <a href=\"%s\" target=\"_blank\">Privacy "
+"Policy</a>"
+msgstr ""
+
+#: var/www/setup.php:13 var/www/setup.php:16
+msgid "Error: No database connection!"
+msgstr ""
+
+#: var/www/setup.php:36
+msgid "Database and files have successfully been set up"
+msgstr ""
+
+#: var/www/setup.php:287
+msgid "Updating chroots, this might take a while…"
+msgstr ""
+
+#: var/www/setup.php:307
+msgid "Suspended"
+msgstr ""
+
+#: var/www/setup.php:307
+#, php-format
+msgid ""
+"This domain has been suspended due to violation of <a href=\"%s\">hosting "
+"rules</a>."
+msgstr ""
+
+#: var/www/setup.php:387
+#, php-format
+msgid ""
+"Successfully added new instance %1$s. Don't forget to add %2$s as allowed "
+"user to your firewall rules in /etc/rc.local"
+msgstr ""
+
+#: var/www/setup.php:421
+msgid "Done - Database and files have been updated to the latest version :)"
+msgstr ""
+
+#: var/www/common.php:203
+msgid "Copy:"
+msgstr ""
+
+#: var/www/common.php:814
+msgid "Invalid CSRF token, please try again."
+msgstr ""
+
+#: var/www/common.php:836
+msgid "No Connection to MySQL database!"
+msgstr ""
+
+#: var/www/common.php:1084
+#, php-format
+msgid "Logged in as %s"
+msgstr ""
+
+#: var/www/common.php:1090
+msgid "FileManager"
+msgstr ""
+
+#: var/www/common.php:1091
+msgid "Delete account"
+msgstr ""
