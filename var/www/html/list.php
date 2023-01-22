@@ -11,7 +11,7 @@ $stmt=$db->query('SELECT COUNT(*) FROM users WHERE public=1;');
 $count=$stmt->fetch(PDO::FETCH_NUM);
 $stmt=$db->query('SELECT COUNT(*) FROM users WHERE public=0;');
 $hidden=$stmt->fetch(PDO::FETCH_NUM);
-echo '<p>'.sprintf(_('Here is a list of %d public hosted sites (%d sites hidden):'), $count[0], $hidden[0]).'</p>';
+echo '<p>'.sprintf(_('Here is a list of %1$d public hosted sites (%2$d sites hidden):'), $count[0], $hidden[0]).'</p>';
 echo '<table border="1">';
 echo '<tr><td>'._('Onion link').'</td></tr>';
 $stmt=$db->query('SELECT onions.onion FROM users INNER JOIN onions ON (onions.user_id=users.id) WHERE users.public=1 ORDER BY onions.onion;');

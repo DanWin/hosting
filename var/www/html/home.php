@@ -294,7 +294,7 @@ $quota = $stmt->fetch(PDO::FETCH_ASSOC);
 $quota_usage = $quota['quota_size_used'] / $quota['quota_size'];
 $quota_files_usage = $quota['quota_files_used'] / $quota['quota_files'];
 $usage_text = bytes_to_human_readable($quota['quota_size_used'] * 1024) . ' of ' . bytes_to_human_readable($quota['quota_size'] * 1024) . ' - ' . round($quota_usage * 100, 2).'%';
-$usage_files_text = sprintf(_("%d of %d - %f%%"), $quota['quota_files_used'], $quota['quota_files'], round($quota_files_usage * 100, 2));
+$usage_files_text = sprintf(_('%1$d of %2$d - %3$f%%'), $quota['quota_files_used'], $quota['quota_files'], round($quota_files_usage * 100, 2));
 ?>
 <p><?php echo _('Your disk usage:'); ?> <meter value="<?php echo round($quota_usage, 2); ?>"><?php echo $usage_text; ?></meter> - <?php printf(_('%s (updated hourly)'), $usage_text); ?> <?php echo ENABLE_UPGRADES ? '<a href="upgrade.php?upgrade=1g_quota">'._('Upgrade').'</a>' : ''; ?></p>
 <p><?php echo _('Your file number usage:'); ?> <meter value="<?php echo round($quota_files_usage, 2); ?>"><?php echo $usage_files_text; ?></meter> - <?php printf(_('%s (updated hourly)'), $usage_files_text); ?> <?php echo ENABLE_UPGRADES ? '<a href="upgrade.php?upgrade=100k_files_quota">'._('Upgrade').'</a>' : ''; ?></p>

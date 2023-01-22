@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 19:59+0100\n"
+"POT-Creation-Date: 2023-01-22 20:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -203,7 +203,7 @@ msgstr ""
 
 #: var/www/html/list.php:14
 #, php-format
-msgid "Here is a list of %d public hosted sites (%d sites hidden):"
+msgid "Here is a list of %1$d public hosted sites (%2$d sites hidden):"
 msgstr ""
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
@@ -1019,7 +1019,7 @@ msgstr ""
 
 #: var/www/html/home.php:297
 #, php-format
-msgid "%d of %d - %f%%"
+msgid "%1$d of %2$d - %3$f%%"
 msgstr ""
 
 #: var/www/html/home.php:299
