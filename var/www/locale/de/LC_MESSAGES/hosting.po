@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 19:59+0100\n"
+"POT-Creation-Date: 2023-01-22 20:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -98,8 +98,8 @@ msgstr ""
 #: var/www/html/index.php:21
 #, php-format
 msgid ""
-"mail() can send e-mails from your_system_account@%1$s "
-"(your_system_account@%2$s for clearnet)"
+"mail() can send e-mails from your_system_account@%1$s (your_system_account@"
+"%2$s for clearnet)"
 msgstr ""
 
 #: var/www/html/index.php:22
@@ -202,7 +202,7 @@ msgstr ""
 
 #: var/www/html/list.php:14
 #, php-format
-msgid "Here is a list of %d public hosted sites (%d sites hidden):"
+msgid "Here is a list of %1$d public hosted sites (%2$d sites hidden):"
 msgstr ""
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
@@ -700,8 +700,8 @@ msgstr ""
 #, php-format
 msgid ""
 "Most likely your site makes use of rewriting rules, which are typically "
-"located in an .htaccess file or are mentioned in a README file. Just <a "
-"href=\"%s\">contact me</a> in this case. Also see the previous question."
+"located in an .htaccess file or are mentioned in a README file. Just <a href="
+"\"%s\">contact me</a> in this case. Also see the previous question."
 msgstr ""
 
 #: var/www/html/faq.php:13
@@ -756,9 +756,8 @@ msgstr ""
 msgid ""
 "Yes, I can offer you a free subdomain of %1$s, which you can configure in "
 "your dashboard. Or if you have your own domain you can use that one, point "
-"your DNS settings to the IPs given in your dashboard and <a "
-"href=\"%2$s\">contact me</a> for setting up an SSL certificate for your "
-"domain."
+"your DNS settings to the IPs given in your dashboard and <a href=\"%2$s"
+"\">contact me</a> for setting up an SSL certificate for your domain."
 msgstr ""
 
 #: var/www/html/faq.php:17
@@ -1018,7 +1017,7 @@ msgstr ""
 
 #: var/www/html/home.php:297
 #, php-format
-msgid "%d of %d - %f%%"
+msgid "%1$d of %2$d - %3$f%%"
 msgstr ""
 
 #: var/www/html/home.php:299
@@ -1099,8 +1098,8 @@ msgstr ""
 #, php-format
 msgid ""
 "Your onion domain %s has successfully been created. Please wait up to one "
-"minute until the changes have been processed. You can then login <a "
-"href=\"login.php\">here</a>."
+"minute until the changes have been processed. You can then login <a href="
+"\"login.php\">here</a>."
 msgstr ""
 
 #: var/www/html/register.php:123
