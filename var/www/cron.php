@@ -26,11 +26,11 @@ $stmt=$db->query("SELECT users.system_account, new_account.password, users.id, u
 while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$system_account = basename($account['system_account']);
 	if($system_account !== $account['system_account']){
-		echo "ERROR: Account $account[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	if(posix_getpwnam($system_account) !== false){
-		echo "ERROR: Account $account[system_account] already exists\n";
+		printf(_("ERROR: Account %s already exists").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	$reload[$account['instance']] = true;
@@ -52,7 +52,7 @@ $mark_onions=$db->prepare('UPDATE onions SET enabled=-1 WHERE user_id=? AND enab
 foreach($accounts as $account){
 	$system_account = sanitize_system_account($account['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $account[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	$reload[$account['instance']]=true;
@@ -95,7 +95,7 @@ $drop_user=$db->prepare("DROP USER ?@'%';");
 foreach($accounts as $account){
 	$system_account = sanitize_system_account($account['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $account[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	//kill processes of the user to allow deleting system users
@@ -131,7 +131,7 @@ $del=$db->prepare("DELETE FROM pass_change WHERE user_id=?;");
 while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$system_account = sanitize_system_account($account['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $account[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	update_system_user_password($system_account, $account['password']);
@@ -144,7 +144,7 @@ $updated=$db->prepare("UPDATE disk_quota SET updated = 0 WHERE user_id=?;");
 while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$system_account = sanitize_system_account($account['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $account[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $account['system_account']);
 		continue;
 	}
 	exec('quotatool -u '. escapeshellarg($system_account) . ' -i -q ' . escapeshellarg($account['quota_files']) . ' -l ' . escapeshellarg($account['quota_files']) . ' ' . HOME_MOUNT_PATH);

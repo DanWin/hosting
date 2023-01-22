@@ -1,8 +1,6 @@
 <?php
 require('common.php');
-if(!extension_loaded('pdo_mysql')){
-	die("Error: You need to install and enable the PDO php module\n");
-}
+global $language, $dir;
 try{
 	$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME . ';charset=utf8mb4', DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
 }catch(PDOException $e){
@@ -12,14 +10,14 @@ try{
 		if(false!==$db->exec('CREATE DATABASE ' . DBNAME)){
 			$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME . ';charset=utf8mb4', DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
 		}else{
-			die("Error: No database connection!\n");
+			die(_('Error: No database connection!').PHP_EOL);
 		}
 	}catch(PDOException $e){
-		die("Error: No database connection!\n");
+		die(_('Error: No database connection!').PHP_EOL);
 	}
 }
-$version;
-if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';")){
+@$version=$db->query("SELECT value FROM settings WHERE setting='version';");
+if(!$version){
 	//create tables
 	$db->exec('CREATE TABLE captcha (id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, time int(11) NOT NULL, code char(5) COLLATE latin1_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$db->exec("CREATE TABLE service_instances (id char(1) NOT NULL PRIMARY KEY, reload tinyint(1) UNSIGNED NOT NULL DEFAULT '0', KEY reload (reload)) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
@@ -35,7 +33,7 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 	$db->exec('CREATE TABLE settings (setting varchar(50) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL PRIMARY KEY, value text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;');
 	$stmt=$db->prepare("INSERT INTO settings (setting, value) VALUES ('version', ?);");
 	$stmt->execute([DBVERSION]);
-	echo "Database and files have successfully been set up\n";
+	echo _('Database and files have successfully been set up').PHP_EOL;
 }else{
 	$version=$version->fetch(PDO::FETCH_NUM)[0];
 	if($version<2){
@@ -101,15 +99,6 @@ if(!@$version=$db->query("SELECT value FROM settings WHERE setting='version';"))
 		$db->exec('ALTER TABLE onions CHANGE user_id user_id int(11) NULL;');
 		$db->exec('ALTER TABLE onions DROP FOREIGN KEY onions_ibfk_1;');
 		$db->exec('ALTER TABLE onions ADD CONSTRAINT onions_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;');
-		$nginx_default = 'server {
-	listen unix:/var/run/nginx/suspended backlog=4096;
-	add_header Content-Type text/html;
-	location / {
-		return 200 \'<html lang="en" dir="ltr"><head><title>Suspended</title></head><body>This domain has been suspended due to violation of <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
-	}
-}
-';
-		file_put_contents('/etc/nginx/sites-enabled/default', $nginx_default, FILE_APPEND);
 	}
 	if($version<11){
 		$db->exec("ALTER TABLE users CHANGE todelete todelete tinyint(1) UNSIGNED NOT NULL DEFAULT '0';");
@@ -295,7 +284,7 @@ env[HOME]=/
 	exec("systemctl enable ".escapeshellarg("php$version-fpm@default"));
 	exec("systemctl restart ".escapeshellarg("php$version-fpm@default"));
 }
-echo "Updating chroots, this might take a while…\n";
+echo _('Updating chroots, this might take a while…').PHP_EOL;
 exec('/var/www/setup_chroot.sh /var/www');
 if(!SKIP_USER_CHROOT_UPDATE){
 	$stmt=$db->query('SELECT system_account FROM users;');
@@ -311,7 +300,63 @@ if(!SKIP_USER_CHROOT_UPDATE){
 if(!file_exists("/etc/nginx/sites-enabled/")){
 	mkdir("/etc/nginx/sites-enabled/", 0755, true);
 }
-file_put_contents('/etc/nginx/sites-enabled/default', NGINX_DEFAULT);
+$nginx_default = 'server {
+	listen unix:/var/run/nginx/suspended backlog=4096 proxy_protocol;
+	add_header Content-Type text/html;
+	location / {
+		return 200 \'<html lang="' . $language . '" dir="' . $dir . '"><head><title>' . _( 'Suspended' ) . '</title></head><body>' . sprintf( _( 'This domain has been suspended due to violation of <a href="%s">hosting rules</a>.' ), 'http://' . ADDRESS ) . '</body></html>\';
+	}
+}
+server {
+	listen [::]:80 ipv6only=off fastopen=100 backlog=4096 default_server;
+	listen unix:/var/run/nginx.sock backlog=4096 default_server;
+	root /var/www/html;
+	index index.php;
+	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
+	location / {
+		try_files $uri $uri/ =404;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
+			fastcgi_pass unix:/var/run/php/8.2-hosting;
+		}
+	}
+	location /squirrelmail {
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
+			fastcgi_pass unix:/var/run/php/8.2-squirrelmail;
+		}
+	}
+	location /phpmyadmin {
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html;
+			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
+			fastcgi_pass unix:/run/php/8.2-phpmyadmin;
+		}
+	}
+	location /adminer {
+		root /var/www/html/adminer;
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param DOCUMENT_ROOT /html/adminer;
+			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
+			fastcgi_pass unix:/run/php/8.2-adminer;
+		}
+	}
+	location /externals/jush/ {
+		root /var/www/html/adminer;
+	}
+	location /nginx/ {
+		root /var/log/;
+		internal;
+	}
+}
+';
+file_put_contents('/etc/nginx/sites-enabled/default', $nginx_default);
 if(!file_exists("/etc/nginx/streams-enabled/")){
 	mkdir("/etc/nginx/streams-enabled/", 0755, true);
 }
@@ -339,7 +384,7 @@ foreach(SERVICE_INSTANCES as $instance){
 			exec("systemctl start ".escapeshellarg("php$version-fpm@$instance"));
 		}
 		$stmt->execute([$instance]);
-		echo "Successfully added new instance $instance. Don't forget to add _tor-$instance as allowed user to your firewall rules in /etc/rc.local\n";
+		printf(_('Successfully added new instance %1$s. Don\'t forget to add %2$s as allowed user to your firewall rules in /etc/rc.local').PHP_EOL, $instance, "_tor-$instance");
 	}
 }
 // remove no longer enabled php/tor instances
@@ -373,4 +418,4 @@ exec('find /var/www/html/ -type d -exec chmod 750 {} \;');
 exec('chown root:www-data /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup_chroot.sh /var/www/setup.php');
 exec('chmod 640 /var/www/common.php /var/www/composer.json /var/www/composer.lock /var/www/cron.php /var/www/find_old.php /var/www/setup.php');
 exec('chmod 700 /var/www/setup_chroot.sh');
-echo "Done - Database and files have been updated to the latest version :)\n";
+echo _('Done - Database and files have been updated to the latest version :)').PHP_EOL;

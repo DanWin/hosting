@@ -9,7 +9,7 @@ if(empty($_SESSION['sftp_pass'])){
 	send_login();
 	exit;
 }
-$ssh=ssh2_connect('127.0.0.1') or die ('No Connection to SFTP server!');
+$ssh=ssh2_connect('127.0.0.1') or die (_('No Connection to SFTP server!'));
 if(@!ssh2_auth_password($ssh, $user['system_account'], $_SESSION['sftp_pass'])){
 	send_login();
 	exit;
@@ -119,21 +119,21 @@ if(!is_dir("ssh2.sftp://$sftp$dir")){
 	exit;
 }
 
-if(!empty($_POST['mkdir']) && !empty($_POST['name'])){
+if(isset($_POST['mkdir']) && !empty($_POST['name'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
 	ssh2_sftp_mkdir($sftp, "$dir/$_POST[name]", 0750);
 }
 
-if(!empty($_POST['mkfile']) && !empty($_POST['name'])){
+if(isset($_POST['mkfile']) && !empty($_POST['name'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
 	file_put_contents("ssh2.sftp://$sftp$dir$_POST[name]", '');
 }
 
-if(!empty($_POST['delete']) && !empty($_POST['files'])){
+if(isset($_POST['delete']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -142,7 +142,7 @@ if(!empty($_POST['delete']) && !empty($_POST['files'])){
 	}
 }
 
-if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
+if(isset($_POST['rename_2']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -151,7 +151,7 @@ if(!empty($_POST['rename_2']) && !empty($_POST['files'])){
 	}
 }
 
-if(!empty($_POST['rename']) && !empty($_POST['files'])){
+if(isset($_POST['rename']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -159,7 +159,7 @@ if(!empty($_POST['rename']) && !empty($_POST['files'])){
 	exit;
 }
 
-if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
+if(isset($_POST['edit_2']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -168,7 +168,7 @@ if(!empty($_POST['edit_2']) && !empty($_POST['files'])){
 	}
 }
 
-if(!empty($_POST['edit']) && !empty($_POST['files'])){
+if(isset($_POST['edit']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -176,7 +176,7 @@ if(!empty($_POST['edit']) && !empty($_POST['files'])){
 	exit;
 }
 
-if(!empty($_POST['unzip']) && !empty($_POST['files'])){
+if(isset($_POST['unzip']) && !empty($_POST['files'])){
 	if($error=check_csrf_error()){
 		die($error);
 	}
@@ -264,12 +264,12 @@ $style = '.list td:nth-child(3){word-break:break-all;} .list td:nth-child(5){tex
 .doc{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPL/AAAAADMzM/8zM5lmM//MM2bM/5mZmf///yH5BAUAAAgALAAAAAAUABYAAARvMMhJJ7oYhcO730F2bV5JhtlZceSBjixBFDT7YedMFxwQ+ECYa1c7AI5IgDAwaDY9hqhBqWE5n9AotVXqHqZCbxdcNSbPHTJXnN72zsl2mC0vcwTmOEdNL/E7eHB1a3R/fXtbAVKLjFE/GXCRSBcRADs=);}
 .txt{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5mZmf///yH5BAUAAAQALAAAAAAUABYAAANYGLq89JCEQaudIb5pO88R11UiuI3XBXFA61JAEM8nCrtujbeW4AuAmq3yC0puuxcFKBwSjaykcsA8OntQpPTZvFZF2un3iu1ul1kyuuv8Bn7wuE8WkdqNCQA7);}
 .sh{min-width:22px; background:no-repeat url(data:img/gif;base64,R0lGODlhFAAWAPH/AAAAADMzM5mZmf///yH5BAUAAAQALAAAAAAUABYAAANgGLq89JCEQaudIb5pO88R11UiuFXAkJIXxAEwjAYATZ9UuuZxjPc7imAoAOBUyBHRKBk5hUzR01L8AXuVanPa0b6usWyU2x2rwDLokTzw8tDiNdnNVksCxLx+eIOg0Q8JADs=);}';
-print_header('FileManager - Index of '.$dir, $style);
+print_header(sprintf(_('FileManager - Index of %s'), $dir), $style);
 $dir=htmlspecialchars($dir);
 ?>
-<h1>Index of <?php echo $dir; ?></h1>
+<h1><?php printf(_('Index of %s'), $dir); ?></h1>
 <?php if($dir!=='/'){ ?>
-<p>Upload up to 1GB and up to 100 files at once <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><input type="submit" value="Upload"></form></p><br>
+    <p><?php echo _('Upload up to 1GB and up to 100 files at once'); ?> <form action="files.php" enctype="multipart/form-data" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>"><input name="files[]" type="file" multiple><input type="hidden" name="path" value="<?php echo $dir; ?>"><button type="submit"><?php echo _('Upload'); ?></button></form></p><br>
 <?php
 }
 $fileurl='A';
@@ -288,22 +288,22 @@ if($order==='A'){
 ?>
 <form action="files.php" method="post">
 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-<input type="submit" name="mkdir" value="Create directory">
-<input type="submit" name="mkfile" value="Create file">
-<input type="text" name="name"><br><br>
+<button type="submit" name="mkdir"><?php echo _('Create directory'); ?></button>
+<button type="submit" name="mkfile"><?php echo _('Create file'); ?></button>
+<input type="text" name="name" aria-label="<?php echo _('Filename'); ?>" placeholder="<?php echo _('Filename'); ?>"><br><br>
 <input type="hidden" name="path" value="<?php echo $dir; ?>">
-<input type="submit" name="delete" value="Delete">
-<input type="submit" name="rename" value="Rename">
-<input type="submit" name="edit" value="Edit">
-<input type="submit" name="unzip" value="Unzip"><br>
+<button type="submit" name="delete"><?php echo _('Delete'); ?></button>
+<button type="submit" name="rename"><?php echo _('Rename'); ?></button>
+<button type="submit" name="edit"><?php echo _('Edit'); ?></button>
+<button type="submit" name="unzip"><?php echo _('Unzip'); ?></button><br>
 <table class="list"><tr>
 <th></th><th></th>
-<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=N&amp;O=<?php echo $fileurl; ?>">File</a></th>
-<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=M&amp;O=<?php echo $dateurl; ?>">Last Modified</a></th>
-<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=S&amp;O=<?php echo $sizeurl; ?>">Size</a></th>
+<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=N&amp;O=<?php echo $fileurl; ?>"><?php echo _('File'); ?></a></th>
+<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=M&amp;O=<?php echo $dateurl; ?>"><?php echo _('Last Modified'); ?></a></th>
+<th><a href="files.php?path=<?php echo $dir; ?>&amp;C=S&amp;O=<?php echo $sizeurl; ?>"><?php echo _('Size'); ?></a></th>
 </tr>
 <tr><td colspan="4"><hr></td></tr>
-<tr><td id="checkAllParent"></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>">Parent Directory</a></td></tr>
+<tr><td id="checkAllParent"></td><td class="back"></td><td colspan="3"><a href="files.php?path=<?php echo substr($dir, 0, strrpos(rtrim($dir, '/'), '/'))."/&amp;C=$sort&amp;O=$order"?>"><?php echo _('Parent Directory'); ?></a></td></tr>
 <?php
 foreach($list as $element){
 	get_properties($element['name'], $icon, $element['size']);
@@ -312,10 +312,10 @@ foreach($list as $element){
 ?>
 <tr><td colspan="4"><hr></td></tr>
 </table>
-<input type="submit" name="delete" value="Delete">
-<input type="submit" name="rename" value="Rename">
-<input type="submit" name="edit" value="Edit">
-<input type="submit" name="unzip" value="Unzip"><br><br>
+<button type="submit" name="delete"><?php echo _('Delete'); ?></button>
+<button type="submit" name="rename"><?php echo _('Rename'); ?></button>
+<button type="submit" name="edit"><?php echo _('Edit'); ?></button>
+<button type="submit" name="unzip"><?php echo _('Unzip'); ?></button><br><br>
 </form>
 <script>
 document.getElementById('checkAllParent').innerHTML = '<input type="checkbox" onclick="toggle(this);">';
@@ -343,18 +343,18 @@ function get_properties($name, &$icon, &$size): void
 function send_not_found(): void
 {
 	header("HTTP/1.1 404 Not Found");
-	print_header('FileManager - 404 Not Found');
-	echo '<p>The requested file '.htmlspecialchars($_REQUEST['path']).' was not found on your account.</p>';
-	echo '<p><a href="files.php">Go back to home directory</a>.</p>';
+	print_header(_('FileManager - 404 Not Found'));
+	echo '<p>'.sprintf(_('The requested file %s was not found on your account.'), htmlspecialchars($_REQUEST['path'])).'</p>';
+	echo '<p><a href="files.php">'._('Go back to home directory').'</a></p>';
 	echo '</body></html>';
 }
 
 function send_login(): void
 {
-	print_header('FileManager - Login');
+	print_header(_('FileManager - Login'));
 ?>
-<p>Please type in your system account password: <form action="files.php" method="post"><input name="sftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
-<p><a href="home.php">Go back to dashboard</a>.</p>
+<p><?php echo _('Please type in your system account password:'); ?> <form action="files.php" method="post"><input name="sftp_pass" type="password" autofocus><input type="submit" value="Login"></form></p>
+<p><a href="home.php"><?php echo _('Go back to dashboard'); ?></a></p>
 </body></html>
 <?php
 }
@@ -378,7 +378,7 @@ function sftp_recursive_delete($sftp, $dir, $file): void
 
 function send_rename($dir): void
 {
-	print_header('FileManager - Rename file');
+	print_header(_('FileManager - Rename file'));
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
@@ -387,14 +387,14 @@ function send_rename($dir): void
 		echo '<tr><td>'.htmlspecialchars($file).'</td><td><input type="text" name="files['.htmlspecialchars($file).']" value='.htmlspecialchars($file).'></td></tr>';
 	}
 	echo '</table>';
-	echo '<input type="submit" name="rename_2" value="rename"></form>';
-	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';
+	echo '<button type="submit" name="rename_2">'._('Rename').'</button></form>';
+	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">'._('Go back').'</a></p>';
 	echo '</body></html>';
 }
 
 function send_edit($sftp, $dir): void
 {
-	print_header('FileManager - Edit file');
+	print_header(_('FileManager - Edit file'));
 	echo '<form action="files.php" method="post">';
 	echo '<input type="hidden" name="csrf_token" value="'.$_SESSION['csrf_token'].'">';
 	echo '<input type="hidden" name="path" value="'.htmlspecialchars($dir).'">';
@@ -407,7 +407,7 @@ function send_edit($sftp, $dir): void
 		}
 	}
 	echo '</table>';
-	echo '<input type="submit" name="edit_2" value="Save"></form>';
-	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">Go back</a>.</p>';
+	echo '<button type="submit" name="edit_2">'._('Save').'</button></form>';
+	echo '<p><a href="files.php?path='.htmlspecialchars($dir).'">'._('Go back').'</a></p>';
 	echo '</body></html>';
 }

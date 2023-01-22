@@ -3,6 +3,14 @@ General Information:
 
 This is a setup for a Tor based shared hosting server. It is provided as is and before putting it into production you should make changes according to your needs. This is a work in progress and you should carefully check the commit history for changes before updating.
 
+Translation:
+--------------------------
+
+Translations are managed in [Weblate](https://weblate.danwin1210.de/projects/DanWin/hosting).
+If you prefer manually submitting translations, the script `update-translations.sh` can be used to update the language template and translation files from source.
+It will generate the file `var/www/locale/hosting.pot` which you can then use as basis to create a new language file in `var/www/YOUR_LANG_CODE/LC_MESSAGES/hosting.po` and edit it with a translation program, such as [Poedit](https://poedit.net/).
+Once you are done, you can open a pull request, or [email me](mailto:daniel@danwin1210.de), to include the translation.
+
 Installation Instructions:
 --------------------------
 

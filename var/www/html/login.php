@@ -24,16 +24,16 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			header('Location: home.php');
 			exit;
 		}else{
-			$msg.='<p style="color:red">Wrong 2FA code</p>';
+			$msg.='<p role="alert" style="color:red">'._('Wrong 2FA code').'</p>';
 		}
 	} else {
 		$db = get_db_instance();
 		$ok=true;
 		if($error=check_captcha_error()){
-			$msg.="<p style=\"color:red;\">$error</p>";
+			$msg.='<p role="alert" style="color:red">'.$error.'</p>';
 			$ok=false;
 		}elseif(!isset($_POST['username']) || $_POST['username']===''){
-			$msg.='<p style="color:red;">Error: username may not be empty.</p>';
+			$msg.='<p role="alert" style="color:red">'._('Error: username may not be empty.').'</p>';
 			$ok=false;
 		}else{
 			$stmt=$db->prepare('SELECT username, password, id, tfa, pgp_key FROM users WHERE username=?;');
@@ -53,17 +53,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 				$stmt->execute([$tmp['id']]);
 				if($tmp=$stmt->fetch(PDO::FETCH_NUM)){
 					if(REQUIRE_APPROVAL && !$tmp[0]){
-						$msg.='<p style="color:red;">Error: Your account is pending admin approval. Please try again later.</p>';
+						$msg.='<p role="alert" style="color:red">'._('Error: Your account is pending admin approval. Please try again later.').'</p>';
 					}else{
-						$msg.='<p style="color:red;">Error: Your account is pending creation. Please try again in a minute.</p>';
+						$msg.='<p role="alert" style="color:red">'._('Error: Your account is pending creation. Please try again in a minute.').'</p>';
 					}
 					$ok=false;
 				}elseif(!isset($_POST['pass']) || !password_verify($_POST['pass'], $password)){
-					$msg.='<p style="color:red;">Error: wrong password.</p>';
+					$msg.='<p role="alert" style="color:red">'._('Error: wrong password.').'</p>';
 					$ok=false;
 				}
 			}else{
-				$msg.='<p style="color:red;">Error: username was not found. If you forgot it, you can enter youraccount.onion instead.</p>';
+				$msg.='<p role="alert" style="color:red">'._('Error: username was not found. If you forgot it, you can enter youraccount.onion instead.').'</p>';
 				$ok=false;
 			}
 		}
@@ -83,7 +83,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}
 	}
 }
-print_header('Login');
+print_header(_('Login'));
 if($tfa){
 	$gpg = gnupg_init();
 	gnupg_seterrormode($gpg, GNUPG_ERROR_WARNING);
@@ -98,36 +98,36 @@ if($tfa){
 				}
 			}
 		}
-		$encrypted = gnupg_encrypt($gpg, "To login, please enter the following code to confirm ownership of your key:\n\n".$_SESSION['2fa_code']."\n");
+		$encrypted = gnupg_encrypt($gpg, _('To login, please enter the following code to confirm ownership of your key:')."\n\n".$_SESSION['2fa_code']."\n");
 		echo $msg;
-		echo "<p>To login, please decrypt the following PGP encrypted message and confirm the code:</p>";
+		echo '<p>'._('To login, please decrypt the following PGP encrypted message and confirm the code:').'</p>';
 		echo "<textarea readonly=\"readonly\" onclick=\"this.select()\" rows=\"10\" cols=\"70\">$encrypted</textarea>";
 		?>
 		<form action="login.php" method="post"><input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 		<table border="1">
-			<tr><td><input type="text" name="2fa_code"></td><td><button type="submit">Confirm</button></td></tr>
+			<tr><td><input type="text" name="2fa_code"></td><td><button type="submit"><?php echo _('Confirm'); ?></button></td></tr>
 		</table></form>
-		<p>Don't have the private key at hand? <a href="logout.php">Logout</a></p>
+		<p><?php echo _("Don't have the private key at hand?"); ?><a href="logout.php"><?php echo _('Logout'); ?></a></p>
 		</body></html>
 <?php
 		exit;
 	}
 }
 ?>
-<h1>Hosting - Login</h1>
+<h1><?php echo _('Hosting - Login'); ?></h1>
 <?php
 main_menu('login.php');
 echo $msg;
 ?>
 <form method="POST" action="login.php"><table>
-<tr><td>Username</td><td><input type="text" name="username" value="<?php
+<tr><td><?php echo _('Username'); ?></td><td><input type="text" name="username" value="<?php
 if(isset($_POST['username'])){
 	echo htmlspecialchars($_POST['username']);
 }
 ?>" required autofocus></td></tr>
-<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>
+<tr><td><?php echo _('Password'); ?></td><td><input type="password" name="pass" required></td></tr>
 <?php send_captcha(); ?>
-<tr><td colspan="2"><input type="submit" value="Login"></td></tr>
+<tr><td colspan="2"><button type="submit"><?php echo _('Login'); ?></button></td></tr>
 </table></form>
-<p>If you disabled cookies, please re-enable them. You can't log in without!</p>
+<p><?php echo _("If you disabled cookies, please re-enable them. You can't log in without!"); ?></p>
 </body></html>

@@ -63,62 +63,6 @@ session.use_strict_mode = 1
 session.serialize_handler=igbinary
 apc.serializer=igbinary
 ';
-const NGINX_DEFAULT = 'server {
-	listen unix:/var/run/nginx/suspended backlog=4096 proxy_protocol;
-	add_header Content-Type text/html;
-	location / {
-		return 200 \'<html lang="en" dir="ltr"><head><title>Suspended</title></head><body>This domain has been suspended due to violation of our <a href="http://' . ADDRESS . '">hosting rules</a>.</body></html>\';
-	}
-}
-server {
-	listen [::]:80 ipv6only=off fastopen=100 backlog=4096 default_server;
-	listen unix:/var/run/nginx.sock backlog=4096 default_server;
-	root /var/www/html;
-	index index.php;
-	server_name ' . ADDRESS . ' *.' . ADDRESS . ';
-	location / {
-		try_files $uri $uri/ =404;
-		location ~ \.php$ {
-			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /html;
-			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.2-hosting;
-		}
-	}
-	location /squirrelmail {
-		location ~ \.php$ {
-			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /html;
-			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/var/run/php/8.2-squirrelmail;
-		}
-	}
-	location /phpmyadmin {
-		location ~ \.php$ {
-			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /html;
-			fastcgi_param SCRIPT_FILENAME /html$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.2-phpmyadmin;
-		}
-	}
-	location /adminer {
-		root /var/www/html/adminer;
-		location ~ \.php$ {
-			include snippets/fastcgi-php.conf;
-			fastcgi_param DOCUMENT_ROOT /html/adminer;
-			fastcgi_param SCRIPT_FILENAME /html/adminer$fastcgi_script_name;
-			fastcgi_pass unix:/run/php/8.2-adminer;
-		}
-	}
-	location /externals/jush/ {
-		root /var/www/html/adminer;
-	}
-	location /nginx/ {
-		root /var/log/;
-		internal;
-	}
-}
-';
 const MAX_NUM_USER_DBS = 5; //maximum number of databases a user may have
 const MAX_NUM_USER_ONIONS = 3; //maximum number of onion domains a user may have
 const MAX_NUM_USER_DOMAINS = 3; //maximum number of clearnet domains a user may have
@@ -143,6 +87,57 @@ const COINPAYMENTS_IPN_SECRET = 'COINPAYMENTS_IPN_SECRET'; //Coinpayments IPN se
 const COINPAYMENTS_FAKE_BUYER_EMAIL = 'daniel@danwin1210.me'; //fixed email used for the required buyer email field
 const SITE_NAME = "Daniel's Hosting"; //globally changes the sites title
 const HOME_MOUNT_PATH = '/home'; //mount path of the home directory. Usually /home as own partition or / on a system with no extra home partition
+const CONTACT_URL = 'https://danwin1210.de/contact.php'; //url to contact form
+const PRIVACY_URL = 'https://danwin1210.de/privacy.php'; //url to privacy policy
+const CLEARNET_A = '116.202.17.147'; // IPv4 Address of your clearnet gateway
+const CLEARNET_AAAA = '2a01:4f8:c010:d56::1'; // IPv6 Address of your clearnet gateway
+const CLEARNET_ADDRESS = 'hosting.danwin1210.me'; //Domain under which the service is reachable in clearnet
+const CLEARNET_SUBDOMAINS = 'danwin1210.me'; //domain of which all subdomains are mapped to this server
+const DEFAULT_LANG = 'en'; //default language
+const LANGUAGES = [ //available languages
+	'en' => ['name' => 'English', 'locale' => 'en_GB', 'dir' => 'ltr'],
+];
+
+
+$language = DEFAULT_LANG;
+$locale = LANGUAGES[DEFAULT_LANG]['locale'];
+$dir = LANGUAGES[DEFAULT_LANG]['dir'];
+
+if(isset($_REQUEST['lang']) && isset(LANGUAGES[$_REQUEST['lang']])){
+	$locale = LANGUAGES[$_REQUEST['lang']]['locale'];
+	$language = $_REQUEST['lang'];
+	$dir = LANGUAGES[$_REQUEST['lang']]['dir'];
+	setcookie('language', $_REQUEST['lang'], ['expires' => 0, 'path' => '/', 'domain' => '', 'secure' => ($_SERVER['HTTPS'] ?? '' === 'on'), 'httponly' => true, 'samesite' => 'Strict']);
+}elseif(isset($_COOKIE['language']) && isset(LANGUAGES[$_COOKIE['language']])){
+	$locale = LANGUAGES[$_COOKIE['language']]['locale'];
+	$language = $_COOKIE['language'];
+	$dir = LANGUAGES[$_COOKIE['language']]['dir'];
+}elseif(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+	$prefLocales = array_reduce(
+		explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']),
+		function (array $res, string $el) {
+			list($l, $q) = array_merge(explode(';q=', $el), [1]);
+			$res[$l] = (float) $q;
+			return $res;
+		}, []);
+	arsort($prefLocales);
+	foreach($prefLocales as $l => $q){
+		$lang = locale_lookup(array_keys(LANGUAGES), $l);
+		if(!empty($lang)){
+			$locale = LANGUAGES[$lang]['locale'];
+			$language = $lang;
+			$dir = LANGUAGES[$lang]['dir'];
+			setcookie('language', $lang, ['expires' => 0, 'path' => '/', 'domain' => '', 'secure' => ($_SERVER['HTTPS'] ?? '' === 'on'), 'httponly' => true, 'samesite' => 'Strict']);
+			break;
+		}
+	}
+}
+putenv('LC_ALL='.$locale);
+setlocale(LC_ALL, $locale);
+
+bindtextdomain('hosting', __DIR__.'/locale');
+bind_textdomain_codeset('hosting', 'UTF-8');
+textdomain('hosting');
 
 function get_onion_v2($pkey) : string {
 	$keyData = openssl_pkey_get_details($pkey);
@@ -205,7 +200,7 @@ function send_captcha(): void
 	$db = get_db_instance();
 	$stmt = $db->prepare('INSERT INTO captcha (id, time, code) VALUES (?, ?, ?);');
 	$stmt->execute([$randid, $time, $code]);
-	echo "<tr><td>Copy: ";
+	echo '<tr><td>'._('Copy:').' ';
 	if(CAPTCHA === 1){
 		$im = imagecreatetruecolor(55, 24);
 		$bg = imagecolorallocate($im, 0, 0, 0);
@@ -285,7 +280,7 @@ function send_captcha(): void
 	imagegif($im);
 	imagedestroy($im);
 	echo base64_encode(ob_get_clean()).'"></td>';
-	echo "<td><input type=\"hidden\" name=\"challenge\" value=\"$randid\"><input type=\"text\" name=\"captcha\" autocomplete=\"off\"></td></tr>";
+	echo '<td><input type="hidden" name="challenge" value="'.$randid.'"><input type="text" name="captcha" autocomplete="off"></td></tr>';
 }
 
 function check_login() : array {
@@ -364,7 +359,7 @@ NumPrimaryGuards '.NUM_GUARDS.'
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$system_account = sanitize_system_account($tmp['system_account']);
 		if($system_account === false){
-			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			printf(_('ERROR: Account %s looks strange').PHP_EOL, $tmp['system_account']);
 			continue;
 		}
 		if(!file_exists("/var/lib/tor-instances/$instance/hidden_service_$tmp[onion].onion")){
@@ -532,7 +527,7 @@ function rewrite_nginx_config(): void
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$system_account = sanitize_system_account($tmp['system_account']);
 		if($system_account === false){
-			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			printf(_('ERROR: Account %s looks strange').PHP_EOL, $tmp['system_account']);
 			continue;
 		}
 		if($tmp['php']>0){
@@ -570,7 +565,7 @@ function rewrite_nginx_config(): void
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$system_account = sanitize_system_account($tmp['system_account']);
 		if($system_account === false){
-			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			printf(_('ERROR: Account %s looks strange').PHP_EOL, $tmp['system_account']);
 			continue;
 		}
 		if($tmp['php']>0){
@@ -611,7 +606,7 @@ function rewrite_nginx_config(): void
 	while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 		$system_account = sanitize_system_account($tmp['system_account']);
 		if($system_account === false){
-			echo "ERROR: Account $tmp[system_account] looks strange\n";
+			printf(_('ERROR: Account %s looks strange').PHP_EOL, $tmp['system_account']);
 			continue;
 		}
 		$nginx_mysql.="server {
@@ -655,7 +650,7 @@ pm.max_children = 8
 		while($tmp=$stmt->fetch(PDO::FETCH_ASSOC)){
 			$system_account = sanitize_system_account($tmp['system_account']);
 			if($system_account === false){
-				echo "ERROR: Account $tmp[system_account] looks strange\n";
+				printf(_('ERROR: Account %s looks strange').PHP_EOL, $tmp['system_account']);
 				continue;
 			}
 			$php.='['.$tmp['system_account']."]
@@ -816,7 +811,7 @@ function del_user_domain(int $user_id, string $domain): void
 function check_csrf_error(): false|string
 {
 	if(empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
-		return 'Invalid CSRF token, please try again.';
+		return _('Invalid CSRF token, please try again.');
 	}
 	return false;
 }
@@ -838,7 +833,7 @@ function get_db_instance() : PDO {
 		try{
 			$db=new PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASS, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING, PDO::ATTR_PERSISTENT=>PERSISTENT]);
 		}catch(PDOException $e){
-			die('No Connection to MySQL database!');
+			die(_('No Connection to MySQL database!'));
 		}
 	}
 	return $db;
@@ -973,7 +968,7 @@ function setup_chroot(string $account, string $last_account): void
 {
 	$system_account = sanitize_system_account($account);
 	if($system_account === false){
-		echo "ERROR: Account $account looks strange\n";
+		printf(_('ERROR: Account %s looks strange').PHP_EOL, $account);
 		return;
 	}
 	$last_account = sanitize_system_account($last_account);
@@ -1016,7 +1011,7 @@ function update_system_user_password(string $user, string $password): void
 {
 	$system_account = sanitize_system_account($user);
 	if($system_account === false){
-		echo "ERROR: Account $user looks strange\n";
+		printf(_('ERROR: Account %s looks strange').PHP_EOL, $user);
 		return;
 	}
 	$fp = fopen("/etc/shadow", "r+");
@@ -1058,11 +1053,11 @@ function main_menu(string $current_site): void
 {
 	echo '<p>';
 	$sites = [
-		'index.php' => 'Info',
-		'register.php' => 'Register',
-		'login.php' => 'Login',
-		'list.php' => 'List of hosted sites',
-		'faq.php' => 'FAQ',
+		'index.php' => _('Info'),
+		'register.php' => _('Register'),
+		'login.php' => _('Login'),
+		'list.php' => _('List of hosted sites'),
+		'faq.php' => _('FAQ'),
 	];
 	$first = true;
 	foreach($sites as $link => $name){
@@ -1086,14 +1081,14 @@ function main_menu(string $current_site): void
 
 function dashboard_menu(array $user, string $current_site): void
 {
-	echo '<p>Logged in as ' . htmlspecialchars($user['username']);
+	echo '<p>'.sprintf(_('Logged in as %s'), htmlspecialchars($user['username']));
 	$sites = [
-		'logout.php' => 'Logout',
-		'home.php' => 'Dashboard',
-		'pgp.php' => 'PGP 2FA',
-		'password.php' => 'Change password',
-		'files.php' => 'FileManager',
-		'delete.php' => 'Delete account',
+		'logout.php' => _('Logout'),
+		'home.php' => _('Dashboard'),
+		'pgp.php' => _('PGP 2FA'),
+		'password.php' => _('Change password'),
+		'files.php' => _('FileManager'),
+		'delete.php' => _('Delete account'),
 	];
 	foreach($sites as $link => $name){
 		if($link===$current_site){
@@ -1107,8 +1102,9 @@ function dashboard_menu(array $user, string $current_site): void
 
 function print_header(string $sub_title, string $style = '', string $base_target = '_self'): void
 {
+    global $language, $dir;
 ?>
-<!DOCTYPE html><html><head>
+<!DOCTYPE html><html lang="<?php echo $language; ?>" dir="<?php echo $dir; ?>"><head>
 <title><?php echo htmlspecialchars(SITE_NAME) . ' - ' . htmlspecialchars($sub_title); ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Daniel Winzen">

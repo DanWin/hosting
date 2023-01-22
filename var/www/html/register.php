@@ -6,9 +6,9 @@ if(!empty($_SESSION['hosting_username'])){
 	header('Location: home.php');
 	exit;
 }
-print_header('Register', '#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}');
+print_header(_('Register'), '#custom_onion:not(checked)+#private_key{display:none;}#custom_onion:checked+#private_key{display:block;}');
 ?>
-<h1>Hosting - Register</h1>
+<h1><?php echo _('Hosting - Register'); ?></h1>
 <?php
 main_menu('register.php');
 if($_SERVER['REQUEST_METHOD']==='POST'){
@@ -31,28 +31,28 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		$autoindex=1;
 	}
 	if($error=check_captcha_error()){
-		echo "<p style=\"color:red;\">$error</p>";
+		echo '<p role="alert" style="color:red">'.$error.'</p>';
 		$ok=false;
 	}elseif(empty($_POST['pass'])){
-		echo '<p style="color:red;">Error: password empty.</p>';
+		echo '<p role="alert" style="color:red">'._('Error: password empty.').'</p>';
 		$ok=false;
 	}elseif(empty($_POST['passconfirm']) || $_POST['pass']!==$_POST['passconfirm']){
-		echo '<p style="color:red;">Error: password confirmation does not match.</p>';
+		echo '<p role="alert" style="color:red">'._('Error: password confirmation does not match.').'</p>';
 		$ok=false;
 	}elseif(empty($_POST['username'])){
-		echo '<p style="color:red;">Error: username empty.</p>';
+		echo '<p role="alert" style="color:red">'._('Error: username empty.').'</p>';
 		$ok=false;
-	}elseif(preg_match('/[^a-z0-9\-_\.]/', $_POST['username'])){
-		echo '<p style="color:red;">Error: username may only contain characters that are in the rage of a-z (lower case) - . _ and 0-9.</p>';
+	}elseif(preg_match('/[^a-z0-9\-_.]/', $_POST['username'])){
+		echo '<p role="alert" style="color:red">'._('Error: username may only contain characters that are in the rage of a-z (lower case) - . _ and 0-9.').'</p>';
 		$ok=false;
 	}elseif(strlen($_POST['username'])>50){
-		echo '<p style="color:red;">Error: username may not be longer than 50 characters.</p>';
+		echo '<p role="alert" style="color:red">'._('Error: username may not be longer than 50 characters.').'</p>';
 		$ok=false;
 	}else{
 		$stmt=$db->prepare('SELECT null FROM users WHERE username=?;');
 		$stmt->execute([$_POST['username']]);
 		if($stmt->fetch(PDO::FETCH_NUM)){
-			echo '<p style="color:red;">Error: this username is already registered.</p>';
+			echo '<p role="alert" style="color:red">'._('Error: this username is already registered.').'</p>';
 			$ok=false;
 		}
 	}
@@ -63,13 +63,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$onion = $data['onion'];
 			$onion_version = $data['version'];
 			if(!$data['ok']){
-				echo "<p style=\"color:red;\">$data[message]</p>";
+				echo '<p role="alert" style="color:red">'.$data['message'].'</p>';
 				$ok = false;
 			} else {
 				$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
 				$check->execute([$onion]);
 				if($check->fetch(PDO::FETCH_NUM)){
-					echo '<p style="color:red;">Error onion already exists.</p>';
+					echo '<p role="alert" style="color:red">'._('Error onion already exists.').'</p>';
 					$ok = false;
 				}
 			}
@@ -92,7 +92,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	$check=$db->prepare('SELECT null FROM users WHERE dateadded>?;');
 	$check->execute([time()-60]);
 	if($ok && $check->fetch(PDO::FETCH_NUM)){
-		echo '<p style="color:red;">To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.</p>';
+		echo '<p role="alert" style="color:red">'._('To prevent abuse a site can only be registered every 60 seconds, but one has already been registered within the last 60 seconds. Please try again.').'</p>';
 		$ok=false;
 	}elseif($ok){
 		$mysql_user = add_mysql_user($_POST['pass']);
@@ -111,16 +111,16 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$headers="From: www-data <www-data>\r\nContent-Type: text/plain; charset=UTF-8\r\n";
 			mail(EMAIL_TO, $title, $msg, $headers);
 		}
-		echo "<p style=\"color:green;\">Your onion domain <a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a> has successfully been created. Please wait up to one minute until the changes have been processed. You can then login <a href=\"login.php\">here</a>.</p>";
+		echo '<p role="alert" style="color:green">'.sprintf(_('Your onion domain %s has successfully been created. Please wait up to one minute until the changes have been processed. You can then login <a href="login.php">here</a>.'), "<a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a>").'</p>';
 	}
 }
 ?>
 <form method="POST" action="register.php"><table>
-<tr><td>Username</td><td><input type="text" name="username" value="<?php
+<tr><td><?php echo _('Username'); ?></td><td><input type="text" name="username" value="<?php
 echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '';
 ?>" required autofocus></td></tr>
-<tr><td>Password</td><td><input type="password" name="pass" required></td></tr>
-<tr><td>Confirm password</td><td><input type="password" name="passconfirm" required></td></tr>
+<tr><td><?php echo _('Password'); ?></td><td><input type="password" name="pass" required></td></tr>
+<tr><td><?php echo _('Confirm password'); ?></td><td><input type="password" name="passconfirm" required></td></tr>
 <?php
 send_captcha();
 if($_SERVER['REQUEST_METHOD']!=='POST' || (isset($public_list) && $public_list==1)){
@@ -134,8 +134,8 @@ if(isset($autoindex) && $autoindex==1){
 	$autoindex='';
 }
 ?>
-<tr><td>PHP version</td><td><select name="php">
-<option value="0">None</option>
+<tr><td><?php echo _('PHP version'); ?></td><td><select name="php">
+<option value="0"><?php echo _('None'); ?></option>
 <?php
 foreach(PHP_VERSIONS as $key => $version){
 	echo "<option value=\"$key\"";
@@ -144,17 +144,17 @@ foreach(PHP_VERSIONS as $key => $version){
 }
 ?>
 </select></td></tr>
-<tr><td colspan=2><label><input type="checkbox" name="public" value="1"<?php echo $public_list; ?>>Publish site on list of hosted sites</label></td></tr>
-<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"<?php echo $autoindex; ?>>Enable autoindex (listing of files)</label></td></tr>
-<tr><td colspan=2>Type of hidden service:<br>
-<label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : ''; ?>>Random v3 Address</label>
-<label><input type="radio" name="onion_type" value="2"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : ''; ?>>Random v2 Address</label>
-<label><input id="custom_onion" type="radio" name="onion_type" value="custom"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : ''; ?>>Custom private key
+<tr><td colspan=2><label><input type="checkbox" name="public" value="1"<?php echo $public_list; ?>><?php echo _('Publish site on list of hosted sites'); ?></label></td></tr>
+<tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"<?php echo $autoindex; ?>><?php echo _('Enable autoindex (listing of files)'); ?></label></td></tr>
+<tr><td colspan=2><?php echo _('Type of hidden service:'); ?><br>
+<label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : ''; ?>><?php echo _('Random v3 Address'); ?></label>
+<label><input type="radio" name="onion_type" value="2"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : ''; ?>><?php echo _('Random v2 Address'); ?></label>
+<label><input id="custom_onion" type="radio" name="onion_type" value="custom"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : ''; ?>><?php echo _('Custom private key'); ?>
 <textarea id="private_key" name="private_key" rows="5" cols="28">
 <?php echo isset($_REQUEST['private_key']) ? htmlspecialchars($_REQUEST['private_key']) : ''; ?>
 </textarea>
 </label></td></tr>
-<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required>I have read and agreed to the <a href="https://danwin1210.me/privacy.php" target="_blank">Privacy Policy</a></label><br></td></tr>
-<tr><td colspan="2"><input type="submit" value="Register"></td></tr>
+<tr><td colspan="2"><label><input type="checkbox" name="accept_privacy" required><?php printf(_('I have read and agreed to the <a href="%s" target="_blank">Privacy Policy</a>'), PRIVACY_URL); ?></label><br></td></tr>
+<tr><td colspan="2"><button type="submit"><?php echo _('Register'); ?></button></td></tr>
 </table></form>
 </body></html>

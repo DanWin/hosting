@@ -9,6 +9,8 @@
         "ext-posix": "*",
         "ext-gnupg": "*",
         "ext-ssh2": "*",
-        "ext-fileinfo": "*"
-    }
+        "ext-fileinfo": "*",
+        "ext-gettext": "*",
+		"ext-intl": "*"
+	}
 }

@@ -9,7 +9,7 @@ $update=$db->prepare('UPDATE disk_quota SET quota_size_used = ?, quota_files_use
 foreach($all_accounts as $tmp){
 	$system_account = sanitize_system_account($tmp['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $tmp[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $tmp['system_account']);
 		continue;
 	}
 	$quota = shell_exec('quota -pu ' . escapeshellarg($tmp['system_account']));
@@ -25,7 +25,7 @@ foreach($all_accounts as $tmp){
 foreach($all_accounts as $tmp){
 	$system_account = sanitize_system_account($tmp['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $tmp[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $tmp['system_account']);
 		continue;
 	}
 	exec('find '.escapeshellarg("/home/$tmp[system_account]/tmp").' -path '.escapeshellarg("/home/$tmp[system_account]/tmp/*").' -cmin +1440 -delete');
@@ -41,7 +41,7 @@ $all=$stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach($all as $tmp){
 	$system_account = sanitize_system_account($tmp['system_account']);
 	if($system_account === false){
-		echo "ERROR: Account $tmp[system_account] looks strange\n";
+		printf(_("ERROR: Account %s looks strange").PHP_EOL, $tmp['system_account']);
 		continue;
 	}
 	//check modification times
