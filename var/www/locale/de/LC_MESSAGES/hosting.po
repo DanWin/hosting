@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-22 20:16+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-01-23 19:55+0000\n"
+"Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
+"Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
+"de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -32,11 +35,11 @@ msgstr ""
 
 #: var/www/html/index.php:4 var/www/common.php:1056
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: var/www/html/index.php:6
 msgid "Hosting - Info"
-msgstr ""
+msgstr "Hosting - Info"
 
 #: var/www/html/index.php:8
 msgid "Here you can get yourself a free web hosting account on my server."
@@ -138,7 +141,7 @@ msgstr ""
 
 #: var/www/html/index.php:30
 msgid "Rules"
-msgstr ""
+msgstr "Regeln"
 
 #: var/www/html/index.php:32
 msgid "No child pornography!"
@@ -207,7 +210,7 @@ msgstr ""
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
 msgid "Onion link"
-msgstr ""
+msgstr "Onion-Adresse"
 
 #: var/www/html/coinpayments_ipn.php:5
 msgid "Upgrades disabled"
@@ -339,7 +342,7 @@ msgstr ""
 #: var/www/html/files.php:297 var/www/html/files.php:317
 #: var/www/html/admin.php:71
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: var/www/html/files.php:298 var/www/html/files.php:318
 msgid "Unzip"
@@ -402,7 +405,7 @@ msgstr ""
 
 #: var/www/html/login.php:27
 msgid "Wrong 2FA code"
-msgstr ""
+msgstr "Falscher 2FA Code"
 
 #: var/www/html/login.php:36
 msgid "Error: username may not be empty."
@@ -429,22 +432,26 @@ msgstr ""
 #: var/www/html/login.php:86 var/www/html/login.php:130
 #: var/www/html/admin.php:24 var/www/common.php:1058
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: var/www/html/login.php:101
 msgid ""
 "To login, please enter the following code to confirm ownership of your key:"
 msgstr ""
+"Um dich anzumelden, gib bitte folgenden Code zur Bestätigung ein, um den "
+"Besitz deines Schlüssels zu bestätigen:"
 
 #: var/www/html/login.php:103
 msgid ""
 "To login, please decrypt the following PGP encrypted message and confirm the "
 "code:"
 msgstr ""
+"Um dich anzumelden, entschlüssel bitte die folgende PGP-verschlüsselte "
+"Nachricht und bestätige den Code:"
 
 #: var/www/html/login.php:108 var/www/html/pgp.php:62
 msgid "Confirm"
-msgstr ""
+msgstr "Bestätigen"
 
 #: var/www/html/login.php:110
 msgid "Don't have the private key at hand?"
@@ -452,7 +459,7 @@ msgstr ""
 
 #: var/www/html/login.php:110 var/www/html/admin.php:39 var/www/common.php:1086
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: var/www/html/login.php:117
 msgid "Hosting - Login"
@@ -462,12 +469,12 @@ msgstr ""
 #: var/www/html/admin.php:88 var/www/html/home.php:281
 #: var/www/html/register.php:119
 msgid "Username"
-msgstr ""
+msgstr "Nutzername"
 
 #: var/www/html/login.php:128 var/www/html/admin.php:22
 #: var/www/html/register.php:122
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: var/www/html/login.php:132 var/www/html/admin.php:31
 msgid ""
@@ -499,7 +506,7 @@ msgstr ""
 
 #: var/www/html/password.php:39 var/www/common.php:1089
 msgid "Change password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: var/www/html/password.php:42
 msgid "Reset type:"
@@ -523,7 +530,7 @@ msgstr ""
 
 #: var/www/html/password.php:60
 msgid "New password:"
-msgstr ""
+msgstr "Neues Passwort:"
 
 #: var/www/html/password.php:61
 msgid "Confirm password:"
@@ -586,7 +593,7 @@ msgstr ""
 
 #: var/www/html/admin.php:91
 msgid "Approve"
-msgstr ""
+msgstr "Akzeptieren"
 
 #: var/www/html/admin.php:96
 msgid "Delete accounts:"
@@ -595,7 +602,7 @@ msgstr ""
 #: var/www/html/admin.php:99 var/www/html/admin.php:125
 #: var/www/html/admin.php:152
 msgid "Onion address:"
-msgstr ""
+msgstr "Onion-Adresse:"
 
 #: var/www/html/admin.php:112
 msgid "Successfully queued for deletion!"
@@ -609,7 +616,7 @@ msgstr ""
 #: var/www/html/admin.php:117 var/www/html/admin.php:144
 #: var/www/html/admin.php:206
 msgid "Invalid onion address!"
-msgstr ""
+msgstr "Ungültige Onion-Adresse!"
 
 #: var/www/html/admin.php:122
 msgid "Suspend hidden service:"
@@ -636,7 +643,7 @@ msgstr ""
 #: var/www/html/home.php:193 var/www/html/home.php:196
 #: var/www/html/home.php:228 var/www/html/home.php:237
 msgid "Enabled"
-msgstr ""
+msgstr "Aktiviert"
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "SMTP enabled"
@@ -652,7 +659,7 @@ msgstr ""
 
 #: var/www/html/faq.php:4 var/www/common.php:1060
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 #: var/www/html/faq.php:6
 msgid "Hosting - FAQ"
@@ -660,11 +667,11 @@ msgstr ""
 
 #: var/www/html/faq.php:9
 msgid "Question"
-msgstr ""
+msgstr "Frage"
 
 #: var/www/html/faq.php:9
 msgid "Answer"
-msgstr ""
+msgstr "Antwort"
 
 #: var/www/html/faq.php:10
 msgid "Your rules are so strict. Can't you make an exception for my site?"
@@ -784,33 +791,40 @@ msgstr ""
 
 #: var/www/html/pgp.php:17
 msgid "There was an error importing the key"
-msgstr ""
+msgstr "Es gab einen Fehler beim Importieren des Schlüssels"
 
 #: var/www/html/pgp.php:27
 msgid "Sorry, the code was incorrect"
-msgstr ""
+msgstr "Leider wer der Code falsch"
 
 #: var/www/html/pgp.php:38
 msgid "Yay, PGP based 2FA is enabled!"
-msgstr ""
+msgstr "Yay, PGP basierende 2FA ist aktiviert!"
 
 #: var/www/html/pgp.php:48
 msgid ""
 "Sorry, this key can't be used to encrypt a message to you. Your key may have "
 "expired or has been revoked."
 msgstr ""
+"Tut uns leid, dieser Schlüssel kann nicht verwendet um eine Nachricht an "
+"dich zu verschlüsseln. Dein Schlüssel ist vielleicht abgelaufen oder wurde "
+"widerrufen."
 
 #: var/www/html/pgp.php:56
 msgid ""
 "To enable 2FA, please enter the following code to confirm ownership of your "
 "key:"
 msgstr ""
+"Um 2FA zu aktivieren, gib bitte folgenden Code ein, um zu bestätigen, dass "
+"der Schlüssel dir gehört:"
 
 #: var/www/html/pgp.php:57
 msgid ""
 "To enable 2FA using your PGP key, please decrypt the following PGP encrypted "
 "message and confirm the code:"
 msgstr ""
+"Um 2FA mit deinem PGP-Schlüssel zu aktivieren, entschlüssle bitte folgende "
+"PGP-verschlüsselte Nachricht und bestätige den Code:"
 
 #: var/www/html/pgp.php:71
 msgid "Add your PGP key for more security features like 2FA:"
@@ -818,7 +832,7 @@ msgstr ""
 
 #: var/www/html/pgp.php:76
 msgid "Update PGP key"
-msgstr ""
+msgstr "PGP-Schlüssel aktualisieren"
 
 #: var/www/html/delete.php:22
 msgid ""
@@ -870,7 +884,7 @@ msgstr ""
 
 #: var/www/html/home.php:113
 msgid "Delete domain"
-msgstr ""
+msgstr "Domain löschen"
 
 #: var/www/html/home.php:115
 #, php-format
@@ -934,7 +948,7 @@ msgstr ""
 
 #: var/www/html/home.php:228
 msgid "Domain"
-msgstr ""
+msgstr "Domain"
 
 #: var/www/html/home.php:248
 msgid "Add additional domain:"
@@ -942,7 +956,7 @@ msgstr ""
 
 #: var/www/html/home.php:252
 msgid "Add domain"
-msgstr ""
+msgstr "Domain hinzufügen"
 
 #: var/www/html/home.php:255
 #, php-format
@@ -1056,7 +1070,7 @@ msgstr ""
 #: var/www/html/register.php:9 var/www/html/register.php:158
 #: var/www/common.php:1057
 msgid "Register"
-msgstr ""
+msgstr "Registrieren"
 
 #: var/www/html/register.php:11
 msgid "Hosting - Register"
@@ -1132,10 +1146,12 @@ msgid ""
 "I have read and agreed to the <a href=\"%s\" target=\"_blank\">Privacy "
 "Policy</a>"
 msgstr ""
+"Ich habe die <a href=\"%s\" target=\"_blank\">Datenschutzerklärung</a> "
+"gelesen und akzeptiere diese"
 
 #: var/www/setup.php:13 var/www/setup.php:16
 msgid "Error: No database connection!"
-msgstr ""
+msgstr "Fehler: Keine Datenbankverbindung!"
 
 #: var/www/setup.php:36
 msgid "Database and files have successfully been set up"
@@ -1169,7 +1185,7 @@ msgstr ""
 
 #: var/www/common.php:203
 msgid "Copy:"
-msgstr ""
+msgstr "Kopiere:"
 
 #: var/www/common.php:814
 msgid "Invalid CSRF token, please try again."
@@ -1177,12 +1193,12 @@ msgstr ""
 
 #: var/www/common.php:836
 msgid "No Connection to MySQL database!"
-msgstr ""
+msgstr "Keine Verbindung zur MySQL Datenbank!"
 
 #: var/www/common.php:1084
 #, php-format
 msgid "Logged in as %s"
-msgstr ""
+msgstr "Angemeldet als %s"
 
 #: var/www/common.php:1090
 msgid "FileManager"
@@ -1190,4 +1206,4 @@ msgstr ""
 
 #: var/www/common.php:1091
 msgid "Delete account"
-msgstr ""
+msgstr "Konto löschen"
