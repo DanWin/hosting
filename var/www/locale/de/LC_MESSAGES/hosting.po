@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-22 20:16+0100\n"
-"PO-Revision-Date: 2023-01-23 19:55+0000\n"
+"PO-Revision-Date: 2023-01-29 14:16+0000\n"
 "Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
 "Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.15.1\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -26,12 +26,12 @@ msgstr ""
 #: var/www/common.php:653 var/www/common.php:971 var/www/common.php:1014
 #, php-format
 msgid "ERROR: Account %s looks strange"
-msgstr ""
+msgstr "FEHLER: Konto %s sieht merkwürdig aus"
 
 #: var/www/cron.php:33
 #, php-format
 msgid "ERROR: Account %s already exists"
-msgstr ""
+msgstr "FEHLER: Konto %s existiert bereits"
 
 #: var/www/html/index.php:4 var/www/common.php:1056
 msgid "Info"
@@ -44,32 +44,33 @@ msgstr "Hosting - Info"
 #: var/www/html/index.php:8
 msgid "Here you can get yourself a free web hosting account on my server."
 msgstr ""
+"Hier kannst du dir ein kostenloses Webhosting Konto auf meinem Server holen."
 
 #: var/www/html/index.php:9
 msgid "What you get:"
-msgstr ""
+msgstr "Was du bekommst:"
 
 #: var/www/html/index.php:11
 msgid "Completely free anonymous Tor and clearnet web hosting"
-msgstr ""
+msgstr "Komplett kostenloses, anonymes Tor und clearnet web hosting"
 
 #: var/www/html/index.php:12
 #, php-format
 msgid "Choose between PHP %s or no PHP support"
-msgstr ""
+msgstr "Wähle zwischen PHP %s oder keiner PHP-Unterstützung"
 
 #: var/www/html/index.php:13
 msgid "Nginx Webserver"
-msgstr ""
+msgstr "Nginx Webserver"
 
 #: var/www/html/index.php:14
 msgid "SQLite support"
-msgstr ""
+msgstr "SQLite Unterstützung"
 
 #: var/www/html/index.php:15
 #, php-format
 msgid "Up to %d MariaDB (MySQL) databases"
-msgstr ""
+msgstr "Bis zu %d MariaDB (MySQL) Datenbanken"
 
 #: var/www/html/index.php:16
 msgid ""
@@ -77,26 +78,29 @@ msgid ""
 "adminer/\" target=\"_blank\">Adminer</a> for web based database "
 "administration"
 msgstr ""
+"<a href=\"/phpmyadmin/\" target=\"_blank\">PHPMyAdmin</a> und <a href=\"/"
+"adminer/\" target=\"_blank\">Adminer</a> für web basierende "
+"Datenbankadministration"
 
 #: var/www/html/index.php:17
 msgid "Web-based file manager"
-msgstr ""
+msgstr "Web-basierender Dateimanager"
 
 #: var/www/html/index.php:18
 msgid "SFTP access"
-msgstr ""
+msgstr "SFTP Zugriff"
 
 #: var/www/html/index.php:19
 msgid "command line access to shell via SSH"
-msgstr ""
+msgstr "Komandozeilen Zugriff über SSH"
 
 #: var/www/html/index.php:20
 msgid "1GB disk quota and a maximum of 100.000 files"
-msgstr ""
+msgstr "1GB Festplatten platz und ein Maximum von 100.000 Dateien"
 
 #: var/www/html/index.php:20
 msgid " - upgradable"
-msgstr ""
+msgstr " - Erweiterbar"
 
 #: var/www/html/index.php:21
 #, php-format
@@ -104,29 +108,33 @@ msgid ""
 "mail() can send e-mails from your_system_account@%1$s (your_system_account@"
 "%2$s for clearnet)"
 msgstr ""
+"mail() kann E-Mail mit deinem_system_konto@%1$s (deinem_system_konto@%2$s "
+"für clearnet) versenden"
 
 #: var/www/html/index.php:22
 msgid "Webmail and IMAP, POP3 and SMTP access to your mail account"
-msgstr ""
+msgstr "Webmail und IMAP, POP3 und SMTP Zugriff auf dein Mailkonto"
 
 #: var/www/html/index.php:23
 msgid "Your own .onion domains"
-msgstr ""
+msgstr "Deine eigenen .onion Domains"
 
 #: var/www/html/index.php:24
 #, php-format
 msgid "Clearnet domains or a free subdomain of %s"
-msgstr ""
+msgstr "Clearnet Domains oder eine kostenlose Subdomain von %s"
 
 #: var/www/html/index.php:25
 msgid ""
 "Empty/Unused accounts will be automatically deleted after a month of "
 "inactivity"
 msgstr ""
+"Leere/Ungenutzte Konten werden automatisch nach einem Monat Inaktivität "
+"gelöscht"
 
 #: var/www/html/index.php:26
 msgid "PGP based Two-Factor Authentication (2FA)"
-msgstr ""
+msgstr "PGP basierende Zwei-Faktor Authorisierung (2FA)"
 
 #: var/www/html/index.php:27
 #, php-format
@@ -134,10 +142,12 @@ msgid ""
 "There is a missing feature, or you need a special configuration? Just <a "
 "href=\"%s\">contact me</a> and I'll see what I can do."
 msgstr ""
+"Es fehlt eine Funktion, oder du brauchst eine besondere Konfiguration? <a "
+"href=\"%s\">Schreib mir</a> und ich werde schauen was ich machen kann."
 
 #: var/www/html/index.php:28
 msgid "More to come…"
-msgstr ""
+msgstr "Mehr wird kommen…"
 
 #: var/www/html/index.php:30
 msgid "Rules"
@@ -145,68 +155,78 @@ msgstr "Regeln"
 
 #: var/www/html/index.php:32
 msgid "No child pornography!"
-msgstr ""
+msgstr "Keine Kinderpornografie!"
 
 #: var/www/html/index.php:33
 msgid "No terroristic propaganda!"
-msgstr ""
+msgstr "Keine terroristische Propaganda!"
 
 #: var/www/html/index.php:34
 msgid "No illegal content according to German law!"
-msgstr ""
+msgstr "Keine illegalen Inhalte nach deutschem Recht!"
 
 #: var/www/html/index.php:35
 msgid "No malware! (e.g. botnets)"
-msgstr ""
+msgstr "Keine Malware! (z.B. Botnets)"
 
 #: var/www/html/index.php:36
 msgid "No phishing, scams or spam!"
-msgstr ""
+msgstr "Kein Phishing, Betrug oder Spam!"
 
 #: var/www/html/index.php:37
 msgid "No mining without explicit user permission! (e.g. using coinhive)"
-msgstr ""
+msgstr "Kein Mining ohne expliziete Nutzerzustimmung! (z.B. mit Coinhive)"
 
 #: var/www/html/index.php:38
 msgid ""
 "No shops, markets or any other sites dedicated to making money! (This is a "
 "FREE hosting!)"
 msgstr ""
+"Keine Shops, Märkte oder andere Seiten bei denen es nur ums Geld machen "
+"geht! (Das ist ein KOSTENLOSES Hosting!)"
 
 #: var/www/html/index.php:39
 msgid ""
 "No proxy scripts! (You are already using Tor and this will just burden the "
 "network)"
 msgstr ""
+"Keine Proxy-Skripte! (Du verwendest bereits Tor und so etwas wird nur das "
+"Netwerk unnötig belasten)"
 
 #: var/www/html/index.php:40
 msgid "No IP logger or similar de-anonymizer sites!"
-msgstr ""
+msgstr "Keine IP-Logger oder ähnliche Deanonymisierungsseiten!"
 
 #: var/www/html/index.php:41
 msgid ""
 "I preserve the right to delete any site for violating these rules and adding "
 "new rules at any time."
 msgstr ""
+"Ich behalte das Recht vor jegliche Seiten, die gegen diese Regeln verstoßen, "
+"zu löschen und jederzeit neue Regeln hinzuzufügen."
 
 #: var/www/html/index.php:42
 msgid ""
 "Should you not honor these rules, I will (have to) work together with Law "
 "Enforcement!"
 msgstr ""
+"Wenn du diese Regeln nicht einhälst, werde ich mit Strafberhörden "
+"zusammenarbeiten (müssen)!"
 
 #: var/www/html/list.php:5 var/www/common.php:1059
 msgid "List of hosted sites"
-msgstr ""
+msgstr "Liste gehosteter Seiten"
 
 #: var/www/html/list.php:7
 msgid "Hosting - List of hosted sites"
-msgstr ""
+msgstr "Hosting - Liste gehosteter Seiten"
 
 #: var/www/html/list.php:14
 #, php-format
 msgid "Here is a list of %1$d public hosted sites (%2$d sites hidden):"
 msgstr ""
+"Hier ist eine Liste von %1$d öffentlich gehosteten Seiten (%2$d Seiten "
+"versteckt):"
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
 msgid "Onion link"
@@ -214,117 +234,122 @@ msgstr "Onion-Adresse"
 
 #: var/www/html/coinpayments_ipn.php:5
 msgid "Upgrades disabled"
-msgstr ""
+msgstr "Erweiterungen deaktiviert"
 
 #: var/www/html/coinpayments_ipn.php:8
 msgid "CoinPayments disabled"
-msgstr ""
+msgstr "CoinPayments deaktiviert"
 
 #: var/www/html/coinpayments_ipn.php:11
 msgid "No HMAC signature sent"
-msgstr ""
+msgstr "Keine HMAC Signatur gesendet"
 
 #: var/www/html/coinpayments_ipn.php:15
 msgid "No Merchant ID passed"
-msgstr ""
+msgstr "Keine Merchant ID übergeben"
 
 #: var/www/html/coinpayments_ipn.php:18
 msgid "Invalid Merchant ID"
-msgstr ""
+msgstr "Ungültige Merchant ID"
 
 #: var/www/html/coinpayments_ipn.php:22
 msgid "Error reading POST data"
-msgstr ""
+msgstr "Fehler beim lesen der POST Daten"
 
 #: var/www/html/coinpayments_ipn.php:26
 msgid "HMAC signature does not match"
-msgstr ""
+msgstr "HMAC Signatur stimmt nicht überein"
 
 #: var/www/html/upgrade.php:13
 msgid "Hosting - Upgrade account"
-msgstr ""
+msgstr "Hosting - Konto erweitern"
 
 #: var/www/html/upgrade.php:17
 msgid "An error occurred talking to coinpayments"
-msgstr ""
+msgstr "Ein Fehler ist beim reden mit Coinpaments passiert"
 
 #: var/www/html/upgrade.php:22
 msgid "Desired upgrade"
-msgstr ""
+msgstr "Gewünschte Erweiterung"
 
 #: var/www/html/upgrade.php:34
 msgid "Desired payment currency"
-msgstr ""
+msgstr "Gewünschte Zahlungswährung"
 
 #: var/www/html/upgrade.php:45
 msgid "Pay now"
-msgstr ""
+msgstr "Jetzt bezahlen"
 
 #: var/www/html/upgrade.php:52
 msgid "Sorry, looks like you didn't select a valid upgrade."
-msgstr ""
+msgstr "Entschuldigung, es scheint du hast keine gülte Erweiterung ausgewählt."
 
 #: var/www/html/upgrade.php:54
 msgid "Sorry, looks like you didn't select a valid payment currency."
 msgstr ""
+"Entschuldigung, es scheint du hast keine gültige Zahlungswährung ausgewählt."
 
 #: var/www/html/upgrade.php:59
 msgid "An error occurred creating the transaction, please try again"
 msgstr ""
+"Ein Fehler ist beim Erstellen der Transaktion aufgetreten. Bitte versuche es "
+"erneut"
 
 #: var/www/html/upgrade.php:61
 #, php-format
 msgid "Please pay %1$s to %2$s"
-msgstr ""
+msgstr "Bitte zahle %1$s an %2$s"
 
 #: var/www/html/upgrade.php:62
 msgid "QR Code"
-msgstr ""
+msgstr "QR Code"
 
 #: var/www/html/upgrade.php:63
 msgid ""
 "Once paid, it can take a while until the upgrade is applied to your account. "
 "Usually within an hour."
 msgstr ""
+"Sobald du bezahlt hast, kann es ein bisschen dauern, bis die Erweiterung "
+"deinem Konto angewendet wird. Meistens innerhalb einer Stunde."
 
 #: var/www/html/upgrade.php:68 var/www/html/files.php:357
 #: var/www/html/password.php:64 var/www/html/pgp.php:79
 msgid "Go back to dashboard"
-msgstr ""
+msgstr "Gehe zurück zum Dashboard"
 
 #: var/www/html/files.php:12
 msgid "No Connection to SFTP server!"
-msgstr ""
+msgstr "Keine Verbindung zum SFTP Server!"
 
 #: var/www/html/files.php:267
 #, php-format
 msgid "FileManager - Index of %s"
-msgstr ""
+msgstr "FileManager - Index von %s"
 
 #: var/www/html/files.php:270
 #, php-format
 msgid "Index of %s"
-msgstr ""
+msgstr "Index von %s"
 
 #: var/www/html/files.php:272
 msgid "Upload up to 1GB and up to 100 files at once"
-msgstr ""
+msgstr "Lade bis zu 1GB und maximal 100 Dateien gleichzeitig hoch"
 
 #: var/www/html/files.php:272
 msgid "Upload"
-msgstr ""
+msgstr "Hochladen"
 
 #: var/www/html/files.php:291
 msgid "Create directory"
-msgstr ""
+msgstr "Ordner erstellen"
 
 #: var/www/html/files.php:292
 msgid "Create file"
-msgstr ""
+msgstr "Datei erstellen"
 
 #: var/www/html/files.php:293
 msgid "Filename"
-msgstr ""
+msgstr "Dateiname"
 
 #: var/www/html/files.php:295 var/www/html/files.php:315
 #: var/www/html/admin.php:71 var/www/html/admin.php:91
@@ -332,12 +357,12 @@ msgstr ""
 #: var/www/html/home.php:201 var/www/html/home.php:240
 #: var/www/html/home.php:269
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: var/www/html/files.php:296 var/www/html/files.php:316
 #: var/www/html/files.php:390
 msgid "Rename"
-msgstr ""
+msgstr "Umbenennen"
 
 #: var/www/html/files.php:297 var/www/html/files.php:317
 #: var/www/html/admin.php:71
@@ -346,62 +371,62 @@ msgstr "Bearbeiten"
 
 #: var/www/html/files.php:298 var/www/html/files.php:318
 msgid "Unzip"
-msgstr ""
+msgstr "Entpacken"
 
 #: var/www/html/files.php:301
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
 #: var/www/html/files.php:302
 msgid "Last Modified"
-msgstr ""
+msgstr "Zuletzt geändert"
 
 #: var/www/html/files.php:303
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: var/www/html/files.php:306
 msgid "Parent Directory"
-msgstr ""
+msgstr "Eltern-Ordner"
 
 #: var/www/html/files.php:346
 msgid "FileManager - 404 Not Found"
-msgstr ""
+msgstr "FileManager - 404 Nicht gefunden"
 
 #: var/www/html/files.php:347
 #, php-format
 msgid "The requested file %s was not found on your account."
-msgstr ""
+msgstr "Die angeforderte Datei %s wurde nicht in deinem Konto gefunden."
 
 #: var/www/html/files.php:348
 msgid "Go back to home directory"
-msgstr ""
+msgstr "Gehe zurück zum Heim-Ordner"
 
 #: var/www/html/files.php:354
 msgid "FileManager - Login"
-msgstr ""
+msgstr "FileManager - Anmelden"
 
 #: var/www/html/files.php:356
 msgid "Please type in your system account password:"
-msgstr ""
+msgstr "Bitte tippe dein Systemkonto-Passwort ein:"
 
 #: var/www/html/files.php:381
 msgid "FileManager - Rename file"
-msgstr ""
+msgstr "FileManager - Datei umbenennen"
 
 #: var/www/html/files.php:391 var/www/html/files.php:411
 msgid "Go back"
-msgstr ""
+msgstr "Gehe zurück"
 
 #: var/www/html/files.php:397
 msgid "FileManager - Edit file"
-msgstr ""
+msgstr "FileManager - Datei bearbeiten"
 
 #: var/www/html/files.php:410 var/www/html/admin.php:191
 #: var/www/html/admin.php:201 var/www/html/home.php:200
 #: var/www/html/home.php:239
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: var/www/html/login.php:27
 msgid "Wrong 2FA code"
@@ -409,25 +434,31 @@ msgstr "Falscher 2FA Code"
 
 #: var/www/html/login.php:36
 msgid "Error: username may not be empty."
-msgstr ""
+msgstr "Fehler: Nutzername darf nicht leer sein."
 
 #: var/www/html/login.php:56
 msgid "Error: Your account is pending admin approval. Please try again later."
 msgstr ""
+"Fehler: Dein Konto wartet auf Genehmingung durch einen Administrator. Bitte "
+"versuche es später noch einmal."
 
 #: var/www/html/login.php:58
 msgid "Error: Your account is pending creation. Please try again in a minute."
 msgstr ""
+"Fehler: Dein Konto muss noch erstellt werden. Bitte versuche es erneut in "
+"einer Minute."
 
 #: var/www/html/login.php:62
 msgid "Error: wrong password."
-msgstr ""
+msgstr "Fehler: falsches Passwort."
 
 #: var/www/html/login.php:66
 msgid ""
 "Error: username was not found. If you forgot it, you can enter youraccount."
 "onion instead."
 msgstr ""
+"Fehler: Nutername wurde nicht gefunden. Falls du ihn vergessen hast, kannst "
+"du auch deinkonto.onion statdessen eingeben."
 
 #: var/www/html/login.php:86 var/www/html/login.php:130
 #: var/www/html/admin.php:24 var/www/common.php:1058
@@ -455,7 +486,7 @@ msgstr "Bestätigen"
 
 #: var/www/html/login.php:110
 msgid "Don't have the private key at hand?"
-msgstr ""
+msgstr "Du hast den privaten Schlüssel nicht zur Hand?"
 
 #: var/www/html/login.php:110 var/www/html/admin.php:39 var/www/common.php:1086
 msgid "Logout"
@@ -463,7 +494,7 @@ msgstr "Abmelden"
 
 #: var/www/html/login.php:117
 msgid "Hosting - Login"
-msgstr ""
+msgstr "Hosting - Anmelden"
 
 #: var/www/html/login.php:123 var/www/html/admin.php:50
 #: var/www/html/admin.php:88 var/www/html/home.php:281
@@ -480,29 +511,33 @@ msgstr "Passwort"
 msgid ""
 "If you disabled cookies, please re-enable them. You can't log in without!"
 msgstr ""
+"Falls du Cookies deaktiviert hast, aktiviere diese bitte weider. Du kannst "
+"dich ohne nicht anmelden!"
 
 #: var/www/html/password.php:14 var/www/html/password.php:16
 #: var/www/html/admin.php:29 var/www/html/delete.php:10
 msgid "Wrong password!"
-msgstr ""
+msgstr "Falsches Passwort!"
 
 #: var/www/html/password.php:22
 msgid "Successfully changed account password."
-msgstr ""
+msgstr "Konto-Passwort erfolgreich geändert."
 
 #: var/www/html/password.php:27
 msgid ""
 "Successfully changed system account password, change will take effect within "
 "the next minute."
 msgstr ""
+"Systemkonto-Passwort erfolgreich geändert. Die Änderung wird innerhalb der "
+"nächsten Minute angewendet."
 
 #: var/www/html/password.php:32
 msgid "Successfully changed sql password."
-msgstr ""
+msgstr "SQL-Passwort erfolgreich geändert."
 
 #: var/www/html/password.php:34
 msgid "Couldn't update password: Unknown reset type."
-msgstr ""
+msgstr "Passwort konnte nicht geändert werden: Unbekannter Zurücksetz-typ,"
 
 #: var/www/html/password.php:39 var/www/common.php:1089
 msgid "Change password"
@@ -510,23 +545,23 @@ msgstr "Passwort ändern"
 
 #: var/www/html/password.php:42
 msgid "Reset type:"
-msgstr ""
+msgstr "Zurücksetz-typ:"
 
 #: var/www/html/password.php:47
 msgid "Account"
-msgstr ""
+msgstr "Konto"
 
 #: var/www/html/password.php:52
 msgid "System account"
-msgstr ""
+msgstr "Systemkonto"
 
 #: var/www/html/password.php:57
 msgid "MySQL"
-msgstr ""
+msgstr "MySQL"
 
 #: var/www/html/password.php:59
 msgid "Account password:"
-msgstr ""
+msgstr "Konto-Passwort:"
 
 #: var/www/html/password.php:60
 msgid "New password:"
@@ -534,62 +569,62 @@ msgstr "Neues Passwort:"
 
 #: var/www/html/password.php:61
 msgid "Confirm password:"
-msgstr ""
+msgstr "Passwort bestätigen:"
 
 #: var/www/html/password.php:62
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
 
 #: var/www/html/admin.php:9
 msgid "Admin panel"
-msgstr ""
+msgstr "Administrationsoberfläche"
 
 #: var/www/html/admin.php:11
 msgid "Hosting - Admin panel"
-msgstr ""
+msgstr "Hosting - Administrationsoberfläche"
 
 #: var/www/html/admin.php:37
 #, php-format
 msgid "Approve pending sites (%s)"
-msgstr ""
+msgstr "Ausstehende Seiten genehmigen (%s)"
 
 #: var/www/html/admin.php:39
 msgid "List of accounts"
-msgstr ""
+msgstr "Liste von Konten"
 
 #: var/www/html/admin.php:39
 msgid "Delete accounts"
-msgstr ""
+msgstr "Konten löschen"
 
 #: var/www/html/admin.php:39
 msgid "Suspend hidden services"
-msgstr ""
+msgstr "Hidden services suspendieren"
 
 #: var/www/html/admin.php:39
 msgid "Edit hidden services"
-msgstr ""
+msgstr "Hidden services bearbeiten"
 
 #: var/www/html/admin.php:41
 msgid "Welcome to the admin panel!"
-msgstr ""
+msgstr "Willkommen zur Administrationsoberfläche!"
 
 #: var/www/html/admin.php:50 var/www/html/admin.php:88
 #: var/www/html/home.php:179 var/www/html/home.php:228
 #: var/www/html/home.php:259
 msgid "Action"
-msgstr ""
+msgstr "Aktion"
 
 #: var/www/html/admin.php:71 var/www/html/admin.php:128
 msgid "Suspend"
-msgstr ""
+msgstr "Suspendieren"
 
 #: var/www/html/admin.php:82
 msgid "Successfully approved"
-msgstr ""
+msgstr "Erfolgreich genehmigt"
 
 #: var/www/html/admin.php:88
 msgid "Onion address"
-msgstr ""
+msgstr "Onion-Adresse"
 
 #: var/www/html/admin.php:91
 msgid "Approve"
@@ -597,7 +632,7 @@ msgstr "Akzeptieren"
 
 #: var/www/html/admin.php:96
 msgid "Delete accounts:"
-msgstr ""
+msgstr "Konten löschen:"
 
 #: var/www/html/admin.php:99 var/www/html/admin.php:125
 #: var/www/html/admin.php:152
@@ -606,12 +641,12 @@ msgstr "Onion-Adresse:"
 
 #: var/www/html/admin.php:112
 msgid "Successfully queued for deletion!"
-msgstr ""
+msgstr "Erfolgreich zum Löschen eingereiht!"
 
 #: var/www/html/admin.php:114 var/www/html/admin.php:141
 #: var/www/html/admin.php:203
 msgid "Onion address not hosted by us!"
-msgstr ""
+msgstr "Onion-Adresse wird nicht von uns gehostet!"
 
 #: var/www/html/admin.php:117 var/www/html/admin.php:144
 #: var/www/html/admin.php:206
@@ -620,23 +655,23 @@ msgstr "Ungültige Onion-Adresse!"
 
 #: var/www/html/admin.php:122
 msgid "Suspend hidden service:"
-msgstr ""
+msgstr "Hidden service suspendieren:"
 
 #: var/www/html/admin.php:138
 msgid "Successfully queued for suspension!"
-msgstr ""
+msgstr "Erfolgreich zur Suspendierung eingereiht!"
 
 #: var/www/html/admin.php:149
 msgid "Edit hidden service:"
-msgstr ""
+msgstr "Hidden service bearbeiten:"
 
 #: var/www/html/admin.php:183
 msgid "Changes successfully saved!"
-msgstr ""
+msgstr "Änderungen erfolgreich gespeichert!"
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Onion"
-msgstr ""
+msgstr "Onion"
 
 #: var/www/html/admin.php:191 var/www/html/admin.php:195
 #: var/www/html/admin.php:198 var/www/html/home.php:179
@@ -647,15 +682,15 @@ msgstr "Aktiviert"
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "SMTP enabled"
-msgstr ""
+msgstr "SMTP aktiviert"
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Nr. of intros"
-msgstr ""
+msgstr "Anzahl an Intros"
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Max streams per rend circuit"
-msgstr ""
+msgstr "Max. Streams pro rend circuit"
 
 #: var/www/html/faq.php:4 var/www/common.php:1060
 msgid "FAQ"
@@ -663,7 +698,7 @@ msgstr "FAQ"
 
 #: var/www/html/faq.php:6
 msgid "Hosting - FAQ"
-msgstr ""
+msgstr "Hosting - FAQ"
 
 #: var/www/html/faq.php:9
 msgid "Question"
@@ -676,6 +711,8 @@ msgstr "Antwort"
 #: var/www/html/faq.php:10
 msgid "Your rules are so strict. Can't you make an exception for my site?"
 msgstr ""
+"Deine Regeln sind so strikt. Kannst du nicht eine Ausnahne für meine Seite "
+"machen?"
 
 #: var/www/html/faq.php:10
 msgid ""
@@ -684,10 +721,16 @@ msgid ""
 "have to for every other site as well which is the same as if the rules "
 "didn't exist."
 msgstr ""
+"Nein, ich werde keine Ausnahmen für jegliche Seiten machen, auch bin ich "
+"nicht korrumpierbar durch Geldangebote. Sobald ich eine Ausnahme für deine "
+"Seite mache, müsste ich das ja für alle machen, was das gleiche wäre, als ob "
+"die Regeln nicht existieren würden."
 
 #: var/www/html/faq.php:11
 msgid "I have an .htaccess file, but it doesn't work. How can I fix it?"
 msgstr ""
+"Ich habe eine .htaccess Datei, aber diese funktioniert nicht. Wie kann ich "
+"das beheben?"
 
 #: var/www/html/faq.php:11
 #, php-format
@@ -698,10 +741,16 @@ msgid ""
 "a> and tell me your sites address where the .htaccess file is. I will then "
 "check your .htaccess and convert the rules to NginX rules and apply those."
 msgstr ""
+".htaccess Dateien sind für Apache2 Webserver gedacht. Mein Server ist "
+"basierend auf NginX, welcher deutlich schneller ist durch statische "
+"Konfigurationsdateien und nicht während der Laufzeit Dateien wie die ."
+"htaccess Datei einliest. Du kannst <a href=\"%s\">mich kontaktieren</a> und "
+"mir deine Adresse nennen, wo die .htaccess Datei liegt. Dann kann ich diese "
+"prüfen und zu NginX regeln umwandeln und anwenden."
 
 #: var/www/html/faq.php:12
 msgid "I just uploaded my page, but it's broken. HELP!"
-msgstr ""
+msgstr "Ich habe gerade meine Seite hochgeladen, aber diese ist kaputt. HILFE!"
 
 #: var/www/html/faq.php:12
 #, php-format
@@ -710,18 +759,24 @@ msgid ""
 "located in an .htaccess file or are mentioned in a README file. Just <a href="
 "\"%s\">contact me</a> in this case. Also see the previous question."
 msgstr ""
+"Höchst wahrscheinlich nutzt deine Seite Rewrite rules, welche typischerweise "
+"in einer .htaccess Datei liegen, oder in einer README Datei benannt sind. <a "
+"href=\"%s\">Schreib mir</a> einfach in diesem Falle. Siehe auch vorherige "
+"Frage."
 
 #: var/www/html/faq.php:13
 msgid "Can I host a porn site?"
-msgstr ""
+msgstr "Darf ich eine Pornoseite hosten?"
 
 #: var/www/html/faq.php:13
 msgid "Yes as long as your content is legal you may upload adult content."
 msgstr ""
+"Ja, so lange deine Inhalte lagal sind, darfst du Erwachseneninhalte "
+"hochladen."
 
 #: var/www/html/faq.php:14
 msgid "What is the directory structure for when I connect via sftp?"
-msgstr ""
+msgstr "Was ist die Ordnerstruktur, wenn ich mich mit sftp verbinde?"
 
 #: var/www/html/faq.php:14
 msgid ""
@@ -736,6 +791,16 @@ msgid ""
 "authorized_keys in this folder, you can authenticate to sftp using your ssh "
 "key, without a password"
 msgstr ""
+"Es gibt meherere Ordner auf dem Server für dein Konto:<br><b>Maildir</b> - "
+"wird verwendet um deine Mails abzuspeichern (nicht anfassen)<br><b>data</b> -"
+" Du kannst Anwendungsdaten hier speichern, die nicht öffentlich auf deiner "
+"Seite verfügbar sein sollen, z.B. Konfigurations-/"
+"Datenbankdateien.<br><b>tmp</b> - Alles was hier gespeichert wird, wird "
+"automatisch nach ca. 24 Stunden gelöscht<br><b>www</b> - Hier lädst du deine "
+"Webseite hoch, die dann unter deiner Domain verfügbar wird.<br><b>logs</b> - "
+"Hier findest du Webserver Logs<br><b>.ssh</b> - Durch hochladen deines "
+"öffentlichen SSH-Keys als authorized_keys in diesem Ordner, kannst du dich "
+"per SFTP mit deinem Key anmelden, ohne ein Passwort"
 
 #: var/www/html/faq.php:15
 msgid ""
