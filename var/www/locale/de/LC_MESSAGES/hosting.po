@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-22 20:16+0100\n"
-"PO-Revision-Date: 2023-01-29 14:16+0000\n"
+"PO-Revision-Date: 2023-01-30 16:36+0000\n"
 "Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
 "Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "de/>\n"
@@ -807,6 +807,8 @@ msgid ""
 "My application is very ressource intensive, or I want to host a different "
 "service e.g. my own tor relay. Can you get me a VPS?"
 msgstr ""
+"Meine Anwendung ist sehr Ressourcenintensiv, oder ich möchte einen anderen "
+"Dienst hosten, z.B. meinen eigenen Tor Relay. Kannst du mir einen VPS geben?"
 
 #: var/www/html/faq.php:15
 #, php-format
@@ -817,11 +819,19 @@ msgid ""
 "managed VPS hosting. However, this will not be for free. It depends on which "
 "server you want me to get. For details, <a href=\"%s\">contact me</a>"
 msgstr ""
+"Ja, wenn du besondere Anforderungen hast, und einen dedizerten VPS für deine "
+"Anwendung haben möchtest oder anonym das Tor netzwerk unterstützen möchtest ("
+"oder andere Netzwerke), ohne mit dem Serversetup etc. zu tun haben zu "
+"müssen, kann ich dir anbieten ein verwaltetes VPS Hosting zu geben. "
+"Allerdings ist dies nicht kostenlos. Es hängt vom Server ab, den ich für "
+"dich anlegen soll. Für mehr Details, <a href=\"%s\">schreib mir</a>"
 
 #: var/www/html/faq.php:16
 msgid ""
 "I want to also publish my site on clearnet. Can you offer a clearnet relay?"
 msgstr ""
+"Ich möchte meine Seite im Clearnet veröffentlichen. Kannst du mir ein "
+"clearnet Relay anbieten?"
 
 #: var/www/html/faq.php:16
 #, php-format
@@ -831,11 +841,18 @@ msgid ""
 "your DNS settings to the IPs given in your dashboard and <a href=\"%2$s"
 "\">contact me</a> for setting up an SSL certificate for your domain."
 msgstr ""
+"Ja, ich kann dir eine kostenlose Subdomain von %1$s anbieten, welche du in "
+"deinem Dashboard konfigurieren kannst. Oder wenn du deine eigene Domain "
+"hast, kannst du diese zu den DNS-Einstellungen die in deinem Dashboard "
+"genannt sind umstellen und <a href=\"%2$s\">mich kontaktieren</a> um ein SSL-"
+"Zertifikat für deine Domain einzurichten."
 
 #: var/www/html/faq.php:17
 msgid ""
 "I'm using CloudFlare, but when I open my site, it shows too many redirects."
 msgstr ""
+"Ich verwende CloudFlare, aber wenn ich meine Seite öffne, zeigt es zu viele "
+"Redirects an."
 
 #: var/www/html/faq.php:17
 msgid ""
@@ -849,10 +866,20 @@ msgid ""
 "SSL. Change the setting from Flexible to Full, which makes CloudFlare use a "
 "secure https:// connection when talking to my server."
 msgstr ""
+"Standartmäßig macht CloudFlare unverschlüsselte Anfragen an die Backend-"
+"Server. Mein Server fordert Clients, die sich unsicher verbinden, jedoch auf "
+"eine sichere Verbindung zu verwenden und https:// statt http:// zu "
+"verwenden. CloudFlare leitet diese Umleitung dann an den Clienten weiter, "
+"welcher dann CloudFlare für das gleiche nochmal fragt, aber CloudFlare "
+"verwendet weiterhin eine unverschlüsselte http:// Verbindung zu meinem "
+"Server. Um dies zu beheben, gehe in deinem CloudFlare Dashboard zu den "
+"Domaineinstellungen. Unter \"Crypto\" kannst du die einstellungen für SSL "
+"finden. Ändere die Einstellung von Flexibel zu Full, damit CloudFlare eine "
+"sichere https:// Verbindung zu meinem Server verwendet."
 
 #: var/www/html/pgp.php:4 var/www/common.php:1088
 msgid "PGP 2FA"
-msgstr ""
+msgstr "PGP 2FA"
 
 #: var/www/html/pgp.php:17
 msgid "There was an error importing the key"
@@ -894,6 +921,7 @@ msgstr ""
 #: var/www/html/pgp.php:71
 msgid "Add your PGP key for more security features like 2FA:"
 msgstr ""
+"Füge deinen PGP-Schlüssel für mehr Sicherheitsfunktionen hinzu, wie 2FA:"
 
 #: var/www/html/pgp.php:76
 msgid "Update PGP key"
@@ -904,18 +932,20 @@ msgid ""
 "This will delete your account and all data associated with it. It can't be "
 "un-done. Are you sure?"
 msgstr ""
+"Dies wird dein Konto und alle diesem zugeordneten Daten löschen. Es kann "
+"nicht rückgängig gemacht werden. Bist du sicher?"
 
 #: var/www/html/delete.php:25
 msgid "Enter your account password to confirm"
-msgstr ""
+msgstr "Gib dein Kontopasswort zur Bestätigung ein"
 
 #: var/www/html/delete.php:28
 msgid "No, don't delete."
-msgstr ""
+msgstr "Nein, nicht löschen."
 
 #: var/www/html/home.php:16
 msgid "Delete database"
-msgstr ""
+msgstr "Datenbank löschen"
 
 #: var/www/html/home.php:18
 #, php-format
@@ -923,18 +953,20 @@ msgid ""
 "This will delete your database %s and all data associated with it. It can't "
 "be un-done. Are you sure?"
 msgstr ""
+"Dies löscht deine Datenbank %s und alle damit verknüpften Daten. Es kann "
+"nicht rückgängig gemacht werden. Bist du sicher?"
 
 #: var/www/html/home.php:21 var/www/html/home.php:42 var/www/html/home.php:118
 msgid "Yes, delete"
-msgstr ""
+msgstr "Ja, löschen"
 
 #: var/www/html/home.php:23 var/www/html/home.php:44 var/www/html/home.php:120
 msgid "No, don't delete"
-msgstr ""
+msgstr "Nein, nicht löschen"
 
 #: var/www/html/home.php:37
 msgid "Delete onion domain"
-msgstr ""
+msgstr "Onion Domain löschen"
 
 #: var/www/html/home.php:39
 #, php-format
@@ -942,10 +974,12 @@ msgid ""
 "This will delete your onion domain %s and all data asociated with it. It "
 "can't be un-done. Are you sure?"
 msgstr ""
+"Dies löscht deine Onion Domain %s und alle zugehörigen Daten. Es kann nicht "
+"rückgängig gemacht werden. Bist du sicher?"
 
 #: var/www/html/home.php:65 var/www/html/register.php:72
 msgid "Error onion already exists."
-msgstr ""
+msgstr "Fehler: Onion existiert bereits."
 
 #: var/www/html/home.php:113
 msgid "Delete domain"
@@ -957,59 +991,61 @@ msgid ""
 "This will delete your domain %s and all data asociated with it. It can't be "
 "un-done. Are you sure?"
 msgstr ""
+"Dies löscht deine Domain %s und alle zugehörigen Daten. Es kann nicht "
+"rückgängig gemacht werden. Bist du sicher?"
 
 #: var/www/html/home.php:171 var/www/common.php:1087
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: var/www/html/home.php:176
 #, php-format
 msgid "Enter system account password to check your %s mail:"
-msgstr ""
+msgstr "Gib dein Systemkonto-Passwwort ein um deine %s Mail zu überprüfen:"
 
 #: var/www/html/home.php:176
 msgid "Login to webmail"
-msgstr ""
+msgstr "Anmelden zu Webmail"
 
 #: var/www/html/home.php:177
 msgid "Onion domains"
-msgstr ""
+msgstr "Onion Domains"
 
 #: var/www/html/home.php:179
 msgid "Private key"
-msgstr ""
+msgstr "Privater Schlüssel"
 
 #: var/www/html/home.php:189
 msgid "Show private key"
-msgstr ""
+msgstr "Privaten Schlüssel anzeigen"
 
 #: var/www/html/home.php:203 var/www/html/home.php:242
 msgid "Unavailable"
-msgstr ""
+msgstr "Nicht verfügbar"
 
 #: var/www/html/home.php:209
 msgid "Add additional hidden service:"
-msgstr ""
+msgstr "Zusätzlichen hidden service hinzufügen:"
 
 #: var/www/html/home.php:212 var/www/html/register.php:150
 msgid "Random v3 Address"
-msgstr ""
+msgstr "Zufällige v3 Adresse"
 
 #: var/www/html/home.php:215 var/www/html/register.php:151
 msgid "Random v2 Address"
-msgstr ""
+msgstr "Zufällige v2 Adresse"
 
 #: var/www/html/home.php:218 var/www/html/register.php:152
 msgid "Custom private key"
-msgstr ""
+msgstr "Benutzerdefinierter privater Schlüssel"
 
 #: var/www/html/home.php:222
 msgid "Add onion"
-msgstr ""
+msgstr "Onion hinzufügen"
 
 #: var/www/html/home.php:226
 msgid "Clearnet domains"
-msgstr ""
+msgstr "Clearnet Domains"
 
 #: var/www/html/home.php:228
 msgid "Domain"
@@ -1017,7 +1053,7 @@ msgstr "Domain"
 
 #: var/www/html/home.php:248
 msgid "Add additional domain:"
-msgstr ""
+msgstr "Zusätzliche Domain hinzufügen:"
 
 #: var/www/html/home.php:252
 msgid "Add domain"
@@ -1031,30 +1067,35 @@ msgid ""
 "settings, <a href=\"%3$s\" target=\"_blank\">contact me</a> to configure the "
 "SSL certificate. You may also use any subdomain of %4$s"
 msgstr ""
+"Um deine Clearnet Domain zu aktivieren, bearbeite deine DNS-Einstellungen "
+"und füge %1$s als deinen A-Record und %2$s als deinen AAAA-Record hinzu. "
+"Sobald dud diene DNS-Einstellungen geändert hast, kannst du <a href=\"%3$s\" "
+"target=\"_blank\">mich kontaktieren</a>, um das SSL.Zertifikat einzurichten. "
+"Du kannst auch eine Subdomain von %4$s verwenden"
 
 #: var/www/html/home.php:257
 msgid "MySQL Database<"
-msgstr ""
+msgstr "MySQL Datenbank"
 
 #: var/www/html/home.php:259
 msgid "Database"
-msgstr ""
+msgstr "Datenbank"
 
 #: var/www/html/home.php:259 var/www/html/home.php:281
 msgid "Host"
-msgstr ""
+msgstr "Host"
 
 #: var/www/html/home.php:259
 msgid "User"
-msgstr ""
+msgstr "Benutzer"
 
 #: var/www/html/home.php:274
 msgid "Add new database"
-msgstr ""
+msgstr "Neue Datenbank hinzufügen"
 
 #: var/www/html/home.php:277
 msgid "Change MySQL password"
-msgstr ""
+msgstr "MySQL Passwort ändern"
 
 #: var/www/html/home.php:278
 #, php-format
@@ -1063,74 +1104,79 @@ msgid ""
 "href=\"/adminer/?username=%s\" target=\"_blank\">Adminer</a> for web based "
 "database administration."
 msgstr ""
+"Du kannst <a href=\"/phpmyadmin/\" target=\"_blank\">PHPMyAdmin</a> und <a "
+"href=\"/adminer/?username=%s\" target=\"_blank\">Adminer</a> zur web "
+"basierenden Datenbankadministration verwenden."
 
 #: var/www/html/home.php:279
 msgid "System Account"
-msgstr ""
+msgstr "Systemkonto"
 
 #: var/www/html/home.php:281
 msgid "SFTP Port"
-msgstr ""
+msgstr "SFTP-Port"
 
 #: var/www/html/home.php:281
 msgid "POP3 Port"
-msgstr ""
+msgstr "POP3-Port"
 
 #: var/www/html/home.php:281
 msgid "IMAP Port"
-msgstr ""
+msgstr "IMAP-Port"
 
 #: var/www/html/home.php:281
 msgid "SMTP port"
-msgstr ""
+msgstr "SMTP-Port"
 
 #: var/www/html/home.php:288
 msgid "Change system account password"
-msgstr ""
+msgstr "Systemkontopasswort ändern"
 
 #: var/www/html/home.php:289
 msgid ""
 "You can use the <a target=\"_blank\" href=\"files.php\">FileManager</a> for "
 "web based file management."
 msgstr ""
+"Du kannst den <a target=\"_blank\" href=\"files.php\">DateiManager</a> zur "
+"web basierenden Dateiverwaltung verwenden."
 
 #: var/www/html/home.php:297
 #, php-format
 msgid "%1$d of %2$d - %3$f%%"
-msgstr ""
+msgstr "%1$d von %2$d - %3$f"
 
 #: var/www/html/home.php:299
 msgid "Your disk usage:"
-msgstr ""
+msgstr "Deine Speicherverwendung:"
 
 #: var/www/html/home.php:299 var/www/html/home.php:300
 #, php-format
 msgid "%s (updated hourly)"
-msgstr ""
+msgstr "%s (stündlich aktualisiert)"
 
 #: var/www/html/home.php:299 var/www/html/home.php:300
 msgid "Upgrade"
-msgstr ""
+msgstr "Erweiterung"
 
 #: var/www/html/home.php:300
 msgid "Your file number usage:"
-msgstr ""
+msgstr "Deine verwendete Dateianzahl:"
 
 #: var/www/html/home.php:301
 msgid "Logs"
-msgstr ""
+msgstr "Protokolle"
 
 #: var/www/html/home.php:303
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: var/www/html/home.php:304
 msgid "Today"
-msgstr ""
+msgstr "Heute"
 
 #: var/www/html/home.php:305
 msgid "Yesterday"
-msgstr ""
+msgstr "Gestern"
 
 #: var/www/html/register.php:9 var/www/html/register.php:158
 #: var/www/common.php:1057
@@ -1139,39 +1185,44 @@ msgstr "Registrieren"
 
 #: var/www/html/register.php:11
 msgid "Hosting - Register"
-msgstr ""
+msgstr "Hosting - Registrieren"
 
 #: var/www/html/register.php:37
 msgid "Error: password empty."
-msgstr ""
+msgstr "Fehler: Passwort leer."
 
 #: var/www/html/register.php:40
 msgid "Error: password confirmation does not match."
-msgstr ""
+msgstr "Fehler: Passwortbestätigung stimmt nicht überein."
 
 #: var/www/html/register.php:43
 msgid "Error: username empty."
-msgstr ""
+msgstr "Fehler: Nutzername leer."
 
 #: var/www/html/register.php:46
 msgid ""
 "Error: username may only contain characters that are in the rage of a-z "
 "(lower case) - . _ and 0-9."
 msgstr ""
+"Fehler: Nutzername darf nur Zeichen im Bereich von a-z (kleingeschrieben) - "
+". _ und 0-9 enthalten."
 
 #: var/www/html/register.php:49
 msgid "Error: username may not be longer than 50 characters."
-msgstr ""
+msgstr "Fehler: Nutername darf nicht länger als 50 Zeichen sein."
 
 #: var/www/html/register.php:55
 msgid "Error: this username is already registered."
-msgstr ""
+msgstr "Fehler: Dieser Nutzername ist bereits registriert."
 
 #: var/www/html/register.php:95
 msgid ""
 "To prevent abuse a site can only be registered every 60 seconds, but one has "
 "already been registered within the last 60 seconds. Please try again."
 msgstr ""
+"Um Missbrauch zu reduzieren, kann eine neue Seite nur alle 60 Sekunden "
+"registriert werden. Allerdings hat bereits jemand eine Seite innerhalb der "
+"letzten 60 Sekunden registriert. Bitte versuche es erneut."
 
 #: var/www/html/register.php:114
 #, php-format
@@ -1180,30 +1231,33 @@ msgid ""
 "minute until the changes have been processed. You can then login <a href="
 "\"login.php\">here</a>."
 msgstr ""
+"Deine Onion-Domain %s wurde erfolgreich erstellt. Bitte warte bis zu einer "
+"minute, bis die Änderungne verarbeitet wurden. Du kannst dich anschließend "
+"<a href=\"login.php\">anmelden</a>."
 
 #: var/www/html/register.php:123
 msgid "Confirm password"
-msgstr ""
+msgstr "Passwort bestätigen"
 
 #: var/www/html/register.php:137
 msgid "PHP version"
-msgstr ""
+msgstr "PHP-Version"
 
 #: var/www/html/register.php:138
 msgid "None"
-msgstr ""
+msgstr "Keine"
 
 #: var/www/html/register.php:147
 msgid "Publish site on list of hosted sites"
-msgstr ""
+msgstr "Seite auf liste der gehosteten Seiten veröffentlichen"
 
 #: var/www/html/register.php:148
 msgid "Enable autoindex (listing of files)"
-msgstr ""
+msgstr "Autoindex aktivieren (das Anzeigen von Dateien)"
 
 #: var/www/html/register.php:149
 msgid "Type of hidden service:"
-msgstr ""
+msgstr "Hidden Service Typ:"
 
 #: var/www/html/register.php:157
 #, php-format
@@ -1220,15 +1274,15 @@ msgstr "Fehler: Keine Datenbankverbindung!"
 
 #: var/www/setup.php:36
 msgid "Database and files have successfully been set up"
-msgstr ""
+msgstr "Datenbank und Dateien wurden erfolgreich eingerichtet"
 
 #: var/www/setup.php:287
 msgid "Updating chroots, this might take a while…"
-msgstr ""
+msgstr "Aktualisiere chroots, dies dauert möglicherweise eine Weile…"
 
 #: var/www/setup.php:307
 msgid "Suspended"
-msgstr ""
+msgstr "Gesperrt"
 
 #: var/www/setup.php:307
 #, php-format
@@ -1236,6 +1290,8 @@ msgid ""
 "This domain has been suspended due to violation of <a href=\"%s\">hosting "
 "rules</a>."
 msgstr ""
+"Diese Domain wurde wegen Verstoß gegen die <a href=\"%s\">Hostingregeln</a> "
+"gesperrt."
 
 #: var/www/setup.php:387
 #, php-format
@@ -1243,10 +1299,14 @@ msgid ""
 "Successfully added new instance %1$s. Don't forget to add %2$s as allowed "
 "user to your firewall rules in /etc/rc.local"
 msgstr ""
+"Neue Instanz %1$s erfolgreich hinzugefügt. Vergesse nicht den neuen Benutzer "
+"%2$s in den Firewall-Regeln unter /etc/rc.local anzupassen"
 
 #: var/www/setup.php:421
 msgid "Done - Database and files have been updated to the latest version :)"
 msgstr ""
+"Erledigt - Datenbank und Dateien wurden erfolgreich auf die aktuellste "
+"Version aktualisiert :)"
 
 #: var/www/common.php:203
 msgid "Copy:"
@@ -1254,7 +1314,7 @@ msgstr "Kopiere:"
 
 #: var/www/common.php:814
 msgid "Invalid CSRF token, please try again."
-msgstr ""
+msgstr "Ungültiges CSRF Token, bitte versuche es erneut."
 
 #: var/www/common.php:836
 msgid "No Connection to MySQL database!"
@@ -1267,7 +1327,7 @@ msgstr "Angemeldet als %s"
 
 #: var/www/common.php:1090
 msgid "FileManager"
-msgstr ""
+msgstr "DateiManager"
 
 #: var/www/common.php:1091
 msgid "Delete account"
