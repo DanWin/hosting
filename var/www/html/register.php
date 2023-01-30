@@ -111,7 +111,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			$headers="From: www-data <www-data>\r\nContent-Type: text/plain; charset=UTF-8\r\n";
 			mail(EMAIL_TO, $title, $msg, $headers);
 		}
-		echo '<p role="alert" style="color:green">'.sprintf(_('Your onion domain %s has successfully been created. Please wait up to one minute until the changes have been processed. You can then login <a href="login.php">here</a>.'), "<a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a>").'</p>';
+		echo '<p role="alert" style="color:green">'.sprintf(_('Your onion domain %s has successfully been created. Please wait up to one minute until the changes have been processed. You can then <a href="login.php">login</a>.'), "<a href=\"http://$onion.onion\" target=\"_blank\">$onion.onion</a>").'</p>';
 	}
 }
 ?>

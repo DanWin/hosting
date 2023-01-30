@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-22 20:16+0100\n"
+"POT-Creation-Date: 2023-01-30 17:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -956,7 +956,7 @@ msgid ""
 msgstr ""
 
 #: var/www/html/home.php:257
-msgid "MySQL Database<"
+msgid "MySQL Database"
 msgstr ""
 
 #: var/www/html/home.php:259
@@ -1100,8 +1100,8 @@ msgstr ""
 #, php-format
 msgid ""
 "Your onion domain %s has successfully been created. Please wait up to one "
-"minute until the changes have been processed. You can then login <a "
-"href=\"login.php\">here</a>."
+"minute until the changes have been processed. You can then <a href=\"login."
+"php\">login</a>."
 msgstr ""
 
 #: var/www/html/register.php:123
