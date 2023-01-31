@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-01-30 16:36+0000\n"
+"PO-Revision-Date: 2023-01-31 17:19+0000\n"
 "Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
 "Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "de/>\n"
@@ -1074,8 +1074,6 @@ msgstr ""
 "Du kannst auch eine Subdomain von %4$s verwenden"
 
 #: var/www/html/home.php:257
-#, fuzzy
-#| msgid "MySQL Database<"
 msgid "MySQL Database"
 msgstr "MySQL Datenbank"
 
@@ -1227,11 +1225,7 @@ msgstr ""
 "letzten 60 Sekunden registriert. Bitte versuche es erneut."
 
 #: var/www/html/register.php:114
-#, fuzzy, php-format
-#| msgid ""
-#| "Your onion domain %s has successfully been created. Please wait up to one "
-#| "minute until the changes have been processed. You can then login <a href="
-#| "\"login.php\">here</a>."
+#, php-format
 msgid ""
 "Your onion domain %s has successfully been created. Please wait up to one "
 "minute until the changes have been processed. You can then <a href=\"login."

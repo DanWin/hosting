@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-01-29 14:17+0000\n"
+"PO-Revision-Date: 2023-01-31 17:19+0000\n"
 "Last-Translator: Zdeněk Grůza <me@zgruza.me>\n"
 "Language-Team: Czech <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "cs/>\n"
@@ -1047,10 +1047,8 @@ msgstr ""
 "Můžeš také použít jakoukoli subdoménu %4$s"
 
 #: var/www/html/home.php:257
-#, fuzzy
-#| msgid "MySQL Database<"
 msgid "MySQL Database"
-msgstr "Databáze MySQL<"
+msgstr "Databáze MySQL"
 
 #: var/www/html/home.php:259
 msgid "Database"
@@ -1200,19 +1198,15 @@ msgstr ""
 "zkuste to znovu."
 
 #: var/www/html/register.php:114
-#, fuzzy, php-format
-#| msgid ""
-#| "Your onion domain %s has successfully been created. Please wait up to one "
-#| "minute until the changes have been processed. You can then login <a href="
-#| "\"login.php\">here</a>."
+#, php-format
 msgid ""
 "Your onion domain %s has successfully been created. Please wait up to one "
 "minute until the changes have been processed. You can then <a href=\"login."
 "php\">login</a>."
 msgstr ""
 "Tvoje cibulová doména %s byla úspěšně vytvořena. Počkejte prosím cirka jednu "
-"minutu, než budou změny zpracovány. Poté se můžete přihlásit <a href=\"login."
-"php\">zde</a>."
+"minutu, než budou změny zpracovány. Poté se můžete <a href=\"login.php\""
+">přihlásit</a>."
 
 #: var/www/html/register.php:123
 msgid "Confirm password"
