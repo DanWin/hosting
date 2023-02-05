@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-01-31 17:19+0000\n"
+"PO-Revision-Date: 2023-02-05 13:23+0000\n"
 "Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
 "Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "de/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -324,7 +324,7 @@ msgstr "Keine Verbindung zum SFTP Server!"
 #: var/www/html/files.php:267
 #, php-format
 msgid "FileManager - Index of %s"
-msgstr "FileManager - Index von %s"
+msgstr "Datei-Verwaltung - Index von %s"
 
 #: var/www/html/files.php:270
 #, php-format
@@ -391,7 +391,7 @@ msgstr "Eltern-Ordner"
 
 #: var/www/html/files.php:346
 msgid "FileManager - 404 Not Found"
-msgstr "FileManager - 404 Nicht gefunden"
+msgstr "Datei-Verwaltung - 404 Nicht gefunden"
 
 #: var/www/html/files.php:347
 #, php-format
@@ -404,7 +404,7 @@ msgstr "Gehe zurück zum Heim-Ordner"
 
 #: var/www/html/files.php:354
 msgid "FileManager - Login"
-msgstr "FileManager - Anmelden"
+msgstr "Datei-Verwaltung - Anmelden"
 
 #: var/www/html/files.php:356
 msgid "Please type in your system account password:"
@@ -412,7 +412,7 @@ msgstr "Bitte tippe dein Systemkonto-Passwort ein:"
 
 #: var/www/html/files.php:381
 msgid "FileManager - Rename file"
-msgstr "FileManager - Datei umbenennen"
+msgstr "Datei-Verwaltung - Datei umbenennen"
 
 #: var/www/html/files.php:391 var/www/html/files.php:411
 msgid "Go back"
@@ -420,7 +420,7 @@ msgstr "Gehe zurück"
 
 #: var/www/html/files.php:397
 msgid "FileManager - Edit file"
-msgstr "FileManager - Datei bearbeiten"
+msgstr "Datei-Verwaltung - Datei bearbeiten"
 
 #: var/www/html/files.php:410 var/www/html/admin.php:191
 #: var/www/html/admin.php:201 var/www/html/home.php:200
@@ -1137,8 +1137,8 @@ msgid ""
 "You can use the <a target=\"_blank\" href=\"files.php\">FileManager</a> for "
 "web based file management."
 msgstr ""
-"Du kannst den <a target=\"_blank\" href=\"files.php\">DateiManager</a> zur "
-"web basierenden Dateiverwaltung verwenden."
+"Du kannst die <a target=\"_blank\" href=\"files.php\">Datei-Verwaltung</a> "
+"zur web basierenden Dateiverwaltung verwenden."
 
 #: var/www/html/home.php:297
 #, php-format
@@ -1327,7 +1327,7 @@ msgstr "Angemeldet als %s"
 
 #: var/www/common.php:1090
 msgid "FileManager"
-msgstr "DateiManager"
+msgstr "Datei-Verwaltung"
 
 #: var/www/common.php:1091
 msgid "Delete account"
