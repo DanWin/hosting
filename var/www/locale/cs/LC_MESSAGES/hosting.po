@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-01-31 17:19+0000\n"
+"PO-Revision-Date: 2023-02-13 20:18+0000\n"
 "Last-Translator: Zdeněk Grůza <me@zgruza.me>\n"
 "Language-Team: Czech <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "cs/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15.1\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -1281,7 +1281,7 @@ msgstr "Hotovo - Databáze a soubory byly aktualizovány na nejnovější verzi 
 
 #: var/www/common.php:203
 msgid "Copy:"
-msgstr "Zkopíruj:"
+msgstr "Přepiš:"
 
 #: var/www/common.php:814
 msgid "Invalid CSRF token, please try again."
