@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-02-05 13:23+0000\n"
+"PO-Revision-Date: 2023-02-15 10:49+0000\n"
 "Last-Translator: Weblate Admin <daniel@danwin1210.de>\n"
 "Language-Team: German <https://weblate.danwin1210.de/projects/DanWin/hosting/"
 "de/>\n"
@@ -537,7 +537,7 @@ msgstr "SQL-Passwort erfolgreich geändert."
 
 #: var/www/html/password.php:34
 msgid "Couldn't update password: Unknown reset type."
-msgstr "Passwort konnte nicht geändert werden: Unbekannter Zurücksetz-typ,"
+msgstr "Passwort konnte nicht geändert werden: Unbekannter Zurücksetz-typ."
 
 #: var/www/html/password.php:39 var/www/common.php:1089
 msgid "Change password"
