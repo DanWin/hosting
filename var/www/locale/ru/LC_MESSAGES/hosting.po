@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-02-23 11:06+0000\n"
+"PO-Revision-Date: 2023-03-15 04:53+0000\n"
 "Last-Translator: Goatli <goatli@porcod.io>\n"
 "Language-Team: Russian <https://weblate.danwin1210.de/projects/DanWin/"
 "hosting/ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.16.2\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -211,7 +211,7 @@ msgstr ""
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
 msgid "Onion link"
-msgstr "Подделка"
+msgstr "Ссылка"
 
 #: var/www/html/coinpayments_ipn.php:5
 msgid "Upgrades disabled"
