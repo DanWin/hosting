@@ -114,7 +114,7 @@ make clean
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 3.4 --recurse-submodules
+git checkout 3.5 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
@@ -1536,7 +1536,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.5.4/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.5.5/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
