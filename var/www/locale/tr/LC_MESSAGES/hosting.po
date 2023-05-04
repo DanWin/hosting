@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-05-04 01:25+0000\n"
+"Last-Translator: Daniel Winzen <daniel@danwin1210.de>\n"
+"Language-Team: Turkish <https://weblate.danwin1210.de/projects/DanWin/"
+"hosting/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -23,16 +26,16 @@ msgstr ""
 #: var/www/common.php:653 var/www/common.php:971 var/www/common.php:1014
 #, php-format
 msgid "ERROR: Account %s looks strange"
-msgstr ""
+msgstr "HATA: Hesap %s garip görünüyor"
 
 #: var/www/cron.php:33
 #, php-format
 msgid "ERROR: Account %s already exists"
-msgstr ""
+msgstr "HATA: %s hesabı zaten var"
 
 #: var/www/html/index.php:4 var/www/common.php:1056
 msgid "Info"
-msgstr ""
+msgstr "Bilgi"
 
 #: var/www/html/index.php:6
 msgid "Hosting - Info"
