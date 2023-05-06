@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-05-04 01:25+0000\n"
+"PO-Revision-Date: 2023-05-06 15:25+0000\n"
 "Last-Translator: Daniel Winzen <daniel@danwin1210.de>\n"
 "Language-Team: Turkish <https://weblate.danwin1210.de/projects/DanWin/"
 "hosting/tr/>\n"
@@ -39,7 +39,7 @@ msgstr "Bilgi"
 
 #: var/www/html/index.php:6
 msgid "Hosting - Info"
-msgstr ""
+msgstr "Hosting - Bilgi"
 
 #: var/www/html/index.php:8
 msgid "Here you can get yourself a free web hosting account on my server."
@@ -655,7 +655,7 @@ msgstr ""
 
 #: var/www/html/faq.php:4 var/www/common.php:1060
 msgid "FAQ"
-msgstr ""
+msgstr "SSS"
 
 #: var/www/html/faq.php:6
 msgid "Hosting - FAQ"
@@ -663,11 +663,11 @@ msgstr ""
 
 #: var/www/html/faq.php:9
 msgid "Question"
-msgstr ""
+msgstr "Soru"
 
 #: var/www/html/faq.php:9
 msgid "Answer"
-msgstr ""
+msgstr "Cevap"
 
 #: var/www/html/faq.php:10
 msgid "Your rules are so strict. Can't you make an exception for my site?"
