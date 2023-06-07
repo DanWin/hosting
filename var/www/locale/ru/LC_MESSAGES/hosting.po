@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-03-15 04:53+0000\n"
-"Last-Translator: Goatli <goatli@porcod.io>\n"
+"PO-Revision-Date: 2023-06-07 05:46+0000\n"
+"Last-Translator: qweruba <qweruba@yandex.ru>\n"
 "Language-Team: Russian <https://weblate.danwin1210.de/projects/DanWin/"
 "hosting/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16.2\n"
+"X-Generator: Weblate 4.17\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -27,16 +27,16 @@ msgstr ""
 #: var/www/common.php:653 var/www/common.php:971 var/www/common.php:1014
 #, php-format
 msgid "ERROR: Account %s looks strange"
-msgstr ""
+msgstr "ОШИБКА: Аккаунт %s выглядит немного странно"
 
 #: var/www/cron.php:33
 #, php-format
 msgid "ERROR: Account %s already exists"
-msgstr ""
+msgstr "ОШИБКА: учетная запись %s уже существует"
 
 #: var/www/html/index.php:4 var/www/common.php:1056
 msgid "Info"
-msgstr ""
+msgstr "Инфо"
 
 #: var/www/html/index.php:6
 msgid "Hosting - Info"
@@ -44,15 +44,15 @@ msgstr ""
 
 #: var/www/html/index.php:8
 msgid "Here you can get yourself a free web hosting account on my server."
-msgstr ""
+msgstr "Здесь вы можете получить бесплатный хостинг-аккаунт."
 
 #: var/www/html/index.php:9
 msgid "What you get:"
-msgstr ""
+msgstr "Что вы получите:"
 
 #: var/www/html/index.php:11
 msgid "Completely free anonymous Tor and clearnet web hosting"
-msgstr ""
+msgstr "Полностью бесплатный и анонимный Tor веб-хостинг"
 
 #: var/www/html/index.php:12
 #, php-format
@@ -61,11 +61,11 @@ msgstr ""
 
 #: var/www/html/index.php:13
 msgid "Nginx Webserver"
-msgstr ""
+msgstr "Nginx Вебсервер"
 
 #: var/www/html/index.php:14
 msgid "SQLite support"
-msgstr ""
+msgstr "Поддержка SQLite"
 
 #: var/www/html/index.php:15
 #, php-format
@@ -85,11 +85,11 @@ msgstr ""
 
 #: var/www/html/index.php:18
 msgid "SFTP access"
-msgstr ""
+msgstr "SFTP доступ"
 
 #: var/www/html/index.php:19
 msgid "command line access to shell via SSH"
-msgstr ""
+msgstr "доступ из командной строки к оболочке через SSH"
 
 #: var/www/html/index.php:20
 msgid "1GB disk quota and a maximum of 100.000 files"
@@ -142,7 +142,7 @@ msgstr ""
 
 #: var/www/html/index.php:30
 msgid "Rules"
-msgstr ""
+msgstr "Правила"
 
 #: var/www/html/index.php:32
 msgid "No child pornography!"
@@ -267,11 +267,12 @@ msgstr ""
 
 #: var/www/html/upgrade.php:54
 msgid "Sorry, looks like you didn't select a valid payment currency."
-msgstr ""
+msgstr "Извините, похоже, что вы не выбрали действительную валюту платежа."
 
 #: var/www/html/upgrade.php:59
 msgid "An error occurred creating the transaction, please try again"
 msgstr ""
+"Произошла ошибка при создании транзакции, пожалуйста, попробуйте еще раз"
 
 #: var/www/html/upgrade.php:61
 #, php-format
@@ -280,7 +281,7 @@ msgstr ""
 
 #: var/www/html/upgrade.php:62
 msgid "QR Code"
-msgstr ""
+msgstr "QR код"
 
 #: var/www/html/upgrade.php:63
 msgid ""
@@ -333,7 +334,7 @@ msgstr ""
 #: var/www/html/home.php:201 var/www/html/home.php:240
 #: var/www/html/home.php:269
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: var/www/html/files.php:296 var/www/html/files.php:316
 #: var/www/html/files.php:390
@@ -343,7 +344,7 @@ msgstr ""
 #: var/www/html/files.php:297 var/www/html/files.php:317
 #: var/www/html/admin.php:71
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 #: var/www/html/files.php:298 var/www/html/files.php:318
 msgid "Unzip"
@@ -402,11 +403,11 @@ msgstr ""
 #: var/www/html/admin.php:201 var/www/html/home.php:200
 #: var/www/html/home.php:239
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: var/www/html/login.php:27
 msgid "Wrong 2FA code"
-msgstr ""
+msgstr "Неправильный 2FA-код"
 
 #: var/www/html/login.php:36
 msgid "Error: username may not be empty."
@@ -433,18 +434,22 @@ msgstr ""
 #: var/www/html/login.php:86 var/www/html/login.php:130
 #: var/www/html/admin.php:24 var/www/common.php:1058
 msgid "Login"
-msgstr ""
+msgstr "Логин"
 
 #: var/www/html/login.php:101
 msgid ""
 "To login, please enter the following code to confirm ownership of your key:"
 msgstr ""
+"Чтобы войти в систему, введите следующий код для подтверждения владения "
+"вашим ключом:"
 
 #: var/www/html/login.php:103
 msgid ""
 "To login, please decrypt the following PGP encrypted message and confirm the "
 "code:"
 msgstr ""
+"Для входа в систему, пожалуйста, расшифруйте следующее зашифрованное PGP-"
+"сообщение и подтвердите код:"
 
 #: var/www/html/login.php:108 var/www/html/pgp.php:62
 msgid "Confirm"
