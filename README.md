@@ -100,6 +100,7 @@ proc /proc proc defaults,hidepid=2 0 0
 
 And add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` options to the `/home` mountpoint (if not a separate partition, the `/` mointpoint and `noatime`to `/`. Then initialize quota (replace `/home` with `/`, if you do not have a separate partition):
 ```
+systemctl daemon-reload
 mount -o remount /home
 quotacheck -cMu /home
 quotaon /home
