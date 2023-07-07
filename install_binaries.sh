@@ -169,25 +169,25 @@ index 0b21def2..69ea76cb 100644
  HTTP_SSL=NO
  HTTP_V2=NO
 +HTTP_V2_HPACK_ENC=NO
+ HTTP_V3=NO
  HTTP_SSI=YES
  HTTP_REALIP=NO
- HTTP_XSLT=NO
-@@ -225,6 +226,7 @@ \$0: warning: the \"--with-ipv6\" option is deprecated"
+@@ -235,6 +236,7 @@ \$0: warning: the \"--with-ipv6\" option is deprecated"
  
          --with-http_ssl_module)          HTTP_SSL=YES               ;;
          --with-http_v2_module)           HTTP_V2=YES                ;;
 +        --with-http_v2_hpack_enc)        HTTP_V2_HPACK_ENC=YES      ;;
+         --with-http_v3_module)           HTTP_V3=YES                ;;
          --with-http_realip_module)       HTTP_REALIP=YES            ;;
          --with-http_addition_module)     HTTP_ADDITION=YES          ;;
-         --with-http_xslt_module)         HTTP_XSLT=YES              ;;
-@@ -441,6 +443,7 @@ cat << END
+@@ -456,6 +458,7 @@ cat << END
  
    --with-http_ssl_module             enable ngx_http_ssl_module
    --with-http_v2_module              enable ngx_http_v2_module
 +  --with-http_v2_hpack_enc           enable ngx_http_v2_hpack_enc
+   --with-http_v3_module              enable ngx_http_v3_module
    --with-http_realip_module          enable ngx_http_realip_module
    --with-http_addition_module        enable ngx_http_addition_module
-   --with-http_xslt_module            enable ngx_http_xslt_module
 diff --git a/src/core/ngx_murmurhash.c b/src/core/ngx_murmurhash.c
 index 5ade658d..4932f20d 100644
 --- a/src/core/ngx_murmurhash.c
@@ -435,7 +435,7 @@ index e062b03a..2dae17d4 100644
  
      return sscf;
  }
-@@ -712,6 +752,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
+@@ -694,6 +734,20 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
      ngx_conf_merge_str_value(conf->stapling_responder,
                           prev->stapling_responder, "");
  
@@ -455,7 +455,7 @@ index e062b03a..2dae17d4 100644
 +
      conf->ssl.log = cf->log;
  
-     if (conf->enable) {
+     if (conf->certificates) {
 @@ -943,6 +997,28 @@ ngx_http_ssl_merge_srv_conf(ngx_conf_t *cf, void *parent, void *child)
          return NGX_CONF_ERROR;
      }
@@ -489,10 +489,9 @@ diff --git a/src/http/modules/ngx_http_ssl_module.h b/src/http/modules/ngx_http_
 index 7ab0f7ea..4485a8b8 100644
 --- a/src/http/modules/ngx_http_ssl_module.h
 +++ b/src/http/modules/ngx_http_ssl_module.h
-@@ -67,6 +67,12 @@ typedef struct {
- 
-     u_char                         *file;
-     ngx_uint_t                      line;
+@@ -63,5 +63,11 @@ typedef struct {
+     ngx_str_t                       stapling_file;
+     ngx_str_t                       stapling_responder;
 +
 +    ngx_flag_t                      dyn_rec_enable;
 +    ngx_msec_t                      dyn_rec_timeout;
@@ -506,7 +505,7 @@ diff --git a/src/http/v2/ngx_http_v2.c b/src/http/v2/ngx_http_v2.c
 index 58916a18..4297a0b6 100644
 --- a/src/http/v2/ngx_http_v2.c
 +++ b/src/http/v2/ngx_http_v2.c
-@@ -273,6 +273,8 @@ ngx_http_v2_init(ngx_event_t *rev)
+@@ -245,6 +245,8 @@ ngx_http_v2_init(ngx_event_t *rev)
  
      h2c->frame_size = NGX_HTTP_V2_DEFAULT_FRAME_SIZE;
  
@@ -514,7 +513,7 @@ index 58916a18..4297a0b6 100644
 +
      h2scf = ngx_http_get_module_srv_conf(hc->conf_ctx, ngx_http_v2_module);
  
-     h2c->concurrent_pushes = h2scf->concurrent_pushes;
+     h2c->priority_limit = ngx_max(h2scf->concurrent_streams, 100);
 @@ -2254,6 +2256,13 @@ ngx_http_v2_state_settings_params(ngx_http_v2_connection_t *h2c, u_char *pos,
  
          case NGX_HTTP_V2_HEADER_TABLE_SIZE_SETTING:
@@ -604,9 +603,9 @@ index 34922971..78bf9fc6 100644
  
      ngx_http_v2_state_t              state;
 @@ -165,6 +214,11 @@ struct ngx_http_v2_connection_s {
+     unsigned                         table_update:1;
      unsigned                         blocked:1;
      unsigned                         goaway:1;
-     unsigned                         push_disabled:1;
 +    unsigned                         indicate_resize:1;
 +
 +#if (NGX_HTTP_V2_HPACK_ENC)
@@ -615,7 +614,7 @@ index 34922971..78bf9fc6 100644
  };
  
  
-@@ -420,4 +474,31 @@ u_char *ngx_http_v2_string_encode(u_char *dst, u_char *src, size_t len,
+@@ -413,4 +467,31 @@ u_char *ngx_http_v2_string_encode(u_char *dst, u_char *src, size_t len,
      u_char *tmp, ngx_uint_t lower);
  
  
@@ -646,7 +645,7 @@ index 34922971..78bf9fc6 100644
 +    ngx_http_v2_write_header(h2c, pos, (u_char *) key, sizeof(key) - 1, \\
 +    val.data, val.len, tmp);
 +
- #endif /* _NGX_HTTP_V2_H_INCLUDED_ */
+ extern ngx_module_t  ngx_http_v2_module;
 diff --git a/src/http/v2/ngx_http_v2_encode.c b/src/http/v2/ngx_http_v2_encode.c
 index ac792084..d1fb7217 100644
 --- a/src/http/v2/ngx_http_v2_encode.c
