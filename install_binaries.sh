@@ -43,24 +43,6 @@ cd nginx
 if [ ! -e ngx_brotli ]; then
 	git clone https://github.com/google/ngx_brotli
 fi
-if [ ! -e ngx_devel_kit ]; then
-	git clone https://github.com/vision5/ngx_devel_kit
-fi
-if [ ! -e lua-resty-core ]; then
-	git clone https://github.com/openresty/lua-resty-core
-fi
-if [ ! -e lua-resty-lrucache ]; then
-	git clone https://github.com/openresty/lua-resty-lrucache
-fi
-if [ ! -e lua-resty-mysql ]; then
-	git clone https://github.com/openresty/lua-resty-mysql
-fi
-if [ ! -e rds-json-nginx-module ]; then
-	git clone https://github.com/openresty/rds-json-nginx-module
-fi
-if [ ! -e set-misc-nginx-module ]; then
-	git clone https://github.com/openresty/set-misc-nginx-module
-fi
 cd ..
 if [ ! -e php-src ]; then
 	git clone https://github.com/php/php-src
@@ -127,22 +109,6 @@ cd nginx
 git fetch --all
 git checkout release-1.25.1
 cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
-cd ngx_devel_kit && git fetch --all && git checkout v0.3.2 && cd ..
-cd rds-json-nginx-module && git fetch --all && git checkout v0.16 && cd ..
-cd set-misc-nginx-module && git fetch --all && git checkout v0.33 && cd ..
-cd lua-resty-core
-git fetch --all
-git checkout v0.1.27
-make -j $PROC_LIMIT install
-cd ../lua-resty-lrucache
-git fetch --all
-git checkout v0.13
-make -j $PROC_LIMIT install
-cd ../lua-resty-mysql
-git fetch --all
-git checkout v0.26
-make -j $PROC_LIMIT install
-cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
 cat <<EOF | git apply -
 diff --git a/auto/modules b/auto/modules
@@ -1366,7 +1332,7 @@ index 7d49803f..b9ee2048 100644
 +#endif
 EOF
 
-LUAJIT_LIB="/usr/local/lib" LUAJIT_INC="/usr/local/include/luajit-2.1/" ./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --add-module=ngx_devel_kit --add-module=rds-json-nginx-module --add-module=set-misc-nginx-module --without-pcre2
+./auto/configure --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --http-client-body-temp-path=/tmp/body --http-fastcgi-temp-path=/tmp/fastcgi --http-proxy-temp-path=/tmp/proxy --with-threads --with-file-aio --with-pcre-jit --with-http_ssl_module --with-http_v2_module --with-http_v2_hpack_enc --with-http_gzip_static_module --without-http_ssi_module --without-http_userid_module --without-http_mirror_module --without-http_geo_module --without-http_split_clients_module --without-http_uwsgi_module --without-http_scgi_module --without-http_grpc_module --without-http_memcached_module --without-http_empty_gif_module --without-http_browser_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_least_conn_module --without-http_upstream_keepalive_module --without-http_upstream_zone_module --with-stream --with-stream_ssl_module --without-stream_geo_module --without-stream_map_module --without-stream_split_clients_module --without-stream_return_module --without-stream_upstream_hash_module --without-stream_upstream_least_conn_module --without-stream_upstream_zone_module --with-cc-opt='-O3 -march=native -mtune=native -fstack-protector-strong -Wformat -Werror=format-security -fPIC -Wdate-time -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' --add-module=ngx_brotli --without-pcre2
 make -j $PROC_LIMIT install
 make clean
 git reset --hard
