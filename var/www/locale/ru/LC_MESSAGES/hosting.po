@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2023-07-11 04:08+0000\n"
+"PO-Revision-Date: 2023-07-17 16:08+0000\n"
 "Last-Translator: Goatli <goatli@porcod.io>\n"
 "Language-Team: Russian <https://weblate.danwin1210.de/projects/DanWin/"
 "hosting/ru/>\n"
@@ -434,7 +434,7 @@ msgstr ""
 #: var/www/html/login.php:86 var/www/html/login.php:130
 #: var/www/html/admin.php:24 var/www/common.php:1058
 msgid "Login"
-msgstr "Логин"
+msgstr "Войти"
 
 #: var/www/html/login.php:101
 msgid ""
