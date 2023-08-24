@@ -98,12 +98,12 @@ To harden the system and hide pids from non-root users, also add the following:
 proc /proc proc defaults,hidepid=2 0 0
 ```
 
-And add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` options to the `/home` mountpoint (if not a separate partition, the `/` mointpoint and `noatime`to `/`. Then initialize quota (replace `/home` with `/`, if you do not have a separate partition):
+And add the `noatime,usrjquota=aquota.user,jqfmt=vfsv1` options to the `/home` mountpoint, then initialize quota. Replace `/home` with `/`, if you do not have a separate partition:
 ```
 systemctl daemon-reload
-mount -o remount /home
-quotacheck -cMu /home
-quotaon /home
+mount -o remount $(findmnt -n -o TARGET --target /home)
+quotacheck -cMu $(findmnt -n -o TARGET --target /home)
+quotaon $(findmnt -n -o TARGET --target /home)
 ```
 
 In some cases, you might get an error, that quota is not supported. This is usually the case in virtual environments. Make sure you have the full kernel installed, not one with a `-virtual` package. They usually are `linux-image-amd64`, `linux-image-arm64` or `linux-image-generic`, depending on your distribution. Also make sure, you are running a real virtual machine (e.g. KVM). Some providers sell containerized VPSes (e.g. OpenVZ), which means you don't run your own kernel...
