@@ -5,7 +5,7 @@ const DBUSER='hosting'; // Database user
 const DBPASS='MY_PASSWORD'; // Database password
 const DBNAME='hosting'; // Database
 const PERSISTENT=true; // Use persistent database conection true/false
-const DBVERSION=20; //database layout version
+const DBVERSION=21; //database layout version
 const CAPTCHA=1; // Captcha difficulty (0=off, 1=simple, 2=moderate, 3=extreme)
 const ADDRESS='dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'; // our own address
 const CANONICAL_URL='https://hosting.danwin1210.me'; // our preferred domain for search engines
@@ -138,14 +138,6 @@ setlocale(LC_ALL, $locale);
 bindtextdomain('hosting', __DIR__.'/locale');
 bind_textdomain_codeset('hosting', 'UTF-8');
 textdomain('hosting');
-
-function get_onion_v2($pkey) : string {
-	$keyData = openssl_pkey_get_details($pkey);
-	$pk = base64_decode(substr($keyData['key'], 27, -26));
-	$skipped_first_22 = substr($pk, 22);
-	$first_80_bits_of_sha1 = hex2bin(substr(sha1($skipped_first_22), 0, 20));
-	return base32_encode($first_80_bits_of_sha1);
-}
 
 function get_onion_v3(string $sk) : string {
 	if(PHP_INT_SIZE === 4){
@@ -420,47 +412,7 @@ function private_key_to_onion(string $priv_key) : array {
 	$onion = '';
 	$priv_key = trim($priv_key);
 	$version = 0;
-	if(($pkey = openssl_pkey_get_private($priv_key)) !== false){
-		$version = 2;
-		$details = openssl_pkey_get_details($pkey);
-		if($details['type'] === OPENSSL_KEYTYPE_RSA){
-			$p = gmp_init(bin2hex($details['rsa']['p']), 16);
-			$q = gmp_init(bin2hex($details['rsa']['q']), 16);
-			$n = gmp_init(bin2hex($details['rsa']['n']), 16);
-			$d = gmp_init(bin2hex($details['rsa']['d']), 16);
-			$dmp1 = gmp_init(bin2hex($details['rsa']['dmp1']), 16);
-			$dmq1 = gmp_init(bin2hex($details['rsa']['dmq1']), 16);
-			$iqmp = gmp_init(bin2hex($details['rsa']['iqmp']), 16);
-		}
-		if($details['type'] !== OPENSSL_KEYTYPE_RSA){
-			$message = 'Error: private key is not an RSA key.';
-			$ok = false;
-		}elseif($details['bits'] !== 1024){
-			$message = 'Error: private key not of bitsize 1024.';
-			$ok = false;
-		}elseif(gmp_prob_prime($p) === 0){
-			$message = 'Error: p is not a prime';
-			$ok = false;
-		}elseif(gmp_prob_prime($q) === 0){
-			$message = 'Error: q is not a prime';
-			$ok = false;
-		}elseif(gmp_cmp($n, gmp_mul($p, $q) ) !== 0){
-			$message = 'Error: n does not equal p q';
-			$ok = false;
-		}elseif(gmp_cmp($dmp1, gmp_mod($d, gmp_sub($p, 1) ) ) !==0 ){
-			$message = 'Error: dmp1 invalid';
-			$ok = false;
-		}elseif(gmp_cmp($dmq1, gmp_mod($d, gmp_sub($q, 1) ) ) !== 0){
-			$message = 'Error: dmq1 invalid';
-			$ok = false;
-		}elseif(gmp_cmp($iqmp, gmp_invert($q, $p) ) !==0 ){
-			$message = 'Error: iqmp not inverse of q';
-			$ok = false;
-		}else{
-			$onion = get_onion_v2($pkey);
-		}
-		return ['ok' => $ok, 'message' => $message, 'onion' => $onion, 'version' => $version];
-	} elseif(($priv = base64_decode($priv_key, true)) !== false){
+	if(($priv = base64_decode($priv_key, true)) !== false){
 		$version = 3;
 		if( ! str_starts_with( $priv, '== ed25519v1-secret: type0 ==' . hex2bin( '000000' ) ) || strlen($priv) !== 96){
 			$message = 'Error: v3 secret key invalid.';
@@ -478,11 +430,7 @@ function private_key_to_onion(string $priv_key) : array {
 function generate_new_onion(int $version = 3) : array {
 	$priv_key = '';
 	$onion = '';
-	if($version === 2){
-		$pkey = openssl_pkey_new(['private_key_bits' => 1024, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
-		openssl_pkey_export($pkey, $priv_key);
-		$onion = get_onion_v2($pkey);
-	} else {
+	if($version === 3){
 		$seed = random_bytes(32);
 		$sk = ed25519_seckey_expand($seed);
 		$priv_key = base64_encode('== ed25519v1-secret: type0 ==' . hex2bin('000000') . $sk);
