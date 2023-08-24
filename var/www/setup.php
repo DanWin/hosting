@@ -156,6 +156,9 @@ if(!$version){
 	if($version<20){
 		$db->exec("ALTER TABLE onions CHANGE max_streams max_streams tinyint(3) unsigned NOT NULL DEFAULT '6';");
 	}
+	if($version<21){
+		$db->exec('UPDATE onions SET enabled=-1 WHERE version = 2;');
+	}
 	$stmt=$db->prepare("UPDATE settings SET value=? WHERE setting='version';");
 	$stmt->execute([DBVERSION]);
 }

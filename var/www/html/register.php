@@ -74,7 +74,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 				}
 			}
 		}else{
-			if(isset($_REQUEST['onion_type']) && in_array($_REQUEST['onion_type'], [2, 3])){
+			if(isset($_REQUEST['onion_type']) && in_array($_REQUEST['onion_type'], [3])){
 				$onion_version = $_REQUEST['onion_type'];
 			}
 			$check=$db->prepare('SELECT null FROM onions WHERE onion=?;');
@@ -148,7 +148,6 @@ foreach(PHP_VERSIONS as $key => $version){
 <tr><td colspan=2><label><input type="checkbox" name="autoindex" value="1"<?php echo $autoindex; ?>><?php echo _('Enable autoindex (listing of files)'); ?></label></td></tr>
 <tr><td colspan=2><?php echo _('Type of hidden service:'); ?><br>
 <label><input type="radio" name="onion_type" value="3"<?php echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : ''; ?>><?php echo _('Random v3 Address'); ?></label>
-<label><input type="radio" name="onion_type" value="2"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==2 ? ' checked' : ''; ?>><?php echo _('Random v2 Address'); ?></label>
 <label><input id="custom_onion" type="radio" name="onion_type" value="custom"<?php echo isset($_POST['onion_type']) && $_POST['onion_type']==='custom' ? ' checked' : ''; ?>><?php echo _('Custom private key'); ?>
 <textarea id="private_key" name="private_key" rows="5" cols="28">
 <?php echo isset($_REQUEST['private_key']) ? htmlspecialchars($_REQUEST['private_key']) : ''; ?>
