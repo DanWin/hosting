@@ -1555,3 +1555,5 @@ if [ ! -e /var/www/html/squirrelmail ]; then
 	mkdir -p /var/www/data/squirrelmail/data /var/www/data/squirrelmail/attach
 	chown www-data:www-data -R /var/www/data
 fi
+#Disable sftp subsystem so we can override it
+sed -i 's/^Subsystem/#Subsystem/' /etc/ssh/sshd_config
