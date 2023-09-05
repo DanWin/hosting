@@ -395,6 +395,7 @@ HiddenServiceExportCircuitID haproxy
 HiddenServiceEnableIntroDoSDefense 1
 HiddenServiceEnableIntroDoSRatePerSec 10
 HiddenServiceEnableIntroDoSBurstPerSec 100
+HiddenServicePoWDefensesEnabled 1
 ";
 		$torrc.="HiddenServicePort 80 unix:/var/run/nginx/$socket\n";
 		if($tmp['enable_smtp']){

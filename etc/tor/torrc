@@ -13,6 +13,7 @@ HiddenServiceEnableIntroDoSRatePerSec 10
 HiddenServiceEnableIntroDoSBurstPerSec 100
 HiddenServiceMaxStreams 10
 HiddenServiceMaxStreamsCloseCircuit 1
+HiddenServicePoWDefensesEnabled 1
 
 ClientUseIPv6 1
 ClientUseIPv4 1
