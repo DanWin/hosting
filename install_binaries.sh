@@ -78,7 +78,7 @@ make -j $PROC_LIMIT install
 make distclean
 cd ../luajit2
 git fetch --all
-git checkout v2.1-20230410
+git checkout v2.1-20230911
 XCFLAGS="-O3 -march=native -mtune=native" make -j $PROC_LIMIT
 make install
 make clean
