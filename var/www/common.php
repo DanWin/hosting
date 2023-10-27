@@ -95,6 +95,8 @@ const CLEARNET_ADDRESS = 'hosting.danwin1210.me'; //Domain under which the servi
 const CLEARNET_SUBDOMAINS = 'danwin1210.me'; //domain of which all subdomains are mapped to this server
 const DEFAULT_LANG = 'en'; //default language
 const LANGUAGES = [ //available languages
+	'cs' => ['name' => 'Czech', 'locale' => 'cs_CZ', 'dir' => 'ltr'],
+	'de' => ['name' => 'Deutsch', 'locale' => 'de_DE', 'dir' => 'ltr'],
 	'en' => ['name' => 'English', 'locale' => 'en_GB', 'dir' => 'ltr'],
 ];
 
