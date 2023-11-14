@@ -85,7 +85,7 @@ make clean
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 3.7.3 --recurse-submodules
+git checkout 3.7.4 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
@@ -96,7 +96,7 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.25.1
+git checkout release-1.25.3
 cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
 cat <<EOF | git apply -
@@ -1329,7 +1329,7 @@ cd ..
 ln -fs /usr/include/qdbm/depot.h /usr/include/depot.h
 cd php-src
 cd ext
-cd apcu && git fetch --all && git checkout v5.1.22 && cd ..
+cd apcu && git fetch --all && git checkout v5.1.23 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
 cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
@@ -1439,7 +1439,7 @@ curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.3.0RC5
+git checkout php-8.3.0RC6
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.3/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.3 --program-suffix=8.3 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
