@@ -11,7 +11,7 @@ DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-tr
 DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` binutils-dev libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libdw-dev libdwarf-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libharfbuzz-dev libheif-dev libhyperscan-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libssh2-1-dev libssl-dev libsqlite3-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
 
 # install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
@@ -72,7 +72,7 @@ export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) 
 #start build
 cd ImageMagick
 git fetch --all
-git checkout 7.1.1-21
+git checkout 7.1.1-22
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
@@ -1331,7 +1331,31 @@ cd php-src
 cd ext
 cd apcu && git fetch --all && git checkout v5.1.23 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
-cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
+cd imagick && git fetch --all && git checkout 3.7.0
+cat <<EOF | git apply -
+From 7088edc353f53c4bc644573a79cdcd67a726ae16 Mon Sep 17 00:00:00 2001
+From: FedericoHeichou <federicoheichou@gmail.com>
+Date: Fri, 24 Nov 2023 11:24:00 +0100
+Subject: [PATCH] Fix compilation error "Unterminated preprocessor conditions"
+ in php 8.3
+
+---
+ Imagick.stub.php | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Imagick.stub.php b/Imagick.stub.php
+index 804c0152..49da9386 100644
+--- a/Imagick.stub.php
++++ b/Imagick.stub.php
+@@ -1669,4 +1669,5 @@ public function setInterpolateMethod(int $method): bool{}
+ 	public function setOrientation(int $orientation): bool {}
+ #endif
+ 
++#endif
+ }
+EOF
+
+cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git reset --hard && git checkout ab26d285759e4c917879967b09976a44829ed570
 cat <<EOF | git apply -
@@ -1432,26 +1456,26 @@ index 5e680f6..cb5bdaa 100644
 EOF
 
 cd ..
-cd igbinary && git fetch --all && git checkout 3.2.14 && cd ..
+cd igbinary && git fetch --all && git checkout 3.2.15 && cd ..
 cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0 && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.3.0RC6
+git checkout php-8.3.0
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.3/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.3 --program-suffix=8.3 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.2.12
+git checkout php-8.2.13
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.2/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.2 --program-suffix=8.2 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.1.25
+git checkout php-8.1.26
 ./buildconf -f
 LIBS='-lgpg-error' CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.1/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.1 --program-suffix=8.1 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/var/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-rar --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
@@ -1462,7 +1486,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.6.5/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.6.6/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
