@@ -69,14 +69,14 @@ export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) 
 #start build
 cd ImageMagick
 git fetch --all
-git checkout 7.1.1-26
+git checkout 7.1.1-27
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --with-rsvg=yes --disable-openmp
 make -j $PROC_LIMIT install
 make distclean
 ldconfig
 cd ../rspamd
 git fetch --all --recurse-submodules
-git checkout 3.8.0 --recurse-submodules
+git checkout 3.8.1 --recurse-submodules
 cd ..
 mkdir -p rspamd_build
 cd rspamd_build
