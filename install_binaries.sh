@@ -69,7 +69,7 @@ export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) 
 #start build
 cd ImageMagick
 git fetch --all
-git checkout 7.1.1-27
+git checkout 7.1.1-28
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --disable-openmp --with-fftw --with-gslib --with-gvc --with-rsvg --with-wmf
 make -j $PROC_LIMIT install
 make distclean
@@ -1453,7 +1453,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.6.6/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.7.1/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
