@@ -87,7 +87,7 @@ cd ..
 rm -rf rspamd_build
 cd nginx
 git fetch --all
-git checkout release-1.25.4
+git checkout release-1.27.0
 cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
 # apply dynamic TLS record and HTTP2 HPACK patch by CloudFlare
 cat <<EOF | git apply -
