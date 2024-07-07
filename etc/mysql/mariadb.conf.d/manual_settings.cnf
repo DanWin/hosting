@@ -11,7 +11,6 @@ innodb_buffer_pool_size = 1G
 innodb_log_buffer_size = 16M
 innodb_log_file_size = 128M
 innodb_flush_log_at_trx_commit = 2
-#innodb-defragment = 1
 skip_name_resolve = 1
 query_cache_size = 128M
 query_cache_limit = 4M
