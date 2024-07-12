@@ -6,9 +6,9 @@ export LANG=C.UTF-8
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # install all required packages
 DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion bind9 brotli bzip2 ca-certificates clamav-daemon clamav-freshclam curl dovecot-imapd dovecot-lmtpd dovecot-pop3d git hardlink haveged iptables libio-socket-ip-perl libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool redis rsync ssh subversion tor unzip util-linux vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion bind9 brotli bzip2 ca-certificates clamav-daemon clamav-freshclam curl dovecot-imapd dovecot-lmtpd dovecot-pop3d git hardlink haveged iptables libio-socket-ip-perl libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano postfix postfix-mysql quota quotatool redis rspamd rsync ssh subversion tor unzip util-linux vim wget xz-utils zip zopfli
 # build dependencies
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison cmake g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` binutils-dev libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libdw-dev libdwarf-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libgraphviz-dev libgs-dev libharfbuzz-dev libheif-dev libhyperscan-dev libjbig-dev libjbig2dec0-dev libjxl-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libluajit-5.1-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libssh2-1-dev libssl-dev libsqlite3-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils ragel re2c yasm zlib1g-dev
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` binutils-dev libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libde265-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libgraphviz-dev libgs-dev libharfbuzz-dev libheif-dev libjbig-dev libjbig2dec0-dev libjxl-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpcre3-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libssh2-1-dev libssl-dev libsqlite3-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libx265-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c zlib1g-dev
 
 # install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -26,9 +26,6 @@ npm i -g yarn
 # initial repository clones
 if [ ! -e ImageMagick ]; then
 	git clone https://github.com/ImageMagick/ImageMagick
-fi
-if [ ! -e rspamd ]; then
-	git clone --recurse-submodules https://github.com/rspamd/rspamd.git
 fi
 if [ ! -e nginx ]; then
 	git clone https://github.com/nginx/nginx
@@ -74,18 +71,7 @@ CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=nati
 make -j $PROC_LIMIT install
 make distclean
 ldconfig
-cd ../rspamd
-git fetch --all --recurse-submodules
-git checkout 3.8.4 --recurse-submodules
-cd ..
-mkdir -p rspamd_build
-cd rspamd_build
-cmake ../rspamd -DENABLE_HYPERSCAN=ON -DENABLE_LUAJIT=ON -DCMAKE_BUILD_TYPE=Release
-make -j $PROC_LIMIT
-make install
-cd ..
-rm -rf rspamd_build
-cd nginx
+cd ../nginx
 git fetch --all
 git checkout release-1.27.0
 cd ngx_brotli && git fetch --all && git checkout 6e975bcb015f62e1f303054897783355e2a877dc && cd ..
@@ -1457,10 +1443,9 @@ curl -sSL https://github.com/composer/composer/releases/download/2.7.7/composer.
 chmod +x /usr/bin/composer
 composer self-update
 
-#rspamd user
-id -u _rspamd >/dev/null 2>&1 ||useradd -M -r -s /bin/false -d /var/lib/rspamd _rspamd
-mkdir -p /var/lib/rspamd
-chown _rspamd: /var/lib/rspamd
+#rspamd dkim directory
+mkdir -p /var/lib/rspamd/dkim
+chown _rspamd: /var/lib/rspamd/dkim
 
 # mysql encryption
 if [ ! -e /etc/mysql/encryption/keyfile.enc ]; then
