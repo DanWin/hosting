@@ -14,13 +14,13 @@ Once you are done, you can open a pull request, or [email me](mailto:daniel@danw
 Installation Instructions:
 --------------------------
 
-The configuration was tested with a standard Debian bookworm and Ubuntu 22.04 LTS installation. It's recommended you install Debian bookworm (or newer) on your server, but with a little tweaking you may also get this working on other distributions and/or versions. If you want to build it on a raspberry pi, please do not use the raspbian images as several things will break. Download an image for your pi model from [https://raspi.debian.net/daily-images/](https://raspi.debian.net/daily-images/) instead.
+The configuration was tested with a standard Debian bookworm and Ubuntu 24.04 LTS installation. It's recommended you install Debian bookworm (or newer) on your server, but with a little tweaking you may also get this working on other distributions and/or versions. If you want to build it on a raspberry pi, please do not use the raspbian images as several things will break. Download an image for your pi model from [https://raspi.debian.net/daily-images/](https://raspi.debian.net/daily-images/) instead.
 
 Because I regularly get asked to make a video tutorial on how to set this up, I decided to create a tutorial which you can [watch on YouTube](https://www.youtube.com/watch?v=f2-SOlnIYmg). It is basically just copy-pasting commands, but maybe it helps someone.
 
 Uninstall packages that may interfere with this setup:
 ```
-DEBIAN_FRONTEND=noninteractive apt-get purge -y apache2* dnsmasq* eatmydata exim4* imagemagick-6-common mysql-client* mysql-server* nginx* libnginx-mod* php7* resolvconf && systemctl disable systemd-resolved.service && systemctl stop systemd-resolved.service
+DEBIAN_FRONTEND=noninteractive apt purge -y apache2* dnsmasq* eatmydata exim4* imagemagick-6-common mysql-client* mysql-server* nginx* libnginx-mod* php7* resolvconf && systemctl disable systemd-resolved.service && systemctl stop systemd-resolved.service
 ```
 
 If you have problems resolving hostnames after this step, temporarily switch to a public nameserver like 1.1.1.1 (from CloudFlare) or 8.8.8.8 (from Google)
@@ -29,24 +29,25 @@ If you have problems resolving hostnames after this step, temporarily switch to 
 rm /etc/resolv.conf && echo "nameserver 1.1.1.1" > /etc/resolv.conf
 ```
 
+Add additional repositories:
+```
+apt update && apt install git
+curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc > /etc/apt/trusted.gpg.d/torproject.gpg
+curl -sSL https://packages.sury.org/nginx/apt.gpg > /etc/apt/trusted.gpg.d/sury.gpg
+echo "deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/ `lsb_release -cs` main" >> /etc/apt/sources.list
+echo "deb https://packages.sury.org/nginx/ `lsb_release -cs` main" >> /etc/apt/sources.list
+apt update && apt upgrade
+```
+
 Install git and clone this repository
 
 ```
-apt-get update && apt-get install git && git clone https://github.com/DanWin/hosting && cd hosting
+apt update && apt install git && git clone https://github.com/DanWin/hosting && cd hosting
 ```
 
 Install custom optimized binaries
 ```
 ./install_binaries.sh
-```
-
-To get the latest mariadb version, you should follow these instructions to add the official repository for your distribution: (https://downloads.mariadb.org/mariadb/repositories/)
-
-Add torproject to our repositories:
-```
-curl --socks5-hostname 127.0.0.1:9050 -sSL http://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc > /etc/apt/trusted.gpg.d/torproject.gpg
-echo "deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/ `lsb_release -cs` main" >> /etc/apt/sources.list
-apt-get update && apt-get upgrade
 ```
 
 Note that debian also has an onion service package archive, so you may want to edit /etc/apt/sources.list to load from there instead:
