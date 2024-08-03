@@ -31,7 +31,7 @@ rm /etc/resolv.conf && echo "nameserver 1.1.1.1" > /etc/resolv.conf
 
 Add additional repositories:
 ```
-apt update && apt install git
+apt update && apt install git apt-transport-tor curl
 curl -sSL https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc > /etc/apt/trusted.gpg.d/torproject.gpg
 curl -sSL https://packages.sury.org/nginx/apt.gpg > /etc/apt/trusted.gpg.d/sury.gpg
 echo "deb tor://apow7mjfryruh65chtdydfmqfpj5btws7nbocgtaovhvezgccyjazpqd.onion/torproject.org/ `lsb_release -cs` main" >> /etc/apt/sources.list
