@@ -6,18 +6,18 @@ export LANG=C.UTF-8
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # install all required packages
 DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion bind9 brotli bzip2 ca-certificates clamav-daemon clamav-freshclam curl dovecot-imapd dovecot-lmtpd dovecot-pop3d git hardlink haveged iptables libio-socket-ip-perl libnginx-mod-http-brotli libnginx-mod-stream libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano nginx postfix postfix-mysql quota quotatool redis rspamd rsync ssh tor unzip util-linux vim wget xz-utils zip zopfli
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y apt-transport-tor bash-completion bind9 brotli bzip2 ca-certificates clamav-daemon clamav-freshclam curl dovecot-imapd dovecot-lmtpd dovecot-pop3d git hardlink haveged iptables jailkit libio-socket-ip-perl libnginx-mod-http-brotli libnginx-mod-stream libsasl2-modules locales locales-all logrotate lsb-release mariadb-server nano nginx postfix postfix-mysql quota quotatool redis rspamd rsync ssh tor unzip util-linux vim wget xz-utils zip zopfli
 # build dependencies
-DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison g++ gcc ghostscript gnupg libaom-dev `apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1` binutils-dev libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libdjvulibre-dev libedit-dev `apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1` libffi-dev `apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1` libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libgraphviz-dev libgs-dev libharfbuzz-dev libheif-dev libjbig-dev libjbig2dec0-dev libjxl-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libssh2-1-dev libssl-dev libsqlite3-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c zlib1g-dev
+DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y autoconf automake bison g++ gcc ghostscript gnupg libaom-dev $(apt-cache search --names-only 'libargon2(-0)?-dev' | awk '{print $1;}' | head -n1) binutils-dev libbrotli-dev libbz2-dev libc-client2007e-dev libcurl4-openssl-dev libdjvulibre-dev libedit-dev $(apt-cache search --names-only 'libenchant(-2)?-dev' | awk '{print $1;}' | head -n1) libffi-dev $(apt-cache search --names-only libfreetype6?-dev | awk '{print $1;}' | head -n1) libfftw3-dev libfribidi-dev libgd-dev libgmp-dev libgpg-error-dev libgpgme-dev libgraphviz-dev libgs-dev libharfbuzz-dev libheif-dev libjbig-dev libjbig2dec0-dev libjxl-dev libkrb5-dev libldap2-dev liblmdb-dev liblqr-1-0-dev libmariadb-dev libonig-dev libopenexr-dev libopenjp2-7-dev libpango1.0-dev libpng-dev libpspell-dev libqdbm-dev libraqm-dev libraw-dev libreadline-dev librsvg2-dev libsasl2-dev libsodium-dev libssh2-1-dev libssl-dev libsqlite3-dev libsystemd-dev libtidy-dev libtool libwebp-dev libwmf-dev libxml2-dev libxpm-dev libxslt1-dev libzip-dev libzstd-dev make poppler-utils re2c zlib1g-dev
 
 # install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # install nodejs
 nvm install node --latest-npm --default
-for old_version in `nvm ls --no-alias --no-colors | grep -v '\->' | awk '{print $1;}'`; do nvm uninstall $old_version; done
+for old_version in $(nvm ls --no-alias --no-colors | grep -v '\->' | awk '{print $1;}'); do nvm uninstall "$old_version"; done
 nvm cache clear
 
 #install yarn
@@ -54,11 +54,11 @@ if [ ! -e msgpack-php ]; then
 fi
 cd ../..
 
-export PROC_LIMIT=`free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) < nproc) ? ($2 + 1) : nproc;}'`
+export PROC_LIMIT=$(free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1) < nproc) ? ($2 + 1) : nproc;}')
 #start build
 cd ImageMagick
 git fetch --all
-git checkout 7.1.1-36
+git checkout 7.1.1-37
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --disable-openmp --with-fftw --with-gslib --with-gvc --with-rsvg --with-wmf
 make -j $PROC_LIMIT install
 make distclean
