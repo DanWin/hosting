@@ -67,8 +67,8 @@ cd ..
 ln -fs /usr/include/qdbm/depot.h /usr/include/depot.h
 cd php-src
 cd ext
-cd apcu && git fetch --all && git checkout v5.1.23 && cd ..
-cd php-ext-brotli && git fetch --all && git checkout 0.13.1 && cd ..
+cd apcu && git fetch --all && git checkout v5.1.24 && cd ..
+cd php-ext-brotli && git fetch --all && git checkout 0.15.0 && cd ..
 cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
 cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
 cd php-rar && git fetch --all && git reset --hard && git checkout ab26d285759e4c917879967b09976a44829ed570
