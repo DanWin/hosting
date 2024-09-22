@@ -364,7 +364,7 @@ if(!file_exists("/etc/nginx/streams-enabled/")){
 	mkdir("/etc/nginx/streams-enabled/", 0755, true);
 }
 file_put_contents('/etc/nginx/streams-enabled/default', "server {
-	listen unix:/var/www/var/run/mysqld/mysqld.sock;
+	listen unix:/var/www/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }");
 exec('systemctl enable nginx');

@@ -600,12 +600,12 @@ function rewrite_nginx_config(): void
 			continue;
 		}
 		$nginx_mysql.="server {
-	listen unix:/home/$tmp[system_account]/var/run/mysqld/mysqld.sock;
+	listen unix:/home/$tmp[system_account]/run/mysqld/mysqld.sock;
 	proxy_pass unix:/var/run/mysqld/mysqld.sock;
 }
 ";
 		$nginx_mail.="server {
-	listen unix:/home/$tmp[system_account]/var/run/mail.sock;
+	listen unix:/home/$tmp[system_account]/run/mail.sock;
 	root /var/www/mail;
 	location / {
 		include snippets/fastcgi-php.conf;
