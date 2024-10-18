@@ -2,6 +2,7 @@ General Information:
 --------------------
 
 This is a setup for a Tor based shared hosting server. It is provided as is and before putting it into production you should make changes according to your needs. This is a work in progress and you should carefully check the commit history for changes before updating.
+For a production server, at least 1TB of SSD disk space, 32GB RAM and 8 CPU cores is recommended. For a small testing/personal server, 4GB RAM and 1 CPU core is enough.
 
 Translation:
 --------------------------
