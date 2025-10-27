@@ -8,16 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 17:36+0100\n"
-"PO-Revision-Date: 2025-10-27 22:20+0000\n"
-"Last-Translator: Turkish Mark <turkishmark@yandex.com>\n"
-"Language-Team: Turkish <https://weblate.danwin1210.de/projects/DanWin/"
-"hosting/tr/>\n"
-"Language: tr\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: af\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.3\n"
 
 #: var/www/find_old.php:12 var/www/find_old.php:28 var/www/find_old.php:44
 #: var/www/cron.php:29 var/www/cron.php:55 var/www/cron.php:98
@@ -26,51 +24,50 @@ msgstr ""
 #: var/www/common.php:653 var/www/common.php:971 var/www/common.php:1014
 #, php-format
 msgid "ERROR: Account %s looks strange"
-msgstr "HATA: Hesap %s garip görünüyor"
+msgstr ""
 
 #: var/www/cron.php:33
 #, php-format
 msgid "ERROR: Account %s already exists"
-msgstr "HATA: %s hesabı zaten var"
+msgstr ""
 
 #: var/www/html/index.php:4 var/www/common.php:1056
 msgid "Info"
-msgstr "Bilgi"
+msgstr ""
 
 #: var/www/html/index.php:6
 msgid "Hosting - Info"
-msgstr "Hosting - Bilgi"
+msgstr ""
 
 #: var/www/html/index.php:8
 msgid "Here you can get yourself a free web hosting account on my server."
 msgstr ""
-"Burada kendinize sunucumda ücretsiz bir web barındırma hesabı alabilirsiniz."
 
 #: var/www/html/index.php:9
 msgid "What you get:"
-msgstr "Ne elde edersiniz:"
+msgstr ""
 
 #: var/www/html/index.php:11
 msgid "Completely free anonymous Tor and clearnet web hosting"
-msgstr "Tamamen ücretsiz anonim Tor ve clearnet web barındırma"
+msgstr ""
 
 #: var/www/html/index.php:12
 #, php-format
 msgid "Choose between PHP %s or no PHP support"
-msgstr "PHP %s veya PHP desteği olmaması arasında seçim yapın"
+msgstr ""
 
 #: var/www/html/index.php:13
 msgid "Nginx Webserver"
-msgstr "Nginx Web Sunucusu"
+msgstr ""
 
 #: var/www/html/index.php:14
 msgid "SQLite support"
-msgstr "SQLite desteği"
+msgstr ""
 
 #: var/www/html/index.php:15
 #, php-format
 msgid "Up to %d MariaDB (MySQL) databases"
-msgstr "%d MariaDB (MySQL) veritabanlarına kadar"
+msgstr ""
 
 #: var/www/html/index.php:16
 msgid ""
@@ -78,29 +75,26 @@ msgid ""
 "adminer/\" target=\"_blank\">Adminer</a> for web based database "
 "administration"
 msgstr ""
-"Web tabanlı veritabanı yönetimi için <a href=\"/phpmyadmin/\" target="
-"\"_blank\">PHPMyAdmin</a> ve <a href=\"/adminer/\" target=\"_blank\""
-">Adminer</a>"
 
 #: var/www/html/index.php:17
 msgid "Web-based file manager"
-msgstr "Web tabanlı dosya yöneticisi"
+msgstr ""
 
 #: var/www/html/index.php:18
 msgid "SFTP access"
-msgstr "SFTP erişimi"
+msgstr ""
 
 #: var/www/html/index.php:19
 msgid "command line access to shell via SSH"
-msgstr "SSH aracılığıyla kabuğa komut satırı erişimi"
+msgstr ""
 
 #: var/www/html/index.php:20
 msgid "1GB disk quota and a maximum of 100.000 files"
-msgstr "1GB disk kotası ve maksimum 100.000 dosya"
+msgstr ""
 
 #: var/www/html/index.php:20
 msgid " - upgradable"
-msgstr " - yükseltilebilir"
+msgstr ""
 
 #: var/www/html/index.php:21
 #, php-format
@@ -108,33 +102,29 @@ msgid ""
 "mail() can send e-mails from your_system_account@%1$s "
 "(your_system_account@%2$s for clearnet)"
 msgstr ""
-"mail() sistem_hesabınız@%1$s adresinden e-posta gönderebilir (clearnet için "
-"sistem_hesabınız@%2$s)"
 
 #: var/www/html/index.php:22
 msgid "Webmail and IMAP, POP3 and SMTP access to your mail account"
-msgstr "Posta hesabınıza Webmail ve IMAP, POP3 ve SMTP erişimi"
+msgstr ""
 
 #: var/www/html/index.php:23
 msgid "Your own .onion domains"
-msgstr "Kendi .onion alan adlarınız"
+msgstr ""
 
 #: var/www/html/index.php:24
 #, php-format
 msgid "Clearnet domains or a free subdomain of %s"
-msgstr "Clearnet alan adları veya %s ücretsiz alt alan adı"
+msgstr ""
 
 #: var/www/html/index.php:25
 msgid ""
 "Empty/Unused accounts will be automatically deleted after a month of "
 "inactivity"
 msgstr ""
-"Boş/Kullanılmayan hesaplar, bir ay boyunca işlem yapılmaması durumunda "
-"otomatik olarak silinecektir"
 
 #: var/www/html/index.php:26
 msgid "PGP based Two-Factor Authentication (2FA)"
-msgstr "PGP tabanlı İki Faktörlü Kimlik Doğrulama (2FA)"
+msgstr ""
 
 #: var/www/html/index.php:27
 #, php-format
@@ -142,212 +132,197 @@ msgid ""
 "There is a missing feature, or you need a special configuration? Just <a "
 "href=\"%s\">contact me</a> and I'll see what I can do."
 msgstr ""
-"Eksik bir özellik mi var, yoksa özel bir konfigürasyona mı ihtiyacınız var? "
-"Sadece <a href=\"%s\">benimle iletişime geçin</a> ve ne yapabileceğime bir "
-"bakayım."
 
 #: var/www/html/index.php:28
 msgid "More to come…"
-msgstr "Daha fazlası gelecek…"
+msgstr ""
 
 #: var/www/html/index.php:30
 msgid "Rules"
-msgstr "Tüzük"
+msgstr ""
 
 #: var/www/html/index.php:32
 msgid "No child pornography!"
-msgstr "Çocuk pornografisine hayır!"
+msgstr ""
 
 #: var/www/html/index.php:33
 msgid "No terroristic propaganda!"
-msgstr "Terör propagandasına hayır!"
+msgstr ""
 
 #: var/www/html/index.php:34
 msgid "No illegal content according to German law!"
-msgstr "Alman yasalarına göre yasa dışı içerik yoktur!"
+msgstr ""
 
 #: var/www/html/index.php:35
 msgid "No malware! (e.g. botnets)"
-msgstr "Kötü amaçlı yazılım yok! (örneğin botnet'ler)"
+msgstr ""
 
 #: var/www/html/index.php:36
 msgid "No phishing, scams or spam!"
-msgstr "Kimlik avı, dolandırıcılık veya spam yok!"
+msgstr ""
 
 #: var/www/html/index.php:37
 msgid "No mining without explicit user permission! (e.g. using coinhive)"
 msgstr ""
-"Açık kullanıcı izni olmadan madencilik yapılmaz! (örneğin, coinhive "
-"kullanarak)"
 
 #: var/www/html/index.php:38
 msgid ""
 "No shops, markets or any other sites dedicated to making money! (This is a "
 "FREE hosting!)"
 msgstr ""
-"Para kazanmaya adanmış hiçbir mağaza, market veya başka site yok! (Bu "
-"ÜCRETSİZ bir barındırmadır!)"
 
 #: var/www/html/index.php:39
 msgid ""
 "No proxy scripts! (You are already using Tor and this will just burden the "
 "network)"
 msgstr ""
-"Proxy komut dosyaları yok! (Zaten Tor kullanıyorsunuz ve bu sadece ağa yük "
-"getirecektir)"
 
 #: var/www/html/index.php:40
 msgid "No IP logger or similar de-anonymizer sites!"
-msgstr "IP kaydedici veya benzeri anonimleştirici siteler yok!"
+msgstr ""
 
 #: var/www/html/index.php:41
 msgid ""
 "I preserve the right to delete any site for violating these rules and adding "
 "new rules at any time."
 msgstr ""
-"Bu kuralları ihlal eden ve dilediğim zaman yeni kurallar ekleyen siteleri "
-"silme hakkını saklı tutuyorum."
 
 #: var/www/html/index.php:42
 msgid ""
 "Should you not honor these rules, I will (have to) work together with Law "
 "Enforcement!"
 msgstr ""
-"Bu kurallara uymazsanız, Emniyet Teşkilatı ile birlikte çalışmak zorunda "
-"kalacağım!"
 
 #: var/www/html/list.php:5 var/www/common.php:1059
 msgid "List of hosted sites"
-msgstr "Barındırılan sitelerin listesi"
+msgstr ""
 
 #: var/www/html/list.php:7
 msgid "Hosting - List of hosted sites"
-msgstr "Barındırma - Barındırılan sitelerin listesi"
+msgstr ""
 
 #: var/www/html/list.php:14
 #, php-format
 msgid "Here is a list of %1$d public hosted sites (%2$d sites hidden):"
-msgstr "Genel olarak barındırılan %1$d sitenin listesi (%2$d site gizli):"
+msgstr ""
 
 #: var/www/html/list.php:16 var/www/html/admin.php:50
 msgid "Onion link"
-msgstr "Soğan bağlantısı"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:5
 msgid "Upgrades disabled"
-msgstr "Yükseltmeler devre dışı bırakıldı"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:8
 msgid "CoinPayments disabled"
-msgstr "CoinPayments devre dışı bırakıldı"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:11
 msgid "No HMAC signature sent"
-msgstr "HMAC imzası gönderilmedi"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:15
 msgid "No Merchant ID passed"
-msgstr "Satıcı Kimliği geçilmedi"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:18
 msgid "Invalid Merchant ID"
-msgstr "Geçersiz Satıcı Kimliği"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:22
 msgid "Error reading POST data"
-msgstr "POST verileri okunurken hata oluştu"
+msgstr ""
 
 #: var/www/html/coinpayments_ipn.php:26
 msgid "HMAC signature does not match"
-msgstr "HMAC imzası eşleşmiyor"
+msgstr ""
 
 #: var/www/html/upgrade.php:13
 msgid "Hosting - Upgrade account"
-msgstr "Barındırma - Hesabı yükseltin"
+msgstr ""
 
 #: var/www/html/upgrade.php:17
 msgid "An error occurred talking to coinpayments"
-msgstr "Madeni para ödemeleriyle konuşurken bir hata oluştu"
+msgstr ""
 
 #: var/www/html/upgrade.php:22
 msgid "Desired upgrade"
-msgstr "İstenilen yükseltme"
+msgstr ""
 
 #: var/www/html/upgrade.php:34
 msgid "Desired payment currency"
-msgstr "İstenilen ödeme para birimi"
+msgstr ""
 
 #: var/www/html/upgrade.php:45
 msgid "Pay now"
-msgstr "Şimdi öde"
+msgstr ""
 
 #: var/www/html/upgrade.php:52
 msgid "Sorry, looks like you didn't select a valid upgrade."
-msgstr "Üzgünüz, geçerli bir yükseltme seçmemişsiniz gibi görünüyor."
+msgstr ""
 
 #: var/www/html/upgrade.php:54
 msgid "Sorry, looks like you didn't select a valid payment currency."
-msgstr "Üzgünüz, geçerli bir ödeme para birimi seçmediğiniz anlaşılıyor."
+msgstr ""
 
 #: var/www/html/upgrade.php:59
 msgid "An error occurred creating the transaction, please try again"
-msgstr "İşlem oluşturulurken bir hata oluştu, lütfen tekrar deneyin"
+msgstr ""
 
 #: var/www/html/upgrade.php:61
 #, php-format
 msgid "Please pay %1$s to %2$s"
-msgstr "Lütfen %1$s'ı %2$s'a ödeyin"
+msgstr ""
 
 #: var/www/html/upgrade.php:62
 msgid "QR Code"
-msgstr "QR Kodu"
+msgstr ""
 
 #: var/www/html/upgrade.php:63
 msgid ""
 "Once paid, it can take a while until the upgrade is applied to your account. "
 "Usually within an hour."
 msgstr ""
-"Ödeme yapıldıktan sonra yükseltmenin hesabınıza uygulanması biraz zaman "
-"alabilir. Genellikle bir saat içinde."
 
 #: var/www/html/upgrade.php:68 var/www/html/files.php:357
 #: var/www/html/password.php:64 var/www/html/pgp.php:79
 msgid "Go back to dashboard"
-msgstr "Kontrol paneline geri dön"
+msgstr ""
 
 #: var/www/html/files.php:12
 msgid "No Connection to SFTP server!"
-msgstr "SFTP sunucusuna Bağlantı Yok!"
+msgstr ""
 
 #: var/www/html/files.php:267
 #, php-format
 msgid "FileManager - Index of %s"
-msgstr "FileManager - %s dizini"
+msgstr ""
 
 #: var/www/html/files.php:270
 #, php-format
 msgid "Index of %s"
-msgstr "%s dizini"
+msgstr ""
 
 #: var/www/html/files.php:272
 msgid "Upload up to 1GB and up to 100 files at once"
-msgstr "Tek seferde 1 GB'a kadar ve 100'e kadar dosya yükleyin"
+msgstr ""
 
 #: var/www/html/files.php:272
 msgid "Upload"
-msgstr "Yüklemek"
+msgstr ""
 
 #: var/www/html/files.php:291
 msgid "Create directory"
-msgstr "Dizin oluştur"
+msgstr ""
 
 #: var/www/html/files.php:292
 msgid "Create file"
-msgstr "Dosya oluştur"
+msgstr ""
 
 #: var/www/html/files.php:293
 msgid "Filename"
-msgstr "Dosya adı"
+msgstr ""
 
 #: var/www/html/files.php:295 var/www/html/files.php:315
 #: var/www/html/admin.php:71 var/www/html/admin.php:91
@@ -355,359 +330,346 @@ msgstr "Dosya adı"
 #: var/www/html/home.php:201 var/www/html/home.php:240
 #: var/www/html/home.php:269
 msgid "Delete"
-msgstr "Silmek"
+msgstr ""
 
 #: var/www/html/files.php:296 var/www/html/files.php:316
 #: var/www/html/files.php:390
 msgid "Rename"
-msgstr "Yeniden isimlendirmek"
+msgstr ""
 
 #: var/www/html/files.php:297 var/www/html/files.php:317
 #: var/www/html/admin.php:71
 msgid "Edit"
-msgstr "Düzenlemek"
+msgstr ""
 
 #: var/www/html/files.php:298 var/www/html/files.php:318
 msgid "Unzip"
-msgstr "Sıkıştırmayı aç"
+msgstr ""
 
 #: var/www/html/files.php:301
 msgid "File"
-msgstr "Dosya"
+msgstr ""
 
 #: var/www/html/files.php:302
 msgid "Last Modified"
-msgstr "Son Değiştirilme"
+msgstr ""
 
 #: var/www/html/files.php:303
 msgid "Size"
-msgstr "Boyut"
+msgstr ""
 
 #: var/www/html/files.php:306
 msgid "Parent Directory"
-msgstr "Ana Dizin"
+msgstr ""
 
 #: var/www/html/files.php:346
 msgid "FileManager - 404 Not Found"
-msgstr "Dosya Yöneticisi - 404 Bulunamadı"
+msgstr ""
 
 #: var/www/html/files.php:347
 #, php-format
 msgid "The requested file %s was not found on your account."
-msgstr "İstenen %s dosyası hesabınızda bulunamadı."
+msgstr ""
 
 #: var/www/html/files.php:348
 msgid "Go back to home directory"
-msgstr "Ana dizine geri dön"
+msgstr ""
 
 #: var/www/html/files.php:354
 msgid "FileManager - Login"
-msgstr "Dosya Yöneticisi - Giriş"
+msgstr ""
 
 #: var/www/html/files.php:356
 msgid "Please type in your system account password:"
-msgstr "Lütfen sistem hesabınızın şifresini yazın:"
+msgstr ""
 
 #: var/www/html/files.php:381
 msgid "FileManager - Rename file"
-msgstr "FileManager - Dosyayı yeniden adlandır"
+msgstr ""
 
 #: var/www/html/files.php:391 var/www/html/files.php:411
 msgid "Go back"
-msgstr "Geri gitmek"
+msgstr ""
 
 #: var/www/html/files.php:397
 msgid "FileManager - Edit file"
-msgstr "FileManager - Dosyayı düzenle"
+msgstr ""
 
 #: var/www/html/files.php:410 var/www/html/admin.php:191
 #: var/www/html/admin.php:201 var/www/html/home.php:200
 #: var/www/html/home.php:239
 msgid "Save"
-msgstr "Kaydetmek"
+msgstr ""
 
 #: var/www/html/login.php:27
 msgid "Wrong 2FA code"
-msgstr "Yanlış 2FA kodu"
+msgstr ""
 
 #: var/www/html/login.php:36
 msgid "Error: username may not be empty."
-msgstr "Hata: Kullanıcı adı boş olamaz."
+msgstr ""
 
 #: var/www/html/login.php:56
 msgid "Error: Your account is pending admin approval. Please try again later."
 msgstr ""
-"Hata: Hesabınız yönetici onayı bekliyor. Lütfen daha sonra tekrar deneyin."
 
 #: var/www/html/login.php:58
 msgid "Error: Your account is pending creation. Please try again in a minute."
 msgstr ""
-"Hata: Hesabınız oluşturulmayı bekliyor. Lütfen bir dakika sonra tekrar "
-"deneyin."
 
 #: var/www/html/login.php:62
 msgid "Error: wrong password."
-msgstr "Hata: yanlış şifre."
+msgstr ""
 
 #: var/www/html/login.php:66
 msgid ""
 "Error: username was not found. If you forgot it, you can enter youraccount."
 "onion instead."
 msgstr ""
-"Hata: kullanıcı adı bulunamadı. Eğer unutursanız, bunun yerine "
-"youraccount.onion adresini girebilirsiniz."
 
 #: var/www/html/login.php:86 var/www/html/login.php:130
 #: var/www/html/admin.php:24 var/www/common.php:1058
 msgid "Login"
-msgstr "Giriş yapmak"
+msgstr ""
 
 #: var/www/html/login.php:101
 msgid ""
 "To login, please enter the following code to confirm ownership of your key:"
 msgstr ""
-"Giriş yapmak için lütfen anahtarınızın size ait olduğunu onaylamak üzere "
-"aşağıdaki kodu girin:"
 
 #: var/www/html/login.php:103
 msgid ""
 "To login, please decrypt the following PGP encrypted message and confirm the "
 "code:"
 msgstr ""
-"Giriş yapmak için lütfen aşağıdaki PGP şifreli mesajın şifresini çözün ve "
-"kodu onaylayın:"
 
 #: var/www/html/login.php:108 var/www/html/pgp.php:62
 msgid "Confirm"
-msgstr "Onayla"
+msgstr ""
 
 #: var/www/html/login.php:110
 msgid "Don't have the private key at hand?"
-msgstr "Elinizde özel anahtar yok mu?"
+msgstr ""
 
 #: var/www/html/login.php:110 var/www/html/admin.php:39 var/www/common.php:1086
 msgid "Logout"
-msgstr "Oturumu kapat"
+msgstr ""
 
 #: var/www/html/login.php:117
 msgid "Hosting - Login"
-msgstr "Barındırma - Giriş Yap"
+msgstr ""
 
 #: var/www/html/login.php:123 var/www/html/admin.php:50
 #: var/www/html/admin.php:88 var/www/html/home.php:281
 #: var/www/html/register.php:119
 msgid "Username"
-msgstr "Kullanıcı adı"
+msgstr ""
 
 #: var/www/html/login.php:128 var/www/html/admin.php:22
 #: var/www/html/register.php:122
 msgid "Password"
-msgstr "Şifre"
+msgstr ""
 
 #: var/www/html/login.php:132 var/www/html/admin.php:31
 msgid ""
 "If you disabled cookies, please re-enable them. You can't log in without!"
 msgstr ""
-"Çerezleri devre dışı bıraktıysanız lütfen yeniden etkinleştirin. olmadan "
-"giriş yapamazsınız!"
 
 #: var/www/html/password.php:14 var/www/html/password.php:16
 #: var/www/html/admin.php:29 var/www/html/delete.php:10
 msgid "Wrong password!"
-msgstr "Yanlış şifre!"
+msgstr ""
 
 #: var/www/html/password.php:22
 msgid "Successfully changed account password."
-msgstr "Hesap şifresi başarıyla değiştirildi."
+msgstr ""
 
 #: var/www/html/password.php:27
 msgid ""
 "Successfully changed system account password, change will take effect within "
 "the next minute."
 msgstr ""
-"Sistem hesabı şifresi başarıyla değiştirildi; değişiklik bir sonraki dakika "
-"içinde geçerli olacaktır."
 
 #: var/www/html/password.php:32
 msgid "Successfully changed sql password."
-msgstr "Sql şifresi başarıyla değiştirildi."
+msgstr ""
 
 #: var/www/html/password.php:34
 msgid "Couldn't update password: Unknown reset type."
-msgstr "Şifre güncellenemedi: Bilinmeyen sıfırlama türü."
+msgstr ""
 
 #: var/www/html/password.php:39 var/www/common.php:1089
 msgid "Change password"
-msgstr "Şifre değiştir"
+msgstr ""
 
 #: var/www/html/password.php:42
 msgid "Reset type:"
-msgstr "Türü sıfırla:"
+msgstr ""
 
 #: var/www/html/password.php:47
 msgid "Account"
-msgstr "Hesap"
+msgstr ""
 
 #: var/www/html/password.php:52
 msgid "System account"
-msgstr "Sistem hesabı"
+msgstr ""
 
 #: var/www/html/password.php:57
 msgid "MySQL"
-msgstr "MySQL"
+msgstr ""
 
 #: var/www/html/password.php:59
 msgid "Account password:"
-msgstr "Hesap şifresi:"
+msgstr ""
 
 #: var/www/html/password.php:60
 msgid "New password:"
-msgstr "Yeni Şifre:"
+msgstr ""
 
 #: var/www/html/password.php:61
 msgid "Confirm password:"
-msgstr "Şifreyi onaylayın:"
+msgstr ""
 
 #: var/www/html/password.php:62
 msgid "Reset"
-msgstr "Sıfırla"
+msgstr ""
 
 #: var/www/html/admin.php:9
 msgid "Admin panel"
-msgstr "Yönetici paneli"
+msgstr ""
 
 #: var/www/html/admin.php:11
 msgid "Hosting - Admin panel"
-msgstr "Barındırma - Yönetici paneli"
+msgstr ""
 
 #: var/www/html/admin.php:37
 #, php-format
 msgid "Approve pending sites (%s)"
-msgstr "Bekleyen siteleri onayla (%s)"
+msgstr ""
 
 #: var/www/html/admin.php:39
 msgid "List of accounts"
-msgstr "Hesapların listesi"
+msgstr ""
 
 #: var/www/html/admin.php:39
 msgid "Delete accounts"
-msgstr "Hesapları sil"
+msgstr ""
 
 #: var/www/html/admin.php:39
 msgid "Suspend hidden services"
-msgstr "Gizli hizmetleri askıya al"
+msgstr ""
 
 #: var/www/html/admin.php:39
 msgid "Edit hidden services"
-msgstr "Gizli hizmetleri düzenle"
+msgstr ""
 
 #: var/www/html/admin.php:41
 msgid "Welcome to the admin panel!"
-msgstr "Yönetici paneline hoş geldiniz!"
+msgstr ""
 
 #: var/www/html/admin.php:50 var/www/html/admin.php:88
 #: var/www/html/home.php:179 var/www/html/home.php:228
 #: var/www/html/home.php:259
 msgid "Action"
-msgstr "Aksiyon"
+msgstr ""
 
 #: var/www/html/admin.php:71 var/www/html/admin.php:128
 msgid "Suspend"
-msgstr "Askıya almak"
+msgstr ""
 
 #: var/www/html/admin.php:82
 msgid "Successfully approved"
-msgstr "Başarıyla onaylandı"
+msgstr ""
 
 #: var/www/html/admin.php:88
 msgid "Onion address"
-msgstr "Soğan adresi"
+msgstr ""
 
 #: var/www/html/admin.php:91
 msgid "Approve"
-msgstr "Onaylamak"
+msgstr ""
 
 #: var/www/html/admin.php:96
 msgid "Delete accounts:"
-msgstr "Hesapları sil:"
+msgstr ""
 
 #: var/www/html/admin.php:99 var/www/html/admin.php:125
 #: var/www/html/admin.php:152
 msgid "Onion address:"
-msgstr "Soğan adresi:"
+msgstr ""
 
 #: var/www/html/admin.php:112
 msgid "Successfully queued for deletion!"
-msgstr "Silinmek üzere başarıyla sıraya alındı!"
+msgstr ""
 
 #: var/www/html/admin.php:114 var/www/html/admin.php:141
 #: var/www/html/admin.php:203
 msgid "Onion address not hosted by us!"
-msgstr "Onion adresi tarafımızdan barındırılmıyor!"
+msgstr ""
 
 #: var/www/html/admin.php:117 var/www/html/admin.php:144
 #: var/www/html/admin.php:206
 msgid "Invalid onion address!"
-msgstr "Geçersiz soğan adresi!"
+msgstr ""
 
 #: var/www/html/admin.php:122
 msgid "Suspend hidden service:"
-msgstr "Gizli hizmeti askıya alın:"
+msgstr ""
 
 #: var/www/html/admin.php:138
 msgid "Successfully queued for suspension!"
-msgstr "Askıya alınmak üzere başarıyla sıraya alındı!"
+msgstr ""
 
 #: var/www/html/admin.php:149
 msgid "Edit hidden service:"
-msgstr "Gizli hizmeti düzenle:"
+msgstr ""
 
 #: var/www/html/admin.php:183
 msgid "Changes successfully saved!"
-msgstr "Değişiklikler başarıyla kaydedildi!"
+msgstr ""
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Onion"
-msgstr "Soğan"
+msgstr ""
 
 #: var/www/html/admin.php:191 var/www/html/admin.php:195
 #: var/www/html/admin.php:198 var/www/html/home.php:179
 #: var/www/html/home.php:193 var/www/html/home.php:196
 #: var/www/html/home.php:228 var/www/html/home.php:237
 msgid "Enabled"
-msgstr "Etkinleştirilmiş"
+msgstr ""
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "SMTP enabled"
-msgstr "SMTP etkin"
+msgstr ""
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Nr. of intros"
-msgstr "No. girişlerin"
+msgstr ""
 
 #: var/www/html/admin.php:191 var/www/html/home.php:179
 msgid "Max streams per rend circuit"
-msgstr "Parçalama devresi başına maksimum akış"
+msgstr ""
 
 #: var/www/html/faq.php:4 var/www/common.php:1060
 msgid "FAQ"
-msgstr "SSS"
+msgstr ""
 
 #: var/www/html/faq.php:6
 msgid "Hosting - FAQ"
-msgstr "Barındırma - SSS"
+msgstr ""
 
 #: var/www/html/faq.php:9
 msgid "Question"
-msgstr "Soru"
+msgstr ""
 
 #: var/www/html/faq.php:9
 msgid "Answer"
-msgstr "Cevap"
+msgstr ""
 
 #: var/www/html/faq.php:10
 msgid "Your rules are so strict. Can't you make an exception for my site?"
-msgstr "Kurallarınız çok katı. Sitem için bir istisna yapamaz mısın?"
+msgstr ""
 
 #: var/www/html/faq.php:10
 msgid ""
@@ -716,14 +678,10 @@ msgid ""
 "have to for every other site as well which is the same as if the rules "
 "didn't exist."
 msgstr ""
-"Hayır, hiçbir site için istisna yapmayacağım ve bana para teklif ederek "
-"yolsuzluk yapmayacağım. Siteniz için bir istisna yapmaya başladığımda, diğer "
-"tüm siteler için de bunu yapmak zorunda kalacağım, bu da sanki kurallar "
-"yokmuş gibi."
 
 #: var/www/html/faq.php:11
 msgid "I have an .htaccess file, but it doesn't work. How can I fix it?"
-msgstr "Bir .htaccess dosyam var ama çalışmıyor. Bunu nasıl düzeltebilirim?"
+msgstr ""
 
 #: var/www/html/faq.php:11
 #, php-format
@@ -734,17 +692,10 @@ msgid ""
 "a> and tell me your sites address where the .htaccess file is. I will then "
 "check your .htaccess and convert the rules to NginX rules and apply those."
 msgstr ""
-".htaccess dosyaları Apache2 web sunucuları içindir. Sunucum, statik "
-"yapılandırma dosyalarının kullanılması ve çalışma zamanında .htaccess gibi "
-"dosyaların okunmaması nedeniyle çok daha hızlı olan NginX'i temel alıyor. "
-"_<a href=\"%s\">benimle iletişime geçebilir</a> ve sitenizin adresini, "
-".htaccess dosyasının nerede olduğunu söyleyebilirsiniz. Daha sonra .htaccess "
-"dosyanızı kontrol edip kuralları NginX kurallarına dönüştüreceğim ve "
-"uygulayacağım."
 
 #: var/www/html/faq.php:12
 msgid "I just uploaded my page, but it's broken. HELP!"
-msgstr "Sayfamı yeni yükledim ama bozuk. YARDIM!"
+msgstr ""
 
 #: var/www/html/faq.php:12
 #, php-format
@@ -753,24 +704,18 @@ msgid ""
 "located in an .htaccess file or are mentioned in a README file. Just <a "
 "href=\"%s\">contact me</a> in this case. Also see the previous question."
 msgstr ""
-"Büyük olasılıkla siteniz, genellikle bir .htaccess dosyasında bulunan veya "
-"bir README dosyasında bahsedilen yeniden yazma kurallarını kullanıyor. Bu "
-"durumda sadece _<a href=\"%s\">benimle iletişime geçin</a>. Ayrıca önceki "
-"soruya bakın."
 
 #: var/www/html/faq.php:13
 msgid "Can I host a porn site?"
-msgstr "Porno sitesi barındırabilir miyim?"
+msgstr ""
 
 #: var/www/html/faq.php:13
 msgid "Yes as long as your content is legal you may upload adult content."
 msgstr ""
-"Evet, içeriğiniz yasal olduğu sürece yetişkinlere uygun içerik "
-"yükleyebilirsiniz."
 
 #: var/www/html/faq.php:14
 msgid "What is the directory structure for when I connect via sftp?"
-msgstr "Sftp aracılığıyla bağlandığımda dizin yapısı nedir?"
+msgstr ""
 
 #: var/www/html/faq.php:14
 msgid ""
@@ -785,25 +730,12 @@ msgid ""
 "authorized_keys in this folder, you can authenticate to sftp using your ssh "
 "key, without a password"
 msgstr ""
-"Hesabınız için sunucuda birkaç dizin vardır:<br><b>Maildir</b> - "
-"postalarınızı depolamak için kullanılır (dokunmayın)<br><b>data</b> - "
-"Siteniz üzerinden erişilmemesi gereken uygulama verilerini burada "
-"saklayabilirsiniz. Örn. yapılandırma veya veritabanı dosyaları.<br><b>tmp</"
-"b> - buraya kaydedilen her şey yaklaşık 24 saat sonra otomatik olarak "
-"silinecektir<br><b>www</b> - burası web sitenizi yüklediğiniz yerdir ve daha "
-"sonra sizin adınıza kullanılabilir hale gelir domain.<br><b>logs</b> - web "
-"sunucusu günlüklerini burada bulacaksınız<br><b>.ssh</b> - ssh genel "
-"anahtarınızı bu klasöre yetkili_anahtarlar olarak yükleyerek, ssh "
-"anahtarınızı kullanarak şifre olmadan sftp'de kimlik doğrulaması "
-"yapabilirsiniz"
 
 #: var/www/html/faq.php:15
 msgid ""
 "My application is very ressource intensive, or I want to host a different "
 "service e.g. my own tor relay. Can you get me a VPS?"
 msgstr ""
-"Başvurum kaynak açısından çok yoğun veya farklı bir hizmete ev sahipliği "
-"yapmak istiyorum; kendi tor aktarmam. Bana bir VPS bulabilir misin?"
 
 #: var/www/html/faq.php:15
 #, php-format
@@ -814,19 +746,11 @@ msgid ""
 "managed VPS hosting. However, this will not be for free. It depends on which "
 "server you want me to get. For details, <a href=\"%s\">contact me</a>"
 msgstr ""
-"Evet, özel gereksinimleriniz varsa, uygulamanız için özel bir VPS "
-"istiyorsanız veya sunucu kurulumu vb. ile uğraşmanıza gerek kalmadan sadece "
-"Tor ağını (veya diğer ağları) anonim olarak desteklemek istiyorsanız, size "
-"yönetimli bir VPS barındırma sunabilirim. Ancak bu ücretsiz olmayacak. Hangi "
-"sunucuyu almamı istediğine bağlı. Ayrıntılar için _<a href=\"%s\">bana "
-"ulaşın</a>"
 
 #: var/www/html/faq.php:16
 msgid ""
 "I want to also publish my site on clearnet. Can you offer a clearnet relay?"
 msgstr ""
-"Sitemi clearnet'te de yayınlamak istiyorum. Clearnet aktarımı sunabilir "
-"misiniz?"
 
 #: var/www/html/faq.php:16
 #, php-format
@@ -837,18 +761,11 @@ msgid ""
 "href=\"%2$s\">contact me</a> for setting up an SSL certificate for your "
 "domain."
 msgstr ""
-"Evet, size kontrol panelinizde yapılandırabileceğiniz %1$s adında ücretsiz "
-"bir alt alan adı sunabilirim. Veya kendi alan adınız varsa onu "
-"kullanabilirsiniz, DNS ayarlarınızı kontrol panelinizde verilen IP'lere "
-"yönlendirin ve alan adınız için bir SSL sertifikası ayarlamak için <a href="
-"\"%2$s\">benimle iletişime geçin</a>."
 
 #: var/www/html/faq.php:17
 msgid ""
 "I'm using CloudFlare, but when I open my site, it shows too many redirects."
 msgstr ""
-"CloudFlare kullanıyorum ancak sitemi açtığımda çok fazla yönlendirme "
-"görünüyor."
 
 #: var/www/html/faq.php:17
 msgid ""
@@ -862,84 +779,66 @@ msgid ""
 "SSL. Change the setting from Flexible to Full, which makes CloudFlare use a "
 "secure https:// connection when talking to my server."
 msgstr ""
-"Varsayılan olarak CloudFlare, arka uç sunucusuna şifrelenmemiş isteklerde "
-"bulunur, ancak sunucum, güvenli olmayan bir bağlantı isteyen tüm istemcilere "
-"güvenli bir bağlantıya yükseltme yapmalarını ve http:// yerine https:// "
-"kullanmalarını söyler. CloudFlare bu yönlendirmeyi istemciye iletir, istemci "
-"de CloudFlare'den aynı şeyi tekrar ister, ancak CloudFlare yine de sunucuma "
-"güvenli olmayan bir http:// bağlantısı üzerinden bağlanır. Bunu düzeltmek "
-"için CloudFlare kontrol panelinize gidin ve alan adı ayarlarınızı yönetin. "
-"\"Kripto\" altında SSL ayarlarını bulabilirsiniz. Ayarı Esnek'ten Tam'a "
-"değiştirin; bu, CloudFlare'in sunucumla konuşurken güvenli bir https:// "
-"bağlantısı kullanmasını sağlar."
 
 #: var/www/html/pgp.php:4 var/www/common.php:1088
 msgid "PGP 2FA"
-msgstr "PGP 2FA"
+msgstr ""
 
 #: var/www/html/pgp.php:17
 msgid "There was an error importing the key"
-msgstr "Anahtar içe aktarılırken bir hata oluştu"
+msgstr ""
 
 #: var/www/html/pgp.php:27
 msgid "Sorry, the code was incorrect"
-msgstr "Üzgünüz, kod hatalıydı"
+msgstr ""
 
 #: var/www/html/pgp.php:38
 msgid "Yay, PGP based 2FA is enabled!"
-msgstr "Yaşasın, PGP tabanlı 2FA etkinleştirildi!"
+msgstr ""
 
 #: var/www/html/pgp.php:48
 msgid ""
 "Sorry, this key can't be used to encrypt a message to you. Your key may have "
 "expired or has been revoked."
 msgstr ""
-"Üzgünüz, bu anahtar size gönderilecek bir mesajı şifrelemek için "
-"kullanılamaz. Anahtarınızın süresi dolmuş veya iptal edilmiş olabilir."
 
 #: var/www/html/pgp.php:56
 msgid ""
 "To enable 2FA, please enter the following code to confirm ownership of your "
 "key:"
 msgstr ""
-"2FA'yı etkinleştirmek için lütfen anahtarınızın size ait olduğunu onaylamak "
-"üzere aşağıdaki kodu girin:"
 
 #: var/www/html/pgp.php:57
 msgid ""
 "To enable 2FA using your PGP key, please decrypt the following PGP encrypted "
 "message and confirm the code:"
 msgstr ""
-"PGP anahtarınızı kullanarak 2FA'yı etkinleştirmek için lütfen aşağıdaki PGP "
-"şifreli mesajın şifresini çözün ve kodu doğrulayın:"
 
 #: var/www/html/pgp.php:71
 msgid "Add your PGP key for more security features like 2FA:"
-msgstr "2FA gibi daha fazla güvenlik özelliği için PGP anahtarınızı ekleyin:"
+msgstr ""
 
 #: var/www/html/pgp.php:76
 msgid "Update PGP key"
-msgstr "PGP anahtarını güncelle"
+msgstr ""
 
 #: var/www/html/delete.php:22
 msgid ""
 "This will delete your account and all data associated with it. It can't be "
 "un-done. Are you sure?"
 msgstr ""
-"Bu, hesabınızı ve onunla ilişkili tüm verileri silecektir. Bu geri alınamaz. "
-"Emin misin?"
 
 #: var/www/html/delete.php:25
 msgid "Enter your account password to confirm"
-msgstr "Onaylamak için hesap şifrenizi girin"
+msgstr ""
 
 #: var/www/html/delete.php:28
 msgid "No, don't delete."
-msgstr "Hayır silmeyin."
+msgstr ""
 
 #: var/www/html/home.php:16
 msgid "Delete database"
-msgstr "Veritabanını sil"
+msgstr ""
 
 #: var/www/html/home.php:18
 #, php-format
@@ -947,20 +846,18 @@ msgid ""
 "This will delete your database %s and all data associated with it. It can't "
 "be un-done. Are you sure?"
 msgstr ""
-"Bu, %s veritabanınızı ve onunla ilişkili tüm verileri silecektir. Bu geri "
-"alınamaz. Emin misin?"
 
 #: var/www/html/home.php:21 var/www/html/home.php:42 var/www/html/home.php:118
 msgid "Yes, delete"
-msgstr "Evet sil"
+msgstr ""
 
 #: var/www/html/home.php:23 var/www/html/home.php:44 var/www/html/home.php:120
 msgid "No, don't delete"
-msgstr "Hayır, silme"
+msgstr ""
 
 #: var/www/html/home.php:37
 msgid "Delete onion domain"
-msgstr "Onion alanını sil"
+msgstr ""
 
 #: var/www/html/home.php:39
 #, php-format
@@ -968,16 +865,14 @@ msgid ""
 "This will delete your onion domain %s and all data asociated with it. It "
 "can't be un-done. Are you sure?"
 msgstr ""
-"Bu, %s_ soğan alan adınızı ve onunla ilişkili tüm verileri silecektir. Bu "
-"geri alınamaz. Emin misin?"
 
 #: var/www/html/home.php:65 var/www/html/register.php:72
 msgid "Error onion already exists."
-msgstr "Hata soğanı zaten mevcut."
+msgstr ""
 
 #: var/www/html/home.php:113
 msgid "Delete domain"
-msgstr "Alanı sil"
+msgstr ""
 
 #: var/www/html/home.php:115
 #, php-format
@@ -985,73 +880,71 @@ msgid ""
 "This will delete your domain %s and all data asociated with it. It can't be "
 "un-done. Are you sure?"
 msgstr ""
-"Bu, %s alan adınızı ve onunla ilişkili tüm verileri silecektir. Bu geri "
-"alınamaz. Emin misin?"
 
 #: var/www/html/home.php:171 var/www/common.php:1087
 msgid "Dashboard"
-msgstr "Kontrol Paneli"
+msgstr ""
 
 #: var/www/html/home.php:176
 #, php-format
 msgid "Enter system account password to check your %s mail:"
-msgstr "%s postanızı kontrol etmek için sistem hesabı şifresini girin:"
+msgstr ""
 
 #: var/www/html/home.php:176
 msgid "Login to webmail"
-msgstr "Web postasına giriş yapın"
+msgstr ""
 
 #: var/www/html/home.php:177
 msgid "Onion domains"
-msgstr "Soğan alanları"
+msgstr ""
 
 #: var/www/html/home.php:179
 msgid "Private key"
-msgstr "Özel anahtar"
+msgstr ""
 
 #: var/www/html/home.php:189
 msgid "Show private key"
-msgstr "Özel anahtarı göster"
+msgstr ""
 
 #: var/www/html/home.php:203 var/www/html/home.php:242
 msgid "Unavailable"
-msgstr "Kullanılamıyor"
+msgstr ""
 
 #: var/www/html/home.php:209
 msgid "Add additional hidden service:"
-msgstr "Ek gizli hizmet ekleyin:"
+msgstr ""
 
 #: var/www/html/home.php:212 var/www/html/register.php:150
 msgid "Random v3 Address"
-msgstr "Rastgele v3 Adresi"
+msgstr ""
 
 #: var/www/html/home.php:215 var/www/html/register.php:151
 msgid "Random v2 Address"
-msgstr "Rastgele v2 Adresi"
+msgstr ""
 
 #: var/www/html/home.php:218 var/www/html/register.php:152
 msgid "Custom private key"
-msgstr "Özel özel anahtar"
+msgstr ""
 
 #: var/www/html/home.php:222
 msgid "Add onion"
-msgstr "Soğan ekle"
+msgstr ""
 
 #: var/www/html/home.php:226
 msgid "Clearnet domains"
-msgstr "Clearnet alanları"
+msgstr ""
 
 #: var/www/html/home.php:228
 msgid "Domain"
-msgstr "İhtisas"
+msgstr ""
 
 #: var/www/html/home.php:248
 msgid "Add additional domain:"
-msgstr "Ek alan adı ekleyin:"
+msgstr ""
 
 #: var/www/html/home.php:252
 msgid "Add domain"
-msgstr "Alan ekle"
+msgstr ""
 
 #: var/www/html/home.php:255
 #, php-format
@@ -1061,35 +954,30 @@ msgid ""
 "settings, <a href=\"%3$s\" target=\"_blank\">contact me</a> to configure the "
 "SSL certificate. You may also use any subdomain of %4$s"
 msgstr ""
-"Clearnet alan adınızı etkinleştirmek için, DNS ayarlarınızı düzenleyin ve A "
-"kaydınız olarak %1$s'yi ve AAAA kaydınız olarak %2$s'yi girin. DNS "
-"ayarlarınızı değiştirdikten sonra, SSL sertifikasını yapılandırmak için _<a "
-"href=\"%3$s\" target=\"_blank\">benimle iletişime geçin</a>. Ayrıca %4$s'in "
-"herhangi bir alt alan adını da kullanabilirsiniz"
 
 #: var/www/html/home.php:257
 msgid "MySQL Database"
-msgstr "MySQL Veritabanı"
+msgstr ""
 
 #: var/www/html/home.php:259
 msgid "Database"
-msgstr "Veritabanı"
+msgstr ""
 
 #: var/www/html/home.php:259 var/www/html/home.php:281
 msgid "Host"
-msgstr "Ev sahibi"
+msgstr ""
 
 #: var/www/html/home.php:259
 msgid "User"
-msgstr "Kullanıcı"
+msgstr ""
 
 #: var/www/html/home.php:274
 msgid "Add new database"
-msgstr "Yeni veritabanı ekle"
+msgstr ""
 
 #: var/www/html/home.php:277
 msgid "Change MySQL password"
-msgstr "MySQL şifresini değiştir"
+msgstr ""
 
 #: var/www/html/home.php:278
 #, php-format
@@ -1098,125 +986,115 @@ msgid ""
 "href=\"/adminer/?username=%s\" target=\"_blank\">Adminer</a> for web based "
 "database administration."
 msgstr ""
-"Web tabanlı veritabanı yönetimi için <a href=\"/phpmyadmin/\" target="
-"\"_blank\">PHPMyAdmin</a> ve <a href=\"/adminer/?username=%s\" target="
-"\"_blank\">Adminer</a> kullanabilirsiniz."
 
 #: var/www/html/home.php:279
 msgid "System Account"
-msgstr "Sistem Hesabı"
+msgstr ""
 
 #: var/www/html/home.php:281
 msgid "SFTP Port"
-msgstr "SFTP Bağlantı Noktası"
+msgstr ""
 
 #: var/www/html/home.php:281
 msgid "POP3 Port"
-msgstr "POP3 Bağlantı Noktası"
+msgstr ""
 
 #: var/www/html/home.php:281
 msgid "IMAP Port"
-msgstr "IMAP Bağlantı Noktası"
+msgstr ""
 
 #: var/www/html/home.php:281
 msgid "SMTP port"
-msgstr "SMTP bağlantı noktası"
+msgstr ""
 
 #: var/www/html/home.php:288
 msgid "Change system account password"
-msgstr "Sistem hesabı şifresini değiştirin"
+msgstr ""
 
 #: var/www/html/home.php:289
 msgid ""
 "You can use the <a target=\"_blank\" href=\"files.php\">FileManager</a> for "
 "web based file management."
 msgstr ""
-"Web tabanlı dosya yönetimi için <a target=\"_blank\" href=\"files.php\""
-">FileManager</a>'ı kullanabilirsiniz."
 
 #: var/www/html/home.php:297
 #, php-format
 msgid "%1$d of %2$d - %3$f%%"
-msgstr "%1$d / %2$d - %3$f%%"
+msgstr ""
 
 #: var/www/html/home.php:299
 msgid "Your disk usage:"
-msgstr "Disk kullanımınız:"
+msgstr ""
 
 #: var/www/html/home.php:299 var/www/html/home.php:300
 #, php-format
 msgid "%s (updated hourly)"
-msgstr "%s (saatlik olarak güncellenir)"
+msgstr ""
 
 #: var/www/html/home.php:299 var/www/html/home.php:300
 msgid "Upgrade"
-msgstr "Güncelleme"
+msgstr ""
 
 #: var/www/html/home.php:300
 msgid "Your file number usage:"
-msgstr "Dosya numarası kullanımınız:"
+msgstr ""
 
 #: var/www/html/home.php:301
 msgid "Logs"
-msgstr "Günlükler"
+msgstr ""
 
 #: var/www/html/home.php:303
 msgid "Date"
-msgstr "Tarih"
+msgstr ""
 
 #: var/www/html/home.php:304
 msgid "Today"
-msgstr "Bugün"
+msgstr ""
 
 #: var/www/html/home.php:305
 msgid "Yesterday"
-msgstr "Dün"
+msgstr ""
 
 #: var/www/html/register.php:9 var/www/html/register.php:158
 #: var/www/common.php:1057
 msgid "Register"
-msgstr "Kayıt olmak"
+msgstr ""
 
 #: var/www/html/register.php:11
 msgid "Hosting - Register"
-msgstr "Barındırma - Kayıt Ol"
+msgstr ""
 
 #: var/www/html/register.php:37
 msgid "Error: password empty."
-msgstr "Hata: şifre boş."
+msgstr ""
 
 #: var/www/html/register.php:40
 msgid "Error: password confirmation does not match."
-msgstr "Hata: şifre onayı eşleşmiyor."
+msgstr ""
 
 #: var/www/html/register.php:43
 msgid "Error: username empty."
-msgstr "Hata: kullanıcı adı boş."
+msgstr ""
 
 #: var/www/html/register.php:46
 msgid ""
 "Error: username may only contain characters that are in the rage of a-z "
 "(lower case) - . _ and 0-9."
 msgstr ""
-"Hata: kullanıcı adı yalnızca a-z (küçük harf) - aralığındaki karakterleri "
-"içerebilir. _ ve 0-9."
 
 #: var/www/html/register.php:49
 msgid "Error: username may not be longer than 50 characters."
-msgstr "Hata: kullanıcı adı 50 karakterden uzun olamaz."
+msgstr ""
 
 #: var/www/html/register.php:55
 msgid "Error: this username is already registered."
-msgstr "Hata: Bu kullanıcı adı zaten kayıtlı."
+msgstr ""
 
 #: var/www/html/register.php:95
 msgid ""
 "To prevent abuse a site can only be registered every 60 seconds, but one has "
 "already been registered within the last 60 seconds. Please try again."
 msgstr ""
-"Kötüye kullanımı önlemek için bir site yalnızca 60 saniyede bir "
-"kaydedilebilir, ancak bir site zaten son 60 saniye içinde kaydedilmiştir. "
-"Lütfen tekrar deneyin."
 
 #: var/www/html/register.php:114
 #, php-format
@@ -1225,33 +1103,30 @@ msgid ""
 "minute until the changes have been processed. You can then <a href=\"login."
 "php\">login</a>."
 msgstr ""
-"%s soğan alan adınız başarıyla oluşturuldu. Lütfen değişiklikler işlenene "
-"kadar bir dakika kadar bekleyin. Daha sonra <a href=\"login.php\">giriş</a> "
-"yapabilirsiniz."
 
 #: var/www/html/register.php:123
 msgid "Confirm password"
-msgstr "Şifreyi onayla"
+msgstr ""
 
 #: var/www/html/register.php:137
 msgid "PHP version"
-msgstr "PHP sürümü"
+msgstr ""
 
 #: var/www/html/register.php:138
 msgid "None"
-msgstr "Hiçbiri"
+msgstr ""
 
 #: var/www/html/register.php:147
 msgid "Publish site on list of hosted sites"
-msgstr "Siteyi barındırılan siteler listesinde yayınla"
+msgstr ""
 
 #: var/www/html/register.php:148
 msgid "Enable autoindex (listing of files)"
-msgstr "Otomatik dizini etkinleştir (dosyaların listelenmesi)"
+msgstr ""
 
 #: var/www/html/register.php:149
 msgid "Type of hidden service:"
-msgstr "Gizli hizmet türü:"
+msgstr ""
 
 #: var/www/html/register.php:157
 #, php-format
@@ -1259,24 +1134,22 @@ msgid ""
 "I have read and agreed to the <a href=\"%s\" target=\"_blank\">Privacy "
 "Policy</a>"
 msgstr ""
-"_<a href=\"%s\" target=\"_blank\">Gizlilik Politikası</a>'nı okudum ve kabul "
-"ettim"
 
 #: var/www/setup.php:13 var/www/setup.php:16
 msgid "Error: No database connection!"
-msgstr "Hata: Veritabanı bağlantısı yok!"
+msgstr ""
 
 #: var/www/setup.php:36
 msgid "Database and files have successfully been set up"
-msgstr "Veritabanı ve dosyalar başarıyla kuruldu"
+msgstr ""
 
 #: var/www/setup.php:287
 msgid "Updating chroots, this might take a while…"
-msgstr "Chroot'lar güncelleniyor, bu biraz zaman alabilir…"
+msgstr ""
 
 #: var/www/setup.php:307
 msgid "Suspended"
-msgstr "Askıya alınmış"
+msgstr ""
 
 #: var/www/setup.php:307
 #, php-format
@@ -1284,8 +1157,6 @@ msgid ""
 "This domain has been suspended due to violation of <a href=\"%s\">hosting "
 "rules</a>."
 msgstr ""
-"Bu alan adı _<a href=\"%s\">barındırma kurallarının</a> ihlali nedeniyle "
-"askıya alındı."
 
 #: var/www/setup.php:387
 #, php-format
@@ -1293,34 +1164,32 @@ msgid ""
 "Successfully added new instance %1$s. Don't forget to add %2$s as allowed "
 "user to your firewall rules in /etc/rc.local"
 msgstr ""
-"Yeni örnek %1$s başarıyla eklendi. /etc/rc.local içindeki güvenlik duvarı "
-"kurallarınıza izin verilen kullanıcı olarak %2$s eklemeyi unutmayın"
 
 #: var/www/setup.php:421
 msgid "Done - Database and files have been updated to the latest version :)"
-msgstr "Bitti - Veritabanı ve dosyalar en son sürüme güncellendi :)"
+msgstr ""
 
 #: var/www/common.php:203
 msgid "Copy:"
-msgstr "Kopyala:"
+msgstr ""
 
 #: var/www/common.php:814
 msgid "Invalid CSRF token, please try again."
-msgstr "Geçersiz CSRF jetonu, lütfen tekrar deneyin."
+msgstr ""
 
 #: var/www/common.php:836
 msgid "No Connection to MySQL database!"
-msgstr "MySQL veritabanına Bağlantı Yok!"
+msgstr ""
 
 #: var/www/common.php:1084
 #, php-format
 msgid "Logged in as %s"
-msgstr "%s olarak giriş yapıldı"
+msgstr ""
 
 #: var/www/common.php:1090
 msgid "FileManager"
-msgstr "Dosya Yöneticisi"
+msgstr ""
 
 #: var/www/common.php:1091
 msgid "Delete account"
-msgstr "Hesabı sil"
+msgstr ""
