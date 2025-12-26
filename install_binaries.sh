@@ -41,7 +41,7 @@ if [ ! -e imagick ]; then
 	git clone https://github.com/Imagick/imagick
 fi
 if [ ! -e php-gnupg ]; then
-	git clone https://github.com/php-gnupg/php-gnupg --recurse-submodules
+	git clone https://github.com/php-gnupg/php-gnupg
 fi
 if [ ! -e php-rar ]; then
 	git clone https://github.com/cataphract/php-rar
@@ -70,7 +70,7 @@ cd ext
 cd apcu && git fetch --all && git checkout v5.1.24 && cd ..
 cd php-ext-brotli && git fetch --all && git checkout 0.15.0 && cd ..
 cd imagick && git fetch --all && git checkout 3.7.0 && cd ..
-cd php-gnupg && git fetch --all --recurse-submodules && git checkout gnupg-1.5.1 --recurse-submodules && cd ..
+cd php-gnupg && git fetch --all && git checkout master && cd ..
 cd php-rar && git fetch --all && git reset --hard && git checkout ab26d285759e4c917879967b09976a44829ed570
 cat <<EOF | git apply -
 From 9be22919015ec050678917aadacb28904317ea46 Mon Sep 17 00:00:00 2001
