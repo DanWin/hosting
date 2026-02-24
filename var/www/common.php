@@ -13,6 +13,8 @@ const SERVERS=[ //servers and ports we are running on
 'dhosting4xxoydyaivckq7tsmtgi4wfs3flpeyitekkmqwu4v4r46syd.onion'=>['sftp'=>22, 'pop3'=>'110', 'imap'=>'143', 'smtp'=>'25'],
 'hosting.danwin1210.me'=>['sftp'=>22, 'pop3'=>'995', 'imap'=>'993', 'smtp'=>'465']
 ];
+const COPYRIGHT='';
+const DISCLAIMER='';
 const EMAIL_TO=''; //Send email notifications about new registrations to this address
 const INDEX_MD5S=[ //MD5 sums of index.hosting.html files that should be considered as unchanged for deletion
 'd41d8cd98f00b204e9800998ecf8427e', //empty file
