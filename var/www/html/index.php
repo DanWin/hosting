@@ -3,7 +3,7 @@ require('../common.php');
 header('Content-Type: text/html; charset=UTF-8');
 print_header(_('Info'));
 ?>
-<h1><?php echo _('Hosting - Info'); ?></h1>
+<h1><?php echo _(SITE_NAME); ?> - Info</h1>
 <?php main_menu('index.php'); ?>
 <p><?php echo _('Here you can get yourself a free web hosting account on my server.'); ?></p>
 <h2><?php echo _('What you get:'); ?></h2>
