@@ -27,6 +27,19 @@ print_header(_('Info'));
 <li><?php printf(_('There is a missing feature, or you need a special configuration? Just <a href="%s">contact me</a> and I\'ll see what I can do.'), CONTACT_URL); ?></li>
 <li><?php echo _('More to come…'); ?></li>
 </ul>
+<?php if (defined('COPYRIGHT') && COPYRIGHT !== ''): ?>
+    <h2><?php echo _('Copyright'); ?></h2>
+    <ul>
+        <li><?php echo _(COPYRIGHT); ?></li>
+    </ul>
+<?php endif; ?>
+
+<?php if (defined('DISCLAIMER') && DISCLAIMER !== ''): ?>
+    <h2><?php echo _('Disclaimer'); ?></h2>
+    <ul>
+        <li><?php echo _(DISCLAIMER); ?></li>
+    </ul>
+<?php endif; ?>
 <h2><?php echo _('Rules'); ?></h2>
 <ul>
 <li><?php echo _('No child pornography!'); ?></li>
