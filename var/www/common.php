@@ -91,6 +91,8 @@ const SITE_NAME = "Daniel's Hosting"; //globally changes the sites title
 const HOME_MOUNT_PATH = '/home'; //mount path of the home directory. Usually /home as own partition or / on a system with no extra home partition
 const CONTACT_URL = 'https://danwin1210.de/contact.php'; //url to contact form
 const PRIVACY_URL = 'https://danwin1210.de/privacy.php'; //url to privacy policy
+const SOFTWARE_URL = 'https://github.com/DanWin/hosting';
+const CLEARNET = '0'; // clearnet enabled = 1 or 0 disabled
 const CLEARNET_A = '116.202.17.147'; // IPv4 Address of your clearnet gateway
 const CLEARNET_AAAA = '2a01:4f8:c010:d56::1'; // IPv6 Address of your clearnet gateway
 const CLEARNET_ADDRESS = 'hosting.danwin1210.me'; //Domain under which the service is reachable in clearnet
