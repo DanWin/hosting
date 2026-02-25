@@ -219,6 +219,7 @@ if($count_onions<MAX_NUM_USER_ONIONS){
 	echo '</label></td><td><button type="submit" name="action" value="add_onion">'._('Add onion').'</button></td></tr></form>';
 }
 echo '</table>';
+if (defined('CLEARNET') && CLEARNET !== '0'): 
 if(MAX_NUM_USER_DOMAINS>0){
 	echo '<h3>'._('Clearnet domains').'</h3>';
 	echo '<table border="1">';
@@ -251,6 +252,7 @@ if(MAX_NUM_USER_DOMAINS>0){
 	echo '</table>';
 	echo '<p>'.sprintf(_('To enable your clearnet domain, edit your DNS settings and enter %1$s as your A record and %2$s as your AAAA record. Once you have modified your DNS settings, <a href="%3$s" target="_blank">contact me</a> to configure the SSL certificate. You may also use any subdomain of %4$s'), CLEARNET_A, CLEARNET_AAAA, CONTACT_URL, CLEARNET_SUBDOMAINS).'</p>';
 }
+endif;
 echo '<h3>'._('MySQL Database').'</h3>';
 echo '<table border="1">';
 echo '<tr><th>'._('Database').'</th><th>'._('Host').'</th><th>'._('User').'</th><th>'._('Action').'</th></tr>';
