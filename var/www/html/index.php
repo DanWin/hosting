@@ -54,4 +54,5 @@ print_header(_('Info'));
 <li><?php echo _('I preserve the right to delete any site for violating these rules and adding new rules at any time.'); ?></li>
 <li><?php echo _('Should you not honor these rules, I will (have to) work together with Law Enforcement!'); ?></li>
 </ul>
+<?php printf(_('<a href="%s" target="_blank" rel="noopener noreferrer">Based on Daniels Hosting</a>'), SOFTWARE_URL); ?>
 </body></html>
