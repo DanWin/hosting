@@ -36,7 +36,36 @@ while($account=$stmt->fetch(PDO::FETCH_ASSOC)){
 	$reload[$account['instance']] = true;
 	//add and manage rights of system user
 	$shell = ENABLE_SHELL_ACCESS ? '/bin/bash' : '/usr/sbin/nologin';
-	exec('useradd -l -g www-data -k /var/www/skel -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
+	exec('useradd -l -g www-data -m -s ' . escapeshellarg($shell) . ' ' . escapeshellarg($system_account));
+	//generate default hosting page
+    $home = "/home/$system_account";
+    $dir  = "$home/www";
+    $file = "$dir/index.hosting.html";
+    if (!is_dir($dir)) {
+       mkdir($dir, 0755, true);
+    }
+    $content = sprintf(
+    '<!DOCTYPE html>
+    <html lang="en" dir="ltr">
+     <head>
+     <meta charset="utf-8">
+     <title>Site hosted by %s service</title>
+     <meta name="robots" content="noindex">
+    </head>
+     <body>
+     <p>This site is hosted by <a href="http://%s" target="_blank" rel="noopener">%s service</a>.</p>
+     </body>
+    </html>',
+        htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8'),
+        htmlspecialchars(ADDRESS, ENT_QUOTES, 'UTF-8'),
+        htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8')
+      );
+    file_put_contents($file, $content);
+    chown($dir, $system_account);
+    chgrp($dir, 'www-data');
+    chown($file, $system_account);
+    chgrp($file, 'www-data');
+	////////
 	update_system_user_password($system_account, $account['password']);
 	setup_chroot($system_account, $last_account);
 	$last_account = $system_account;
