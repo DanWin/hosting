@@ -131,10 +131,15 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 	if($error=check_csrf_error()){
 		die($error);
 	}
-	$stmt=$db->prepare('SELECT onions.version, onions.instance FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
+	//$stmt=$db->prepare('SELECT onions.version, onions.instance FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
+    $stmt=$db->prepare('SELECT onions.version, onions.instance, onions.description FROM onions INNER JOIN users ON (users.id=onions.user_id) WHERE onions.onion = ? AND users.id = ? AND onions.enabled IN (0, 1);');
+    $description = trim($_POST['description'] ?? $_REQUEST['description'] ?? '');
+    $description = mb_substr($description, 0, 50); // Limit 50
+	
 	$stmt->execute([$_REQUEST['onion'], $user['id']]);
 	if($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
-		$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion = ?;');
+		//$stmt=$db->prepare('UPDATE onions SET enabled = ?, enable_smtp = ?, num_intros = ?, max_streams = ? WHERE onion = ?;');
+		$stmt=$db->prepare('UPDATE onions SET enabled = ?,enable_smtp = ?,num_intros = ?,max_streams = ?,description = ?WHERE onion = ?;');
 		$enabled = isset($_REQUEST['enabled']) ? 1 : 0;
 		$enable_smtp = isset($_REQUEST['enable_smtp']) ? 1 : 0;
 		$num_intros = intval($_REQUEST['num_intros']);
@@ -151,7 +156,8 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['onion']) && $_REQUEST['action'
 		}elseif($max_streams>65535){
 			$max_streams = 65535;
 		}
-		$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
+		//$stmt->execute([$enabled, $enable_smtp, $num_intros, $max_streams, $_REQUEST['onion']]);
+		$stmt->execute([$enabled,$enable_smtp,$num_intros,$max_streams,$description,$_REQUEST['onion']]);
 		enqueue_instance_reload($onion['instance']);
 	}
 }
@@ -176,8 +182,10 @@ if(!empty($msg)){
 echo '<p>'.sprintf(_('Enter system account password to check your %s mail:'), $user['system_account'].'@' . ADDRESS).'</td><td><form action="squirrelmail/src/redirect.php" method="post" target="_blank"><input type="hidden" name="login_username" value="'.$user['system_account'].'"><input type="password" name="secretkey"><button type="submit">'._('Login to webmail').'</button></form></p>';
 echo '<h3>'._('Onion domains').'</h3>';
 echo '<table border="1">';
-echo '<tr><th>'._('Onion').'</th><th>'._('Private key').'</th><th>'._('Enabled').'</th><th>'._('SMTP enabled').'</th><th>'._('Nr. of intros').'</th><th>'._('Max streams per rend circuit').'</th><th>'._('Action').'</th></tr>';
-$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
+//echo '<tr><th>'._('Onion').'</th><th>'._('Private key').'</th><th>'._('Enabled').'</th><th>'._('SMTP enabled').'</th><th>'._('Nr. of intros').'</th><th>'._('Max streams per rend circuit').'</th><th>'._('Action').'</th></tr>';
+echo '<tr><th>'._('Onion').'</th><th>'._('Private key').'</th><th>'._('Enabled').'</th><th>'._('SMTP enabled').'</th><th>'._('Nr. of intros').'</th><th>'._('Max streams per rend circuit').'</th><th>'._('Description').'</th><th>'._('Action').'</th></tr>';
+//$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams FROM onions WHERE user_id = ?;');
+$stmt=$db->prepare('SELECT onion, private_key, enabled, enable_smtp, num_intros, max_streams, description FROM onions WHERE user_id = ?;');
 $stmt->execute([$user['id']]);
 $count_onions = 0;
 while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
@@ -196,6 +204,8 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '>'._('Enabled').'</label></td>';
 	echo '<td><input type="number" name="num_intros" min="3" max="20" value="'.$onion['num_intros'].'"></td>';
 	echo '<td><input type="number" name="max_streams" min="0" max="65535" value="'.$onion['max_streams'].'"></td>';
+	//added description
+	echo '<td><input type="text" name="description" maxlength="50" value="'.htmlspecialchars($onion['description'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'"></td>';
 	if(in_array($onion['enabled'], [0, 1])){
 		echo '<td><button type="submit" name="action" value="edit_onion">'._('Save').'</button>';
 		echo '<button type="submit" name="action" value="del_onion">'._('Delete').'</button></td>';
@@ -206,7 +216,8 @@ while($onion=$stmt->fetch(PDO::FETCH_ASSOC)){
 }
 if($count_onions<MAX_NUM_USER_ONIONS){
 	echo "<form action=\"home.php\" method=\"post\"><input type=\"hidden\" name=\"csrf_token\" value=\"$_SESSION[csrf_token]\">";
-	echo '<tr><td colspan="6">'._('Add additional hidden service:').'<br>';
+	//echo '<tr><td colspan="6">'._('Add additional hidden service:').'<br>';
+	echo '<tr><td colspan="7">'._('Add additional hidden service:').'<br>';
 	echo '<label><input type="radio" name="onion_type" value="3"';
 	echo (!isset($_POST['onion_type']) || $_POST['onion_type']==3) ? ' checked' : '';
 	echo '>'._('Random v3 Address').'</label>';
