@@ -300,21 +300,6 @@ if($count_dbs<MAX_NUM_USER_DBS){
 ?>
 <p><a href="password.php?type=sql"><?php echo _('Change MySQL password'); ?></a></p>
 <p><?php printf(_('You can use <a href="/phpmyadmin/" target="_blank">PHPMyAdmin</a> and <a href="/adminer/?username=%s" target="_blank">Adminer</a> for web based database administration.'), rawurlencode($user['mysql_user'])); ?></p>
-<h3><?php echo _('PHP Version'); ?></h3>
-<form action="home.php" method="post">
-<input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-<select name="php">
-<option value="0"<?php echo $user['php'] == 0 ? ' selected' : ''; ?>><?php echo _('None'); ?></option>
-<?php
-foreach(PHP_VERSIONS as $key => $version){
-	echo "<option value=\"$key\"";
-	echo $user['php'] == $key ? ' selected' : '';
-	echo ">PHP $version</option>";
-}
-?>
-</select>
-<button type="submit" name="action" value="change_php"><?php echo _('Save'); ?></button>
-</form>
 <h3><?php echo _('System Account'); ?></h3>
 <table border="1">
 <tr><th><?php echo _('Username'); ?></th><th><?php echo _('Host'); ?></th><th><?php echo _('SFTP Port'); ?></th><th><?php echo _('POP3 Port'); ?></th><th><?php echo _('IMAP Port'); ?></th><th><?php echo _('SMTP port'); ?></th></tr>
