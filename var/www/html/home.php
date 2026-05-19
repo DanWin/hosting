@@ -158,6 +158,7 @@ if(isset($_POST['action']) && isset($_POST['onion']) && $_POST['action']==='edit
 		enqueue_instance_reload($onion['instance']);
 	}
 }
+
 if(isset($_POST['action']) && $_POST['action']==='change_php'){
 	if($error=check_csrf_error()){
 		die($error);
@@ -169,16 +170,13 @@ if(isset($_POST['action']) && $_POST['action']==='change_php'){
 		$user['php'] = $new_php;
 		$stmt=$db->prepare('SELECT instance FROM onions WHERE user_id = ?;');
 		$stmt->execute([$user['id']]);
-		$instances = [];
 		while($row=$stmt->fetch(PDO::FETCH_ASSOC)){
-			$instances[$row['instance']] = true;
+			enqueue_instance_reload($row['instance']);
 		}
-		foreach(array_keys($instances) as $instance){
-			rewrite_php_config($instance);
-		}
-		rewrite_nginx_config();
+		enqueue_instance_reload();
 	}
 }
+
 if(isset($_REQUEST['action']) && isset($_POST['domain']) && $_POST['action']==='edit_domain'){
 	if($error=check_csrf_error()){
 		die($error);
