@@ -30,7 +30,7 @@ if [ ! -e /usr/local/lib/libc-client.a ]; then
 fi
 
 # install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
@@ -77,7 +77,7 @@ export PROC_LIMIT=$(free -g | grep Mem | awk -v nproc=$(nproc) '{print (($2 + 1)
 #start build
 cd ImageMagick
 git fetch --all
-git checkout 7.1.1-39
+git checkout 7.1.2-35
 CXXFLAGS='-O3 -mtune=native -march=native' CFLAGS='-O3 -mtune=native -march=native' ./configure --without-perl --without-magick-plus-plus --disable-openmp --with-fftw --with-gslib --with-gvc --with-rsvg --with-wmf
 make -j $PROC_LIMIT install
 make distclean
@@ -86,135 +86,37 @@ cd ..
 ln -fs /usr/include/qdbm/depot.h /usr/include/depot.h
 cd php-src
 cd ext
-cd apcu && git fetch --all && git checkout v5.1.24 && cd ..
-cd php-ext-brotli && git fetch --all && git checkout 0.18.3 && cd ..
+cd apcu && git fetch --all && git checkout v5.1.28 && cd ..
+cd php-ext-brotli && git fetch --all && git checkout 0.21.1 && cd ..
 cd imagick && git fetch --all && git checkout 3.8.1 && cd ..
 cd php-gnupg && git fetch --all && git checkout master && cd ..
-cd php-rar && git fetch --all && git reset --hard && git checkout ab26d285759e4c917879967b09976a44829ed570
-cat <<EOF | git apply -
-From 9be22919015ec050678917aadacb28904317ea46 Mon Sep 17 00:00:00 2001
-From: Remi Collet <remi@remirepo.net>
-Date: Thu, 15 Sep 2022 10:28:06 +0200
-Subject: [PATCH 1/2] ignore more build artefacts
-
----
- .gitignore | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/.gitignore b/.gitignore
-index 86886db..288c25b 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -11,6 +11,7 @@
- /modules
- /missing
- /.deps
-+*.dep
- /.libs
- /Makefile
- /Makefile.fragments
-@@ -36,6 +37,7 @@
- /libtool
- /mkinstalldirs
- /ltmain.sh
-+/ltmain.sh.backup
- /.cproject
- /.project
- /.settings
-
-From 02331ca1cc1e8638c34e024566f4b391a6c863c5 Mon Sep 17 00:00:00 2001
-From: Remi Collet <remi@remirepo.net>
-Date: Thu, 15 Sep 2022 10:28:23 +0200
-Subject: [PATCH 2/2] fix __toString prototype for PHP 8.2
-
----
- rararch.c  | 9 ++++++++-
- rarentry.c | 9 ++++++++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/rararch.c b/rararch.c
-index 7cbfa26..9cad093 100644
---- a/rararch.c
-+++ b/rararch.c
-@@ -970,6 +970,13 @@ ZEND_END_ARG_INFO()
- 
- ZEND_BEGIN_ARG_INFO(arginfo_rararchive_void, 0)
- ZEND_END_ARG_INFO()
-+
-+#if PHP_VERSION_ID >= 80200
-+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_rararchive_tostring, 0, 0, IS_STRING, 0)
-+ZEND_END_ARG_INFO()
-+#else
-+#define arginfo_rararchive_tostring arginfo_rararchive_void
-+#endif
- /* }}} */
- 
- static zend_function_entry php_rararch_class_functions[] = {
-@@ -984,7 +991,7 @@ static zend_function_entry php_rararch_class_functions[] = {
- 	PHP_ME_MAPPING(isBroken,		rar_broken_is,			arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(setAllowBroken,	rar_allow_broken_set,	arginfo_rararchive_setallowbroken, ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(close,			rar_close,				arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
--	PHP_ME(rararch,					__toString,				arginfo_rararchive_void,		ZEND_ACC_PUBLIC)
-+	PHP_ME(rararch,					__toString,				arginfo_rararchive_tostring,	ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(__construct,		rar_bogus_ctor,			arginfo_rararchive_void,		ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
- #if PHP_MAJOR_VERSION >= 8
- 	PHP_ME(rararch,					getIterator,			arginfo_rararchive_getiterator,	ZEND_ACC_PUBLIC)
-diff --git a/rarentry.c b/rarentry.c
-index 5e680f6..cb5bdaa 100644
---- a/rarentry.c
-+++ b/rarentry.c
-@@ -735,6 +735,13 @@ ZEND_END_ARG_INFO()
- 
- ZEND_BEGIN_ARG_INFO(arginfo_rar_void, 0)
- ZEND_END_ARG_INFO()
-+
-+#if PHP_VERSION_ID >= 80200
-+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_rar_tostring, 0, 0, IS_STRING, 0)
-+ZEND_END_ARG_INFO()
-+#else
-+#define arginfo_rar_tostring arginfo_rar_void
-+#endif
- /* }}} */
- 
- static zend_function_entry php_rar_class_functions[] = {
-@@ -755,7 +762,7 @@ static zend_function_entry php_rar_class_functions[] = {
- 	PHP_ME(rarentry,		getRedirType,		arginfo_rar_void,	ZEND_ACC_PUBLIC)
- 	PHP_ME(rarentry,		isRedirectToDirectory,	arginfo_rar_void,	ZEND_ACC_PUBLIC)
- 	PHP_ME(rarentry,		getRedirTarget,	arginfo_rar_void,	ZEND_ACC_PUBLIC)
--	PHP_ME(rarentry,		__toString,			arginfo_rar_void,	ZEND_ACC_PUBLIC)
-+	PHP_ME(rarentry,		__toString,			arginfo_rar_tostring,	ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(__construct,	rar_bogus_ctor,	arginfo_rar_void,	ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
- 	{NULL, NULL, NULL}
- };
-EOF
-
-cd ..
+cd php-rar && git fetch --all && git reset --hard && git checkout v4.3.1
 cd igbinary && git fetch --all && git checkout master && cd ..
-cd msgpack-php && git fetch --all && git checkout msgpack-2.2.0 && cd ..
+cd msgpack-php && git fetch --all && git checkout v0.0.1 && cd ..
 rm -rf ssh2-*
 curl -sSf https://pecl.php.net/get/ssh2 | tar xzvf - --exclude package.xml
 cd ..
 git fetch --all
 git fetch --all --tags
-git checkout php-8.5.4
+git checkout php-8.5.12
 ./buildconf -f
 LIBS='-lgpg-error -lgomp' CXXFLAGS='-O3 -mtune=native -march=native -std=c++17' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.5/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.5 --program-suffix=8.5 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.4.19
+git checkout php-8.4.27
 ./buildconf -f
 LIBS='-lgpg-error -lgomp' CXXFLAGS='-O3 -mtune=native -march=native -std=c++17' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.4/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.4 --program-suffix=8.4 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.3.13
+git checkout php-8.3.36
 ./buildconf -f
 LIBS='-lgpg-error -lgomp' CXXFLAGS='-O3 -mtune=native -march=native -std=c++17' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.3/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.3 --program-suffix=8.3 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
 make distclean
 git reset --hard
-git checkout php-8.2.25
+git checkout php-8.2.34
 ./buildconf -f
 LIBS='-lgpg-error -lgomp' CXXFLAGS='-O3 -mtune=native -march=native -std=c++17' CFLAGS='-O3 -mtune=native -march=native' ./configure -C --enable-re2c-cgoto --prefix=/usr --with-config-file-scan-dir=/etc/php/8.2/fpm/conf.d --libdir=/usr/lib/php --libexecdir=/usr/lib/php --datadir=/usr/share/php/8.2 --program-suffix=8.2 --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --enable-fpm --enable-cli --disable-cgi --disable-phpdbg --with-fpm-systemd --with-fpm-user=www-data --with-fpm-group=www-data --with-layout=GNU --disable-dtrace --disable-short-tags --without-valgrind --disable-shared --disable-debug --disable-rpath --without-pear --with-openssl --enable-bcmath --with-bz2 --enable-calendar --with-curl --enable-dba --with-qdbm --with-lmdb --enable-exif --enable-ftp --enable-gd --with-external-gd --with-jpeg --with-webp --with-xpm --with-freetype --enable-gd-jis-conv --with-gettext --with-gmp --with-mhash --with-imap --with-imap-ssl --with-kerberos --enable-intl --with-ldap --with-ldap-sasl --enable-mbstring --with-mysqli --with-pdo-mysql --enable-mysqlnd --with-mysql-sock=/run/mysqld/mysqld.sock --with-zlib --with-libedit --with-readline --enable-shmop --enable-soap --enable-sockets --with-sodium --with-password-argon2 --with-tidy --with-xsl --with-enchant --with-pspell --with-zip --with-ffi --enable-apcu --enable-brotli --with-libbrotli --with-imagick --with-ssh2 --with-gnupg --enable-igbinary --with-msgpack --enable-sysvsem --enable-sysvmsg --enable-sysvshm
 make -j $PROC_LIMIT install
@@ -225,7 +127,7 @@ cd ..
 ldconfig
 
 # install composer
-curl -sSL https://github.com/composer/composer/releases/download/2.8.2/composer.phar > /usr/bin/composer
+curl -sSL https://github.com/composer/composer/releases/download/2.11.1/composer.phar > /usr/bin/composer
 chmod +x /usr/bin/composer
 composer self-update
 
